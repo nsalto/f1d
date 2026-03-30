@@ -24,12 +24,16 @@ const sortedDrivers = computed(() => {
   return Object.entries(timingData.value.Lines as Record<string, any>)
     .map(([num, data]: [string, any]) => {
       const driver = driverList.value?.[num] || {}
+      // Try to extract team from driver data or use a mapping
+      const teamId = driver.TeamId?.toLowerCase().replace(/\s+/g, '-') || ''
       return {
         number: num,
         position: parseInt(data.Position || '99'),
         tla: driver.Tla || num,
         broadcastName: driver.BroadcastName || driver.FullName || '',
         teamColour: driver.TeamColour ? `#${driver.TeamColour}` : '#444',
+        teamId,
+        teamName: driver.TeamName || '',
         gap: data.GapToLeader || '',
         interval: data.IntervalToPositionAhead?.Value || '',
         catching: data.IntervalToPositionAhead?.Catching || false,
@@ -211,76 +215,47 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
       <!-- Timing tower -->
       <div class="lg:col-span-3 rounded-xl bg-[#0a0a0a] border border-[#141414] overflow-hidden">
         <!-- Header -->
-        <div class="grid items-center gap-2 px-3 py-2 border-b border-[#1f1f1f] text-[10px] text-[#444] uppercase tracking-wider font-medium"
-             style="grid-template-columns: 2rem 3px 3rem 1fr 5rem 5rem 6rem auto 2.5rem">
-          <span class="text-center">P</span>
-          <span />
-          <span>TLA</span>
-          <span class="hidden md:block">Sectors</span>
-          <span class="text-right">INT</span>
-          <span class="text-right">GAP</span>
-          <span class="text-right">LAST</span>
-          <span class="text-right">BEST</span>
-          <span class="text-center">PIT</span>
-        </div>
-
-        <!-- Rows -->
-        <div
-          v-for="d in sortedDrivers"
-          :key="d.number"
-          class="grid items-center gap-2 px-3 py-1.5 border-b border-[#0f0f0f] hover:bg-[#0f0f0f] transition-colors"
-          :class="{ 'opacity-30': d.retired || d.stopped }"
-          style="grid-template-columns: 2rem 3px 3rem 1fr 5rem 5rem 6rem auto 2.5rem"
-        >
-          <!-- Position -->
-          <LivePositionBadge :position="d.position" size="sm" />
-
-          <!-- Team color bar -->
-          <div class="h-full w-[3px] rounded-full" :style="{ backgroundColor: d.teamColour }" />
-
-          <!-- TLA + nombre -->
-          <div class="flex flex-col min-w-0 justify-center">
-            <span class="text-xs font-bold text-[#f0f0f0] tracking-wider leading-tight">{{ d.tla }}</span>
-            <span v-if="d.broadcastName" class="text-[9px] text-[#5a5a5a] truncate leading-tight mt-0.5">{{ d.broadcastName }}</span>
-          </div>
-
-          <!-- Mini sectors -->
-          <div class="hidden md:block">
-            <LiveMiniSectors :sectors="d.sectors" compact />
-          </div>
-
-          <!-- Interval -->
-          <span class="font-timing text-xs text-right"
-            :class="d.catching ? 'text-[#00d25b]' : 'text-[#8a8a8a]'">
-            {{ d.position === 1 ? '' : d.interval }}
-          </span>
-
-          <!-- Gap -->
-          <span class="font-timing text-xs text-right text-[#444]">
-            {{ d.position === 1 ? 'LEADER' : d.gap }}
-          </span>
-
-          <!-- Last lap -->
-          <span class="font-timing text-xs text-right font-medium"
-            :class="{
-              'text-[#9f00ff]': d.lastLapFastest,
-              'text-[#00d25b]': d.lastLapPersonal && !d.lastLapFastest,
-              'text-[#f0f0f0]': !d.lastLapFastest && !d.lastLapPersonal
-            }">
-            {{ d.lastLap }}
-          </span>
-
-          <!-- Best lap -->
-          <span class="font-timing text-xs text-right text-[#444]">{{ d.bestLap }}</span>
-
-          <!-- Pit -->
-          <div class="text-center">
-            <span v-if="d.inPit" class="text-[9px] font-bold text-[#ffc906] bg-[#ffc906]/10 px-1 rounded">PIT</span>
-            <span v-else-if="d.pitOut" class="text-[9px] font-bold text-[#00d25b] bg-[#00d25b]/10 px-1 rounded">OUT</span>
-            <span v-else-if="d.retired" class="text-[9px] font-bold text-[#e10600] bg-[#e10600]/10 px-1 rounded">RET</span>
-            <span v-else class="font-timing text-[10px] text-[#2a2a2a]">{{ d.pitStops || '' }}</span>
+        <div class="px-3 py-2 border-b border-[#1f1f1f] text-[10px] text-[#444] uppercase tracking-wider font-medium">
+          <div class="flex items-center gap-2 justify-between">
+            <div class="flex-1">Pos • Driver • Team</div>
+            <div class="flex gap-4 text-right">
+              <span>INT</span>
+              <span>GAP</span>
+              <span>LAST</span>
+              <span>BEST</span>
+              <span>PIT</span>
+            </div>
           </div>
         </div>
+
+        <!-- Rows using new DriverRow component -->
+        <table class="w-full">
+          <tbody>
+            <DriverRow
+              v-for="d in sortedDrivers"
+              :key="d.number"
+              :position="d.position"
+              :number="d.number"
+              :given="d.broadcastName?.split(' ')[0] || d.tla"
+              :family="d.broadcastName?.split(' ').slice(1).join(' ') || ''"
+              :tla="d.tla"
+              :team="d.teamName || ''"
+              :teamId="d.teamId || ''"
+              :team-color="d.teamColour"
+              :gap="d.gap"
+              :interval="d.interval"
+              :last-lap="d.lastLap"
+              :best-lap="d.bestLap"
+              :last-lap-fastest="d.lastLapFastest"
+              :last-lap-personal="d.lastLapPersonal"
+              :pit-stops="d.pitStops"
+              :in-pit="d.inPit"
+              :pit-out="d.pitOut"
+              :retired="d.retired"
+              :stopped="d.stopped"
+            />
+          </tbody>
+        </table>
       </div>
 
       <!-- Sidebar -->

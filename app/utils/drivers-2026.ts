@@ -1,203 +1,27 @@
 // F1 2026 Driver Roster
 export const DRIVERS_2026 = [
-  {
-    number: '1',
-    givenName: 'Max',
-    familyName: 'Verstappen',
-    nameAcronym: 'VER',
-    team: 'Red Bull Racing',
-    teamId: 'red-bull-racing',
-    nationality: 'Dutch'
-  },
-  {
-    number: '4',
-    givenName: 'Isack',
-    familyName: 'Hadjar',
-    nameAcronym: 'HAD',
-    team: 'Red Bull Racing',
-    teamId: 'red-bull-racing',
-    nationality: 'Swedish'
-  },
-  {
-    number: '81',
-    givenName: 'Lando',
-    familyName: 'Norris',
-    nameAcronym: 'NOR',
-    team: 'McLaren',
-    teamId: 'mclaren',
-    nationality: 'British'
-  },
-  {
-    number: '5',
-    givenName: 'Oscar',
-    familyName: 'Piastri',
-    nameAcronym: 'PIA',
-    team: 'McLaren',
-    teamId: 'mclaren',
-    nationality: 'Australian'
-  },
-  {
-    number: '16',
-    givenName: 'Charles',
-    familyName: 'Leclerc',
-    nameAcronym: 'LEC',
-    team: 'Ferrari',
-    teamId: 'ferrari',
-    nationality: 'Monegasque'
-  },
-  {
-    number: '44',
-    givenName: 'Lewis',
-    familyName: 'Hamilton',
-    nameAcronym: 'HAM',
-    team: 'Ferrari',
-    teamId: 'ferrari',
-    nationality: 'British'
-  },
-  {
-    number: '63',
-    givenName: 'George',
-    familyName: 'Russell',
-    nameAcronym: 'RUS',
-    team: 'Mercedes',
-    teamId: 'mercedes',
-    nationality: 'British'
-  },
-  {
-    number: '12',
-    givenName: 'Kimi',
-    familyName: 'Antonelli',
-    nameAcronym: 'ANT',
-    team: 'Mercedes',
-    teamId: 'mercedes',
-    nationality: 'Italian'
-  },
-  {
-    number: '3',
-    givenName: 'Fernando',
-    familyName: 'Alonso',
-    nameAcronym: 'ALO',
-    team: 'Aston Martin',
-    teamId: 'aston-martin',
-    nationality: 'Spanish'
-  },
-  {
-    number: '18',
-    givenName: 'Lance',
-    familyName: 'Stroll',
-    nameAcronym: 'STR',
-    team: 'Aston Martin',
-    teamId: 'aston-martin',
-    nationality: 'Canadian'
-  },
-  {
-    number: '31',
-    givenName: 'Pierre',
-    familyName: 'Gasly',
-    nameAcronym: 'GAS',
-    team: 'Alpine',
-    teamId: 'alpine',
-    nationality: 'French'
-  },
-  {
-    number: '43',
-    givenName: 'Franco',
-    familyName: 'Colapinto',
-    nameAcronym: 'COL',
-    team: 'Alpine',
-    teamId: 'alpine',
-    nationality: 'Argentine'
-  },
-  {
-    number: '2',
-    givenName: 'Carlos',
-    familyName: 'Sainz',
-    nameAcronym: 'SAI',
-    team: 'Williams',
-    teamId: 'williams',
-    nationality: 'Spanish'
-  },
-  {
-    number: '23',
-    givenName: 'Alexander',
-    familyName: 'Albon',
-    nameAcronym: 'ALB',
-    team: 'Williams',
-    teamId: 'williams',
-    nationality: 'Thai-British'
-  },
-  {
-    number: '27',
-    givenName: 'Nico',
-    familyName: 'Hulkenberg',
-    nameAcronym: 'HUL',
-    team: 'Audi',
-    teamId: 'audi',
-    nationality: 'German'
-  },
-  {
-    number: '30',
-    givenName: 'Gabriel',
-    familyName: 'Bortoleto',
-    nameAcronym: 'BOT',
-    team: 'Audi',
-    teamId: 'audi',
-    nationality: 'Brazilian'
-  },
-  {
-    number: '24',
-    givenName: 'Liam',
-    familyName: 'Lawson',
-    nameAcronym: 'LAW',
-    team: 'Racing Bulls',
-    teamId: 'racing-bulls',
-    nationality: 'New Zealander'
-  },
-  {
-    number: '7',
-    givenName: 'Arvid',
-    familyName: 'Lindblad',
-    nameAcronym: 'LIN',
-    team: 'Racing Bulls',
-    teamId: 'racing-bulls',
-    nationality: 'Swedish'
-  },
-  {
-    number: '14',
-    givenName: 'Esteban',
-    familyName: 'Ocon',
-    nameAcronym: 'OCO',
-    team: 'Haas',
-    teamId: 'haas',
-    nationality: 'French'
-  },
-  {
-    number: '50',
-    givenName: 'Oliver',
-    familyName: 'Bearman',
-    nameAcronym: 'BEA',
-    team: 'Haas',
-    teamId: 'haas',
-    nationality: 'British'
-  },
-  {
-    number: '11',
-    givenName: 'Sergio',
-    familyName: 'Perez',
-    nameAcronym: 'PER',
-    team: 'Cadillac',
-    teamId: 'cadillac',
-    nationality: 'Mexican'
-  },
-  {
-    number: '77',
-    givenName: 'Valtteri',
-    familyName: 'Bottas',
-    nameAcronym: 'BOT',
-    team: 'Cadillac',
-    teamId: 'cadillac',
-    nationality: 'Finnish'
-  }
+  { number: '1', givenName: 'Max', familyName: 'Verstappen', nameAcronym: 'VER', team: 'Red Bull Racing', teamId: 'red-bull-racing', nationality: 'Dutch' },
+  { number: '4', givenName: 'Isack', familyName: 'Hadjar', nameAcronym: 'HAD', team: 'Red Bull Racing', teamId: 'red-bull-racing', nationality: 'Swedish' },
+  { number: '81', givenName: 'Lando', familyName: 'Norris', nameAcronym: 'NOR', team: 'McLaren', teamId: 'mclaren', nationality: 'British' },
+  { number: '5', givenName: 'Oscar', familyName: 'Piastri', nameAcronym: 'PIA', team: 'McLaren', teamId: 'mclaren', nationality: 'Australian' },
+  { number: '16', givenName: 'Charles', familyName: 'Leclerc', nameAcronym: 'LEC', team: 'Ferrari', teamId: 'ferrari', nationality: 'Monegasque' },
+  { number: '44', givenName: 'Lewis', familyName: 'Hamilton', nameAcronym: 'HAM', team: 'Ferrari', teamId: 'ferrari', nationality: 'British' },
+  { number: '63', givenName: 'George', familyName: 'Russell', nameAcronym: 'RUS', team: 'Mercedes', teamId: 'mercedes', nationality: 'British' },
+  { number: '12', givenName: 'Kimi', familyName: 'Antonelli', nameAcronym: 'ANT', team: 'Mercedes', teamId: 'mercedes', nationality: 'Italian' },
+  { number: '3', givenName: 'Fernando', familyName: 'Alonso', nameAcronym: 'ALO', team: 'Aston Martin', teamId: 'aston-martin', nationality: 'Spanish' },
+  { number: '18', givenName: 'Lance', familyName: 'Stroll', nameAcronym: 'STR', team: 'Aston Martin', teamId: 'aston-martin', nationality: 'Canadian' },
+  { number: '31', givenName: 'Pierre', familyName: 'Gasly', nameAcronym: 'GAS', team: 'Alpine', teamId: 'alpine', nationality: 'French' },
+  { number: '43', givenName: 'Franco', familyName: 'Colapinto', nameAcronym: 'COL', team: 'Alpine', teamId: 'alpine', nationality: 'Argentine' },
+  { number: '2', givenName: 'Carlos', familyName: 'Sainz', nameAcronym: 'SAI', team: 'Williams', teamId: 'williams', nationality: 'Spanish' },
+  { number: '23', givenName: 'Alexander', familyName: 'Albon', nameAcronym: 'ALB', team: 'Williams', teamId: 'williams', nationality: 'Thai-British' },
+  { number: '27', givenName: 'Nico', familyName: 'Hulkenberg', nameAcronym: 'HUL', team: 'Audi', teamId: 'audi', nationality: 'German' },
+  { number: '30', givenName: 'Gabriel', familyName: 'Bortoleto', nameAcronym: 'BOT', team: 'Audi', teamId: 'audi', nationality: 'Brazilian' },
+  { number: '24', givenName: 'Liam', familyName: 'Lawson', nameAcronym: 'LAW', team: 'Racing Bulls', teamId: 'racing-bulls', nationality: 'New Zealander' },
+  { number: '7', givenName: 'Arvid', familyName: 'Lindblad', nameAcronym: 'LIN', team: 'Racing Bulls', teamId: 'racing-bulls', nationality: 'Swedish' },
+  { number: '14', givenName: 'Esteban', familyName: 'Ocon', nameAcronym: 'OCO', team: 'Haas', teamId: 'haas', nationality: 'French' },
+  { number: '50', givenName: 'Oliver', familyName: 'Bearman', nameAcronym: 'BEA', team: 'Haas', teamId: 'haas', nationality: 'British' },
+  { number: '11', givenName: 'Sergio', familyName: 'Perez', nameAcronym: 'PER', team: 'Cadillac', teamId: 'cadillac', nationality: 'Mexican' },
+  { number: '77', givenName: 'Valtteri', familyName: 'Bottas', nameAcronym: 'BOT', team: 'Cadillac', teamId: 'cadillac', nationality: 'Finnish' }
 ]
 
 export const TEAMS_2026 = [
