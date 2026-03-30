@@ -35,7 +35,7 @@ onUnmounted(() => clearInterval(interval))
 <template>
   <div v-if="nextRace" class="rounded-xl bg-gradient-to-br from-red-950/40 to-zinc-900 border border-zinc-800 p-6">
     <div class="flex items-center gap-2 text-sm text-zinc-400 mb-1">
-      <span>Proxima Carrera</span>
+      <span>Next Race</span>
       <span class="text-xs bg-zinc-800 px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
     </div>
 
@@ -54,19 +54,19 @@ onUnmounted(() => clearInterval(interval))
           {{ String(val).padStart(2, '0') }}
         </div>
         <div class="text-xs text-zinc-500 uppercase mt-1">
-          {{ key === 'days' ? 'Dias' : key === 'hours' ? 'Horas' : key === 'minutes' ? 'Min' : 'Seg' }}
+          {{ key === 'days' ? 'Days' : key === 'hours' ? 'Hours' : key === 'minutes' ? 'Min' : 'Secs' }}
         </div>
       </div>
     </div>
 
     <!-- Race date -->
     <div class="mt-4 text-sm text-zinc-500">
-      {{ new Date(nextRace.date).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) }}
+      {{ new Date(nextRace.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) }}
       {{ nextRace.time ? ' - ' + nextRace.time.replace(':00Z', ' UTC') : '' }}
     </div>
   </div>
 
   <div v-else class="rounded-xl bg-zinc-900 border border-zinc-800 p-6 text-zinc-500">
-    No hay datos de proxima carrera. Sincroniza primero.
+    No next race data available. Sync first.
   </div>
 </template>

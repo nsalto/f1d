@@ -38,6 +38,18 @@ export const TEAMS_2026 = [
   { id: 'cadillac', name: 'Cadillac' }
 ]
 
+// Map driver number to team ID
+export function getTeamIdByDriverNumber(driverNumber: string | number): string {
+  const driver = DRIVERS_2026.find(d => d.number === String(driverNumber))
+  return driver?.teamId || ''
+}
+
+// Map team name to team ID
+export function getTeamIdByName(teamName: string): string {
+  const team = TEAMS_2026.find(t => t.name.toLowerCase() === teamName.toLowerCase())
+  return team?.id || ''
+}
+
 export function getDriversByTeam(teamId: string) {
   return DRIVERS_2026.filter(d => d.teamId === teamId)
 }

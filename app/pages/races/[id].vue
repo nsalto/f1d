@@ -56,7 +56,7 @@ const maxLap = computed(() => {
     <!-- Header -->
     <div class="mb-5">
       <NuxtLink to="/calendar" class="text-[10px] text-[#444] hover:text-[#8a8a8a] uppercase tracking-wider">
-        &larr; Calendario
+        &larr; Calendar
       </NuxtLink>
 
       <div class="flex items-center justify-between mt-2">
@@ -64,9 +64,9 @@ const maxLap = computed(() => {
           <h1 v-if="race" class="text-2xl font-bold text-[#f0f0f0] tracking-tight">
             {{ getCountryFlag(race.country || '') }} {{ race.raceName }}
           </h1>
-          <h1 v-else class="text-2xl font-bold text-[#f0f0f0]">Ronda {{ round }}</h1>
+          <h1 v-else class="text-2xl font-bold text-[#f0f0f0]">Round {{ round }}</h1>
           <p v-if="race" class="text-xs text-[#8a8a8a] mt-0.5">
-            {{ race.circuitName }} | {{ new Date(race.date).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' }) }}
+            {{ race.circuitName }} | {{ new Date(race.date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) }}
           </p>
         </div>
         <UButton v-if="isDev" icon="i-lucide-refresh-cw" variant="outline" color="neutral" size="xs" :loading="syncing" @click="syncRace">Sync</UButton>
@@ -77,9 +77,9 @@ const maxLap = computed(() => {
     <div class="flex gap-1 mb-5">
       <button
         v-for="tab in [
-          { id: 'results', label: 'Carrera' },
-          { id: 'qualifying', label: 'Qualy' },
-          { id: 'strategy', label: 'Estrategia' },
+          { id: 'results', label: 'Race' },
+          { id: 'qualifying', label: 'Qualifying' },
+          { id: 'strategy', label: 'Strategy' },
           { id: 'pitstops', label: 'Pit Stops' }
         ]"
         :key="tab.id"
@@ -100,12 +100,12 @@ const maxLap = computed(() => {
           <thead>
             <tr class="border-b border-[#1f1f1f] text-[10px] text-[#444] uppercase tracking-wider">
               <th class="px-3 py-2 text-left w-10">Pos</th>
-              <th class="px-3 py-2 text-left">Piloto</th>
-              <th class="px-3 py-2 text-left">Equipo</th>
+              <th class="px-3 py-2 text-left">Driver</th>
+              <th class="px-3 py-2 text-left">Team</th>
               <th class="px-3 py-2 text-center">Grid</th>
-              <th class="px-3 py-2 text-right">Tiempo</th>
+              <th class="px-3 py-2 text-right">Time</th>
               <th class="px-3 py-2 text-center">Pts</th>
-              <th class="px-3 py-2 text-left">Estado</th>
+              <th class="px-3 py-2 text-left">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -129,7 +129,7 @@ const maxLap = computed(() => {
           </tbody>
         </table>
       </div>
-      <p v-else class="text-[#444] text-xs text-center py-12">Resultados no disponibles aun.</p>
+      <p v-else class="text-[#444] text-xs text-center py-12">Results not available yet.</p>
     </div>
 
     <!-- Qualifying -->
@@ -139,8 +139,8 @@ const maxLap = computed(() => {
           <thead>
             <tr class="border-b border-[#1f1f1f] text-[10px] text-[#444] uppercase tracking-wider">
               <th class="px-3 py-2 text-left w-10">Pos</th>
-              <th class="px-3 py-2 text-left">Piloto</th>
-              <th class="px-3 py-2 text-left">Equipo</th>
+              <th class="px-3 py-2 text-left">Driver</th>
+              <th class="px-3 py-2 text-left">Team</th>
               <th class="px-3 py-2 text-right">Q1</th>
               <th class="px-3 py-2 text-right">Q2</th>
               <th class="px-3 py-2 text-right">Q3</th>
@@ -166,7 +166,7 @@ const maxLap = computed(() => {
           </tbody>
         </table>
       </div>
-      <p v-else class="text-[#444] text-xs text-center py-12">Qualifying no disponible aun.</p>
+      <p v-else class="text-[#444] text-xs text-center py-12">Qualifying not available yet.</p>
     </div>
 
     <!-- Tyre Strategy -->
@@ -201,7 +201,7 @@ const maxLap = computed(() => {
           </div>
         </div>
       </div>
-      <p v-else class="text-[#444] text-xs text-center py-12">Estrategia no disponible aun.</p>
+      <p v-else class="text-[#444] text-xs text-center py-12">Strategy not available yet.</p>
     </div>
 
     <!-- Pit Stops -->
@@ -210,9 +210,9 @@ const maxLap = computed(() => {
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-[#1f1f1f] text-[10px] text-[#444] uppercase tracking-wider">
-              <th class="px-3 py-2 text-left">Piloto</th>
-              <th class="px-3 py-2 text-center">Vuelta</th>
-              <th class="px-3 py-2 text-right">Duracion</th>
+              <th class="px-3 py-2 text-left">Driver</th>
+              <th class="px-3 py-2 text-center">Lap</th>
+              <th class="px-3 py-2 text-right">Duration</th>
             </tr>
           </thead>
           <tbody>
@@ -229,7 +229,7 @@ const maxLap = computed(() => {
           </tbody>
         </table>
       </div>
-      <p v-else class="text-[#444] text-xs text-center py-12">Pit stops no disponibles aun.</p>
+      <p v-else class="text-[#444] text-xs text-center py-12">Pit stops not available yet.</p>
     </div>
   </div>
 </template>

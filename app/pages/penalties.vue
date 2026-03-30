@@ -37,7 +37,7 @@ function getTag(msg: any): { label: string; color: string } | null {
     <div class="flex items-center justify-between mb-4">
       <div>
         <h1 class="text-lg font-bold text-[#f0f0f0]">Penalties & Decisions</h1>
-        <p class="text-xs text-[#444]">Race control messages, investigaciones y penalizaciones</p>
+        <p class="text-xs text-[#444]">Race control messages, investigations and penalties</p>
       </div>
       <div v-if="penaltyData?.sessionActive" class="flex items-center gap-1.5">
         <span class="w-2 h-2 rounded-full bg-[#00d25b] animate-pulse" />
@@ -79,9 +79,9 @@ function getTag(msg: any): { label: string; color: string } | null {
       <div class="w-16 h-16 rounded-full bg-[#0f0f0f] border border-[#1f1f1f] flex items-center justify-center mx-auto mb-4">
         <UIcon name="i-lucide-shield-alert" class="w-6 h-6 text-[#444]" />
       </div>
-      <h2 class="text-sm font-bold text-[#8a8a8a] mb-1">Sin penalizaciones recientes</h2>
+      <h2 class="text-sm font-bold text-[#8a8a8a] mb-1">No recent penalties</h2>
       <p class="text-xs text-[#444] max-w-sm mx-auto">
-        Las penalties y decisiones de stewards aparecen aqui durante sesiones activas de F1.
+        Penalties and stewards' decisions appear here during active F1 sessions.
       </p>
     </div>
   </div>

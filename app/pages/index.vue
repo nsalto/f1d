@@ -43,7 +43,7 @@ onUnmounted(() => clearInterval(interval))
                style="width: calc(100% + 3rem)" />
 
           <div class="flex items-center gap-2 text-[10px] text-[#444] uppercase tracking-widest mb-2">
-            <span>Proxima Carrera</span>
+            <span>Next Race</span>
             <span class="font-timing bg-[#141414] px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
           </div>
 
@@ -60,16 +60,16 @@ onUnmounted(() => clearInterval(interval))
                 {{ String(val).padStart(2, '0') }}
               </div>
               <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">
-                {{ key === 'days' ? 'Dias' : key === 'hours' ? 'Hrs' : key === 'minutes' ? 'Min' : 'Seg' }}
+                {{ key === 'days' ? 'Days' : key === 'hours' ? 'Hrs' : key === 'minutes' ? 'Min' : 'Secs' }}
               </div>
             </div>
           </div>
 
           <div class="mt-4 text-[10px] text-[#2a2a2a]">
-            {{ new Date(nextRace.date).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) }}
+            {{ new Date(nextRace.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) }}
           </div>
         </div>
-        <div v-else class="p-6 text-[#444] text-sm">Cargando datos...</div>
+        <div v-else class="p-6 text-[#444] text-sm">Loading data...</div>
       </div>
 
       <!-- Mini Standings -->
@@ -77,8 +77,8 @@ onUnmounted(() => clearInterval(interval))
         <!-- Drivers -->
         <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
           <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Campeonato Pilotos</span>
-            <NuxtLink to="/standings/drivers" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">Ver todos</NuxtLink>
+            <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Drivers Championship</span>
+            <NuxtLink to="/standings/drivers" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
           <div v-if="topDrivers.length" class="space-y-1.5">
             <div v-for="d in topDrivers.slice(0, 5)" :key="d.driverId" class="flex items-center gap-2 text-xs">
@@ -88,14 +88,14 @@ onUnmounted(() => clearInterval(interval))
               <span class="font-timing text-[#8a8a8a]">{{ d.points }}</span>
             </div>
           </div>
-          <p v-else class="text-[#2a2a2a] text-xs">Cargando...</p>
+          <p v-else class="text-[#2a2a2a] text-xs">Loading...</p>
         </div>
 
         <!-- Constructors -->
         <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
           <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Constructores</span>
-            <NuxtLink to="/standings/constructors" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">Ver todos</NuxtLink>
+            <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Constructors</span>
+            <NuxtLink to="/standings/constructors" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
           <div v-if="topConstructors.length" class="space-y-1.5">
             <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs">
@@ -105,14 +105,14 @@ onUnmounted(() => clearInterval(interval))
               <span class="font-timing text-[#8a8a8a]">{{ c.points }}</span>
             </div>
           </div>
-          <p v-else class="text-[#2a2a2a] text-xs">Cargando...</p>
+          <p v-else class="text-[#2a2a2a] text-xs">Loading...</p>
         </div>
       </div>
     </div>
 
     <!-- Driver standings bar chart -->
     <div v-if="topDrivers.length" class="mt-4 rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
-      <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Puntos Temporada {{ currentSeason }}</span>
+      <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Season Points {{ currentSeason }}</span>
       <div class="mt-3 space-y-1">
         <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 group">
           <span class="font-timing text-[10px] text-[#444] w-4 text-right">{{ d.position }}</span>

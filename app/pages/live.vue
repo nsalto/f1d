@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getTeamIdByDriverNumber, getTeamIdByName } from '~/utils/drivers-2026'
+
 definePageMeta({ layout: 'default' })
 
 const connected = ref(false)
@@ -24,8 +26,8 @@ const sortedDrivers = computed(() => {
   return Object.entries(timingData.value.Lines as Record<string, any>)
     .map(([num, data]: [string, any]) => {
       const driver = driverList.value?.[num] || {}
-      // Try to extract team from driver data or use a mapping
-      const teamId = driver.TeamId?.toLowerCase().replace(/\s+/g, '-') || ''
+      // Use driver number to get the correct teamId from mapping
+      const teamId = getTeamIdByDriverNumber(num) || getTeamIdByName(driver.TeamName) || ''
       return {
         number: num,
         position: parseInt(data.Position || '99'),
@@ -199,15 +201,15 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
       <div class="w-16 h-16 rounded-full bg-[#0f0f0f] border border-[#1f1f1f] flex items-center justify-center mx-auto mb-4">
         <UIcon name="i-lucide-radio" class="w-6 h-6 text-[#444]" />
       </div>
-      <h2 class="text-base font-bold text-[#8a8a8a] mb-1">No hay sesion activa</h2>
+      <h2 class="text-base font-bold text-[#8a8a8a] mb-1">No active session</h2>
       <p class="text-xs text-[#444] max-w-sm mx-auto mb-6">
-        Se conecta automaticamente cuando hay Practice, Qualifying o Carrera.
+        Connects automatically during Practice, Qualifying, or Race sessions.
       </p>
       <button
         @click="loadHistory"
         class="px-4 py-2 rounded-lg bg-[#0f0f0f] border border-[#1f1f1f] text-xs font-semibold text-[#f0f0f0] hover:bg-[#141414] transition-colors"
       >
-        Ver última carrera
+        View last race
       </button>
     </div>
 
@@ -281,19 +283,19 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
           </div>
         </div>
 
-        <!-- Clima (detalle) -->
+        <!-- Weather (detailed) -->
         <div v-if="weatherData" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
-          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Clima</h3>
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Weather</h3>
           <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-[11px]">
-            <dt class="text-[#5a5a5a]">Aire</dt>
+            <dt class="text-[#5a5a5a]">Air</dt>
             <dd class="font-timing text-[#f0f0f0] text-right">{{ weatherData.AirTemp != null ? `${weatherData.AirTemp} °C` : '—' }}</dd>
-            <dt class="text-[#5a5a5a]">Pista</dt>
+            <dt class="text-[#5a5a5a]">Track</dt>
             <dd class="font-timing text-[#f0f0f0] text-right">{{ weatherData.TrackTemp != null ? `${weatherData.TrackTemp} °C` : '—' }}</dd>
-            <dt class="text-[#5a5a5a]">Humedad</dt>
+            <dt class="text-[#5a5a5a]">Humidity</dt>
             <dd class="font-timing text-[#f0f0f0] text-right">{{ weatherData.Humidity != null ? `${weatherData.Humidity}%` : '—' }}</dd>
-            <dt class="text-[#5a5a5a]">Presión</dt>
+            <dt class="text-[#5a5a5a]">Pressure</dt>
             <dd class="font-timing text-[#f0f0f0] text-right">{{ weatherData.Pressure ?? '—' }}</dd>
-            <dt class="text-[#5a5a5a]">Viento</dt>
+            <dt class="text-[#5a5a5a]">Wind</dt>
             <dd class="font-timing text-[#f0f0f0] text-right">
               <template v-if="weatherData.WindSpeed || weatherData.WindDirection">
                 {{ weatherData.WindSpeed || '—' }}
@@ -301,14 +303,14 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
               </template>
               <template v-else>—</template>
             </dd>
-            <dt class="text-[#5a5a5a]">Lluvia</dt>
+            <dt class="text-[#5a5a5a]">Rain</dt>
             <dd class="text-right" :class="weatherData.Rainfall === '1' ? 'text-blue-400 font-medium' : 'text-[#8a8a8a]'">
-              {{ weatherData.Rainfall === '1' ? 'Sí' : 'No' }}
+              {{ weatherData.Rainfall === '1' ? 'Yes' : 'No' }}
             </dd>
           </dl>
         </div>
 
-        <!-- SessionData (campos planos) -->
+        <!-- Session Data -->
         <div v-if="sessionDataRows.length" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
           <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Session data</h3>
           <dl class="space-y-1.5">
@@ -319,9 +321,9 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
           </dl>
         </div>
 
-        <!-- Estado (feed SessionStatus) -->
+        <!-- Session Status -->
         <div v-if="sessionStatusRows.length" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
-          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Estado</h3>
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Status</h3>
           <dl class="space-y-1.5">
             <div v-for="row in sessionStatusRows" :key="row.key" class="flex justify-between gap-2 text-[11px]">
               <dt class="text-[#5a5a5a] truncate">{{ row.key }}</dt>
@@ -352,9 +354,9 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
           </dl>
         </div>
 
-        <!-- Championship prediction (resumen) -->
+        <!-- Championship Prediction -->
         <div v-if="championshipRows.length" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
-          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Campeonato</h3>
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Championship</h3>
           <dl class="space-y-1.5">
             <div v-for="row in championshipRows" :key="row.key" class="flex justify-between gap-2 text-[11px]">
               <dt class="text-[#5a5a5a] truncate">{{ row.key }}</dt>
@@ -384,7 +386,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
                 <span v-if="msg.Lap" class="ml-1">L{{ msg.Lap }}</span>
               </p>
             </div>
-            <p v-if="!rcMessages.length" class="text-[#2a2a2a] text-xs">Sin mensajes</p>
+            <p v-if="!rcMessages.length" class="text-[#2a2a2a] text-xs">No messages</p>
           </div>
         </div>
       </div>
@@ -393,7 +395,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
     <!-- Loading -->
     <div v-else class="text-center py-24">
       <div class="inline-block w-6 h-6 border-2 border-[#e10600] border-t-transparent rounded-full animate-spin mb-3" />
-      <p class="text-xs text-[#444]">Conectando al live timing...</p>
+      <p class="text-xs text-[#444]">Connecting to live timing...</p>
     </div>
   </div>
 </template>

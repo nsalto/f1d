@@ -16,7 +16,7 @@ function getRaceStatus(date: string): 'completed' | 'next' | 'upcoming' {
 
 <template>
   <div>
-    <h1 class="text-lg font-bold text-[#f0f0f0] mb-4">Calendario {{ currentSeason }}</h1>
+    <h1 class="text-lg font-bold text-[#f0f0f0] mb-4">Calendar {{ currentSeason }}</h1>
 
     <div v-if="races?.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
       <CalendarRaceCard
@@ -33,6 +33,6 @@ function getRaceStatus(date: string): 'completed' | 'next' | 'upcoming' {
         :status="getRaceStatus(race.date)"
       />
     </div>
-    <p v-else class="text-[#444] text-sm text-center py-12">Cargando calendario...</p>
+    <p v-else class="text-[#444] text-sm text-center py-12">Loading calendar...</p>
   </div>
 </template>

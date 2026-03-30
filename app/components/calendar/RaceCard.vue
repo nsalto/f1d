@@ -34,7 +34,7 @@ defineProps<{
           <span class="font-timing text-[10px] text-[#444] font-medium">R{{ round }}</span>
           <span v-if="status === 'next'"
             class="text-[10px] font-bold text-[#e10600] bg-[#e10600]/10 border border-[#e10600]/20 px-2 py-0.5 rounded-full">
-            PROXIMA
+            NEXT
           </span>
           <span v-if="sprintDate"
             class="text-[10px] font-bold text-[#ff9500] bg-[#ff9500]/10 border border-[#ff9500]/20 px-1.5 py-0.5 rounded-full">
@@ -52,7 +52,7 @@ defineProps<{
 
       <div class="mt-3 pt-3 border-t border-[#141414] flex items-center justify-between">
         <span class="text-xs text-[#8a8a8a]">
-          {{ new Date(date).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' }) }}
+          {{ new Date(date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) }}
         </span>
         <span v-if="time" class="font-timing text-[10px] text-[#444]">
           {{ time.replace(':00Z', '') }} UTC

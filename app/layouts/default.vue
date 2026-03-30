@@ -4,10 +4,10 @@ const { currentSeason } = useSeason()
 const navigation = [
   { label: 'Dashboard', icon: 'i-lucide-layout-dashboard', to: '/' },
   { label: 'Live', icon: 'i-lucide-radio', to: '/live' },
-  { label: 'Calendario', icon: 'i-lucide-calendar', to: '/calendar' },
+  { label: 'Calendar', icon: 'i-lucide-calendar', to: '/calendar' },
   { label: 'Standings', icon: 'i-lucide-trophy', to: '/standings/drivers' },
   { label: 'Penalties', icon: 'i-lucide-shield-alert', to: '/penalties' },
-  { label: 'Comparar', icon: 'i-lucide-git-compare-arrows', to: '/compare' }
+  { label: 'Compare', icon: 'i-lucide-git-compare-arrows', to: '/compare' }
 ]
 </script>
 
@@ -53,7 +53,7 @@ const navigation = [
     <!-- Footer -->
     <footer class="border-t border-[#141414] mt-12 py-4">
       <div class="max-w-screen-2xl mx-auto px-4 text-center text-[10px] text-[#2a2a2a]">
-        Datos: <a href="https://api.jolpi.ca" target="_blank" class="text-[#444] hover:text-[#8a8a8a]">Jolpica</a>
+        Data: <a href="https://api.jolpi.ca" target="_blank" class="text-[#444] hover:text-[#8a8a8a]">Jolpica</a>
         + <a href="https://openf1.org" target="_blank" class="text-[#444] hover:text-[#8a8a8a]">OpenF1</a>
         + <a href="https://www.formula1.com" target="_blank" class="text-[#444] hover:text-[#8a8a8a]">F1 Live Timing</a>
       </div>

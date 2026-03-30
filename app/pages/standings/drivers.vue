@@ -12,12 +12,12 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
 <template>
   <div>
     <div class="flex items-center gap-3 mb-4">
-      <h1 class="text-lg font-bold text-[#f0f0f0]">Pilotos {{ currentSeason }}</h1>
+      <h1 class="text-lg font-bold text-[#f0f0f0]">Drivers {{ currentSeason }}</h1>
       <div class="flex gap-1">
         <NuxtLink to="/standings/drivers"
-          class="text-[10px] font-bold px-2.5 py-1 rounded bg-[#141414] text-[#f0f0f0]">Pilotos</NuxtLink>
+          class="text-[10px] font-bold px-2.5 py-1 rounded bg-[#141414] text-[#f0f0f0]">Drivers</NuxtLink>
         <NuxtLink to="/standings/constructors"
-          class="text-[10px] font-bold px-2.5 py-1 rounded text-[#444] hover:text-[#8a8a8a]">Constructores</NuxtLink>
+          class="text-[10px] font-bold px-2.5 py-1 rounded text-[#444] hover:text-[#8a8a8a]">Constructors</NuxtLink>
       </div>
     </div>
 
@@ -26,10 +26,10 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
         <thead>
           <tr class="border-b border-[#1f1f1f] text-[10px] text-[#444] uppercase tracking-wider">
             <th class="px-3 py-2 text-left w-10">Pos</th>
-            <th class="px-3 py-2 text-left">Piloto</th>
-            <th class="px-3 py-2 text-left">Equipo</th>
+            <th class="px-3 py-2 text-left">Driver</th>
+            <th class="px-3 py-2 text-left">Team</th>
             <th class="px-3 py-2 text-center w-14">Wins</th>
-            <th class="px-3 py-2 text-right w-48">Puntos</th>
+            <th class="px-3 py-2 text-right w-48">Points</th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +66,6 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
         </tbody>
       </table>
     </div>
-    <p v-else class="text-[#444] text-sm text-center py-12">Cargando standings...</p>
+    <p v-else class="text-[#444] text-sm text-center py-12">Loading standings...</p>
   </div>
 </template>

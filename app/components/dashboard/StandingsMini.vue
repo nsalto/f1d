@@ -14,9 +14,9 @@ const topConstructors = computed(() => (constructors.value || []).slice(0, 5))
     <!-- Drivers -->
     <div class="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-semibold text-zinc-300">Pilotos</h3>
+        <h3 class="text-sm font-semibold text-zinc-300">Drivers</h3>
         <NuxtLink to="/standings/drivers" class="text-xs text-red-400 hover:text-red-300">
-          Ver todos
+          View all
         </NuxtLink>
       </div>
 
@@ -35,15 +35,15 @@ const topConstructors = computed(() => (constructors.value || []).slice(0, 5))
           <span class="font-mono-timing text-zinc-400">{{ d.points }}</span>
         </div>
       </div>
-      <p v-else class="text-zinc-600 text-sm">Sin datos. Sincroniza primero.</p>
+      <p v-else class="text-zinc-600 text-sm">No data. Sync first.</p>
     </div>
 
     <!-- Constructors -->
     <div class="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-semibold text-zinc-300">Constructores</h3>
+        <h3 class="text-sm font-semibold text-zinc-300">Constructors</h3>
         <NuxtLink to="/standings/constructors" class="text-xs text-red-400 hover:text-red-300">
-          Ver todos
+          View all
         </NuxtLink>
       </div>
 
@@ -62,7 +62,7 @@ const topConstructors = computed(() => (constructors.value || []).slice(0, 5))
           <span class="font-mono-timing text-zinc-400">{{ c.points }}</span>
         </div>
       </div>
-      <p v-else class="text-zinc-600 text-sm">Sin datos. Sincroniza primero.</p>
+      <p v-else class="text-zinc-600 text-sm">No data. Sync first.</p>
     </div>
   </div>
 </template>
