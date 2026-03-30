@@ -1,5 +1,5 @@
-import { syncCalendar, syncDriverStandings, syncConstructorStandings, syncOpenF1Sessions } from '~/server/utils/sync'
-import { syncAllCompletedRaces } from '~/server/utils/sync-races'
+import { syncCalendar, syncDriverStandings, syncConstructorStandings, syncOpenF1Sessions } from '../utils/sync'
+import { syncAllCompletedRaces } from '../utils/sync-races'
 
 export default defineEventHandler(async (event) => {
   const season = String(new Date().getFullYear())
