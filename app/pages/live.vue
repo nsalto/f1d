@@ -26,16 +26,30 @@ const sortedDrivers = computed(() => {
   return Object.entries(timingData.value.Lines as Record<string, any>)
     .map(([num, data]: [string, any]) => {
       const driver = driverList.value?.[num] || {}
+      // Clean team name (remove " F1 Team" suffix)
+      const cleanTeamName = (name?: string) => name?.replace(/\s+F1\s+Team\s*$/i, '') || ''
+      const teamNameClean = cleanTeamName(driver.TeamName)
+
       // Use driver number to get the correct teamId from mapping
-      const teamId = getTeamIdByDriverNumber(num) || getTeamIdByName(driver.TeamName) || ''
+      const teamId = getTeamIdByDriverNumber(num) || getTeamIdByName(teamNameClean) || ''
+
+      // Format broadcast name properly (handles "ARVID_LINDBLAD" -> "Arvid Lindblad")
+      const formatName = (name?: string) => {
+        if (!name) return ''
+        return name
+          .split(/[\s_]+/)
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(' ')
+      }
+
       return {
         number: num,
         position: parseInt(data.Position || '99'),
         tla: driver.Tla || num,
-        broadcastName: driver.BroadcastName || driver.FullName || '',
+        broadcastName: formatName(driver.BroadcastName || driver.FullName) || formatName(num),
         teamColour: driver.TeamColour ? `#${driver.TeamColour}` : undefined,
         teamId,
-        teamName: driver.TeamName || '',
+        teamName: teamNameClean,
         gap: data.GapToLeader || '',
         interval: data.IntervalToPositionAhead?.Value || '',
         catching: data.IntervalToPositionAhead?.Catching || false,
