@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="120" height="120">
+  <!-- Background -->
+  <rect width="200" height="200" fill="#0a0a0a"/>
+  
+  <!-- Border -->
+  <rect x="10" y="10" width="180" height="180" fill="none" stroke="#1f1f1f" stroke-width="2"/>
+  
+  <!-- Circuit path (simple loop) -->
+  <path d="M 50 50 L 150 50 Q 160 100 150 150 L 50 150 Q 40 100 50 50" 
+        fill="none" stroke="#e10600" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Start/finish line -->
+  <line x1="50" y1="45" x2="50" y2="55" stroke="#00d25b" stroke-width="2"/>
+  
+  <!-- Circuit name text -->
+  <text x="100" y="175" font-size="10" font-family="monospace" fill="#f0f0f0" text-anchor="middle">
+    MEXICO-CITY
+  </text>
+</svg>
