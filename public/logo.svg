@@ -1,0 +1,29 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#0a0a0a" stroke="#00d25b" stroke-width="2"/>
+
+  <!-- F1 Shield concept -->
+  <path d="M 60 50 L 140 50 L 140 120 Q 100 150 60 120 Z" fill="none" stroke="#00d25b" stroke-width="2.5"/>
+
+  <!-- F -->
+  <path d="M 75 70 L 75 125 M 75 70 L 110 70 M 75 95 L 105 95" fill="none" stroke="#FF8700" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- 1 -->
+  <path d="M 130 75 L 115 65 L 115 125" fill="none" stroke="#00d25b" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Racing stripe accent -->
+  <line x1="50" y1="130" x2="150" y2="130" stroke="#FF8700" stroke-width="2"/>
+
+  <!-- Checkered pattern base -->
+  <g opacity="0.2">
+    <rect x="55" y="135" width="5" height="5" fill="#00d25b"/>
+    <rect x="65" y="135" width="5" height="5" fill="#00d25b"/>
+    <rect x="75" y="135" width="5" height="5" fill="#00d25b"/>
+    <rect x="85" y="135" width="5" height="5" fill="#00d25b"/>
+    <rect x="95" y="135" width="5" height="5" fill="#00d25b"/>
+    <rect x="105" y="135" width="5" height="5" fill="#00d25b"/>
+    <rect x="115" y="135" width="5" height="5" fill="#00d25b"/>
+    <rect x="125" y="135" width="5" height="5" fill="#00d25b"/>
+    <rect x="135" y="135" width="5" height="5" fill="#00d25b"/>
+  </g>
+</svg>

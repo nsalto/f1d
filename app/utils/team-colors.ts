@@ -1,25 +1,35 @@
 export const TEAM_COLORS: Record<string, string> = {
-  'Red Bull': '#3671C6',
-  'McLaren': '#FF8000',
-  'Ferrari': '#E8002D',
-  'Mercedes': '#27F4D2',
-  'Aston Martin': '#229971',
-  'Alpine': '#FF87BC',
-  'Williams': '#64C4FF',
-  'RB': '#6692FF',
-  'Kick Sauber': '#52E252',
-  'Haas F1 Team': '#B6BABD',
-  // Aliases
-  'red_bull': '#3671C6',
-  'mclaren': '#FF8000',
-  'ferrari': '#E8002D',
-  'mercedes': '#27F4D2',
-  'aston_martin': '#229971',
-  'alpine': '#FF87BC',
-  'williams': '#64C4FF',
-  'rb': '#6692FF',
-  'sauber': '#52E252',
-  'haas': '#B6BABD'
+  // 2026 Official Team Colors
+  'Red Bull Racing': '#E30118',
+  'McLaren': '#FF8700',
+  'Ferrari': '#DC0000',
+  'Mercedes': '#00D4BE',
+  'Williams': '#0082FA',
+  'Aston Martin': '#006F62',
+  'Alpine': '#0082FA',
+  'Haas': '#000000',
+  'Racing Bulls': '#FFFFFF',
+  'Audi': '#8B8B8B',
+  'Cadillac': '#FFFFFF',
+
+  // Aliases / Fallbacks
+  'Red Bull': '#E30118',
+  'RB': '#FFFFFF',
+  'Sauber': '#8B8B8B',
+  'Kick Sauber': '#8B8B8B',
+
+  // Lowercase variations
+  'red_bull_racing': '#E30118',
+  'mclaren': '#FF8700',
+  'ferrari': '#DC0000',
+  'mercedes': '#00D4BE',
+  'williams': '#0082FA',
+  'aston_martin': '#006F62',
+  'alpine': '#0082FA',
+  'haas': '#000000',
+  'racing_bulls': '#FFFFFF',
+  'audi': '#8B8B8B',
+  'cadillac': '#FFFFFF'
 }
 
 export function getTeamColor(team: string): string {
