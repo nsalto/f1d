@@ -121,6 +121,8 @@ function updateClock() {
 async function loadHistory() {
   try {
     const res = await $fetch<any>('/api/live/history')
+    console.log('[loadHistory] Response:', res)
+
     if (res.type === 'history' && res.data) {
       isHistory.value = true
       historyMessage.value = res.message || 'Last race data'
@@ -140,9 +142,11 @@ async function loadHistory() {
       if (d.championshipPrediction) championshipPrediction.value = d.championshipPrediction
       connected.value = true
       noSession.value = false
+    } else {
+      console.warn('[loadHistory] No history data:', res.message)
     }
   } catch (error) {
-    console.error('Error loading history:', error)
+    console.error('[loadHistory] Error:', error)
   }
 }
 
