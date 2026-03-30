@@ -10,9 +10,15 @@ const { data: standings } = useFetch(`/api/standings/drivers/${currentSeason}`)
 const maxPoints = computed(() => standings.value?.[0]?.points || 1)
 
 function getTeamIdForConstructor(constructorName: string): string {
-  const teamId = getTeamIdByName(constructorName)
+  // Clean team name (remove " F1 Team" suffix)
+  const cleanName = constructorName.replace(/\s+F1\s+Team\s*$/i, '')
+
+  // Try direct name match first
+  const teamId = getTeamIdByName(cleanName)
   if (teamId) return teamId
-  return constructorName.toLowerCase().replace(/\s+/g, '-')
+
+  // Fallback: convert name to id format
+  return cleanName.toLowerCase().replace(/\s+/g, '-')
 }
 </script>
 

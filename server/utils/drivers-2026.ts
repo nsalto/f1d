@@ -45,7 +45,9 @@ export function getTeamIdByDriverNumber(driverNumber: string | number): string {
 
 export function getTeamIdByName(teamName: string | undefined): string {
   if (!teamName) return ''
-  const team = TEAMS_2026.find(t => t.name.toLowerCase() === teamName.toLowerCase())
+  // Clean team name (remove " F1 Team" suffix)
+  const cleanName = teamName.replace(/\s+F1\s+Team\s*$/i, '')
+  const team = TEAMS_2026.find(t => t.name.toLowerCase() === cleanName.toLowerCase())
   return team?.id || ''
 }
 
@@ -54,6 +56,8 @@ export function getDriversByTeam(teamId: string) {
 }
 
 export function getTeamDrivers(teamName: string) {
-  const team = TEAMS_2026.find(t => t.name.toLowerCase() === teamName.toLowerCase())
+  // Clean team name (remove " F1 Team" suffix)
+  const cleanName = teamName.replace(/\s+F1\s+Team\s*$/i, '')
+  const team = TEAMS_2026.find(t => t.name.toLowerCase() === cleanName.toLowerCase())
   return team ? getDriversByTeam(team.id) : []
 }
