@@ -45,6 +45,9 @@ export default defineNuxtConfig({
     externals: {
       inline: [],
       external: [
+        'better-sqlite3',
+        'bindings',
+        'file-uri-to-path',
         '@microsoft/signalr',
         'tough-cookie',
         'fetch-cookie',
