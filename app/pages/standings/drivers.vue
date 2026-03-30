@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { getTeamColor } from '~/utils/team-colors'
 import { getCountryFlag } from '~/utils/formatters'
+import { getTeamIdByName } from '~/utils/drivers-2026'
 
 definePageMeta({ layout: 'default' })
 
 const { currentSeason } = useSeason()
 const { data: standings } = useFetch(`/api/standings/drivers/${currentSeason}`)
 const maxPoints = computed(() => standings.value?.[0]?.points || 1)
+
+function getTeamIdForConstructor(constructorName: string): string {
+  const teamId = getTeamIdByName(constructorName)
+  if (teamId) return teamId
+  return constructorName.toLowerCase().replace(/\s+/g, '-')
+}
 </script>
 
 <template>
@@ -49,6 +56,11 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
             <td class="px-3 py-2">
               <div class="flex items-center gap-2">
                 <span class="w-[3px] h-4 rounded-full" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
+                <img
+                  :src="`/teams/logos/${getTeamIdForConstructor(d.constructorName || '')}.webp`"
+                  :alt="d.constructorName"
+                  class="w-4 h-4 object-contain"
+                />
                 <span class="text-xs text-[#8a8a8a]">{{ d.constructorName }}</span>
               </div>
             </td>
