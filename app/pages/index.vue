@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getCountryFlag } from '~/utils/formatters'
 import { getTeamColor } from '~/utils/team-colors'
+import { getTeamIdByName } from '~/utils/drivers-2026'
 
 definePageMeta({ layout: 'default' })
 
@@ -12,6 +13,14 @@ const { data: constructors } = useFetch(`/api/standings/constructors/${currentSe
 const topDrivers = computed(() => drivers.value || [])
 const topConstructors = computed(() => constructors.value || [])
 const maxPoints = computed(() => topDrivers.value[0]?.points || 1)
+
+// Helper to get team logo ID
+function getTeamLogo(teamName: string): string {
+  const teamId = getTeamIdByName(teamName)
+  if (teamId) return teamId
+  // Fallback
+  return teamName.replace(/\s+F1\s+Team\s*$/i, '').toLowerCase().replace(/\s+/g, '-')
+}
 
 // Countdown
 const countdown = ref({ days: 0, hours: 0, minutes: 0, seconds: 0 })
@@ -108,7 +117,11 @@ onUnmounted(() => clearInterval(interval))
           <div v-if="topDrivers.length" class="space-y-1.5 max-h-96 overflow-y-auto">
             <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs">
               <span class="font-timing w-4 text-right text-[#444]">{{ d.position }}</span>
-              <span class="w-[3px] h-4 rounded-full" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
+              <img
+                :src="`/teams/logos/${getTeamLogo(d.constructorName || '')}.webp`"
+                :alt="d.constructorName"
+                class="w-4 h-4 object-contain"
+              />
               <span class="flex-1 text-[#f0f0f0] font-medium">{{ d.familyName }}</span>
               <span class="font-timing text-[#8a8a8a]">{{ d.points }}</span>
             </div>
@@ -125,7 +138,11 @@ onUnmounted(() => clearInterval(interval))
           <div v-if="topConstructors.length" class="space-y-1.5 max-h-96 overflow-y-auto">
             <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs">
               <span class="font-timing w-4 text-right text-[#444]">{{ c.position }}</span>
-              <span class="w-[3px] h-4 rounded-full" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
+              <img
+                :src="`/teams/logos/${getTeamLogo(c.constructorName)}.webp`"
+                :alt="c.constructorName"
+                class="w-4 h-4 object-contain"
+              />
               <span class="flex-1 text-[#f0f0f0] font-medium">{{ c.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</span>
               <span class="font-timing text-[#8a8a8a]">{{ c.points }}</span>
             </div>
@@ -135,26 +152,13 @@ onUnmounted(() => clearInterval(interval))
       </div>
     </div>
 
-    <!-- Driver standings bar chart -->
-    <div v-if="topDrivers.length" class="mt-4 rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
-      <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Season Points {{ currentSeason }}</span>
-      <div class="mt-3 space-y-1">
-        <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 group">
-          <span class="font-timing text-[10px] text-[#444] w-4 text-right">{{ d.position }}</span>
-          <span class="text-xs text-[#8a8a8a] w-12 truncate">{{ d.driverCode }}</span>
-          <div class="flex-1 h-4 bg-[#0a0a0a] rounded overflow-hidden">
-            <div
-              class="h-full rounded transition-all duration-700 flex items-center px-1.5"
-              :style="{
-                width: `${(d.points / maxPoints) * 100}%`,
-                backgroundColor: getTeamColor(d.constructorName || '')
-              }"
-            >
-              <span class="font-timing text-[9px] font-bold text-black/70">{{ d.points }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Next Circuit Preview -->
+    <CircuitDisplay
+      v-if="nextRace"
+      :circuit-name="nextRace.circuitName"
+      :country="nextRace.country"
+      :show-map="true"
+      class="mt-4"
+    />
   </div>
 </template>
