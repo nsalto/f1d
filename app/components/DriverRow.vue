@@ -24,7 +24,13 @@ const props = defineProps<{
   stopped?: boolean
 }>()
 
-const teamColor = computed(() => props.teamColor || getTeamColor(props.team))
+const teamColor = computed(() => {
+  // If teamColor is the default gray, use team color instead
+  if (props.teamColor === '#444' || !props.teamColor) {
+    return getTeamColor(props.team)
+  }
+  return props.teamColor
+})
 
 const positionColor = computed(() => {
   const pos = Number(props.position)

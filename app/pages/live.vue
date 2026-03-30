@@ -33,7 +33,7 @@ const sortedDrivers = computed(() => {
         position: parseInt(data.Position || '99'),
         tla: driver.Tla || num,
         broadcastName: driver.BroadcastName || driver.FullName || '',
-        teamColour: driver.TeamColour ? `#${driver.TeamColour}` : '#444',
+        teamColour: driver.TeamColour ? `#${driver.TeamColour}` : undefined,
         teamId,
         teamName: driver.TeamName || '',
         gap: data.GapToLeader || '',
