@@ -9,8 +9,8 @@ const { data: nextRace } = useFetch('/api/races/next')
 const { data: drivers } = useFetch(`/api/standings/drivers/${currentSeason}`)
 const { data: constructors } = useFetch(`/api/standings/constructors/${currentSeason}`)
 
-const topDrivers = computed(() => (drivers.value || []).slice(0, 10))
-const topConstructors = computed(() => (constructors.value || []).slice(0, 5))
+const topDrivers = computed(() => drivers.value || [])
+const topConstructors = computed(() => constructors.value || [])
 const maxPoints = computed(() => topDrivers.value[0]?.points || 1)
 
 // Countdown
@@ -105,8 +105,8 @@ onUnmounted(() => clearInterval(interval))
             <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Drivers Championship</span>
             <NuxtLink to="/standings/drivers" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
-          <div v-if="topDrivers.length" class="space-y-1.5">
-            <div v-for="d in topDrivers.slice(0, 5)" :key="d.driverId" class="flex items-center gap-2 text-xs">
+          <div v-if="topDrivers.length" class="space-y-1.5 max-h-96 overflow-y-auto">
+            <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs">
               <span class="font-timing w-4 text-right text-[#444]">{{ d.position }}</span>
               <span class="w-[3px] h-4 rounded-full" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
               <span class="flex-1 text-[#f0f0f0] font-medium">{{ d.familyName }}</span>
@@ -122,7 +122,7 @@ onUnmounted(() => clearInterval(interval))
             <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Constructors</span>
             <NuxtLink to="/standings/constructors" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
-          <div v-if="topConstructors.length" class="space-y-1.5">
+          <div v-if="topConstructors.length" class="space-y-1.5 max-h-96 overflow-y-auto">
             <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs">
               <span class="font-timing w-4 text-right text-[#444]">{{ c.position }}</span>
               <span class="w-[3px] h-4 rounded-full" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
