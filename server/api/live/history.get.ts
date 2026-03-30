@@ -1,5 +1,7 @@
 import { useDB, schema } from '../../database'
 import { desc, sql } from 'drizzle-orm'
+import { DRIVERS_2026 } from '../../../app/utils/drivers-2026'
+import { getTeamColor } from '../../../app/utils/team-colors'
 
 // GET /api/live/history - Get the last race data for development/testing
 export default defineEventHandler(async () => {
@@ -65,11 +67,30 @@ export default defineEventHandler(async () => {
       }
     }
 
+    // Build driverList with correct team info from DRIVERS_2026
+    const driverList: Record<string, any> = {}
+    const driverMap = new Map(DRIVERS_2026.map(d => [d.number, d]))
+
+    for (const r of results) {
+      const driverNum = r.driverId || ''
+      const driver2026 = driverMap.get(driverNum)
+      if (driver2026) {
+        driverList[driverNum] = {
+          Tla: driver2026.nameAcronym,
+          BroadcastName: `${driver2026.givenName} ${driver2026.familyName}`,
+          FullName: `${driver2026.givenName} ${driver2026.familyName}`,
+          TeamName: driver2026.team,
+          TeamColour: getTeamColor(driver2026.team).substring(1) // Remove # for API format
+        }
+      }
+    }
+
     // Build timing data structure similar to live timing
     const timingData = {
       Lines: Object.fromEntries(
         results.map(r => {
           const driverNum = parseInt(r.driverId || '0')
+          const driver2026 = driverMap.get(r.driverId || '')
           return [
             r.driverId || r.givenName,
             {
@@ -118,7 +139,7 @@ export default defineEventHandler(async () => {
       data: {
         sessionInfo,
         timingData,
-        driverList: {},
+        driverList,
         lapCount: { CurrentLap: 0, TotalLaps: 0 },
         trackStatus: null,
         weatherData: null,

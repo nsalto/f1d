@@ -1,7 +1,7 @@
 // F1 2026 Driver Roster
 export const DRIVERS_2026 = [
-  { number: '1', givenName: 'Max', familyName: 'Verstappen', nameAcronym: 'VER', team: 'Red Bull Racing', teamId: 'red-bull-racing', nationality: 'Dutch' },
-  { number: '4', givenName: 'Isack', familyName: 'Hadjar', nameAcronym: 'HAD', team: 'Red Bull Racing', teamId: 'red-bull-racing', nationality: 'Swedish' },
+  { number: '1', givenName: 'Max', familyName: 'Verstappen', nameAcronym: 'VER', team: 'Red Bull Racing', teamId: 'red-bull', nationality: 'Dutch' },
+  { number: '4', givenName: 'Isack', familyName: 'Hadjar', nameAcronym: 'HAD', team: 'Red Bull Racing', teamId: 'red-bull', nationality: 'Swedish' },
   { number: '81', givenName: 'Lando', familyName: 'Norris', nameAcronym: 'NOR', team: 'McLaren', teamId: 'mclaren', nationality: 'British' },
   { number: '5', givenName: 'Oscar', familyName: 'Piastri', nameAcronym: 'PIA', team: 'McLaren', teamId: 'mclaren', nationality: 'Australian' },
   { number: '16', givenName: 'Charles', familyName: 'Leclerc', nameAcronym: 'LEC', team: 'Ferrari', teamId: 'ferrari', nationality: 'Monegasque' },
