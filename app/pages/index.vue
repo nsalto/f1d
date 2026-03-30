@@ -114,9 +114,10 @@ onUnmounted(() => clearInterval(interval))
             <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Drivers Championship</span>
             <NuxtLink to="/standings/drivers" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
-          <div v-if="topDrivers.length" class="space-y-1.5 max-h-96 overflow-y-auto">
-            <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs">
+          <div v-if="topDrivers.length" class="space-y-2 max-h-96 overflow-y-auto">
+            <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] transition-colors">
               <span class="font-timing w-4 text-right text-[#444]">{{ d.position }}</span>
+              <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
               <img
                 :src="`/teams/logos/${getTeamLogo(d.constructorName || '')}.webp`"
                 :alt="d.constructorName"
@@ -135,9 +136,10 @@ onUnmounted(() => clearInterval(interval))
             <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Constructors</span>
             <NuxtLink to="/standings/constructors" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
-          <div v-if="topConstructors.length" class="space-y-1.5 max-h-96 overflow-y-auto">
-            <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs">
+          <div v-if="topConstructors.length" class="space-y-2 max-h-96 overflow-y-auto">
+            <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] transition-colors">
               <span class="font-timing w-4 text-right text-[#444]">{{ c.position }}</span>
+              <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
               <img
                 :src="`/teams/logos/${getTeamLogo(c.constructorName)}.webp`"
                 :alt="c.constructorName"
