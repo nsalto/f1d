@@ -44,7 +44,7 @@ function getTeamIdForConstructor(constructorName: string): string {
           class="w-6 h-6 object-contain"
         />
         <div class="flex-1">
-          <h3 class="text-base font-bold text-[#f0f0f0]">{{ c.constructorName }}</h3>
+          <h3 class="text-base font-bold text-[#f0f0f0]">{{ c.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</h3>
           <p class="text-[10px] text-[#444]">{{ c.wins }} wins</p>
         </div>
         <div class="flex items-center gap-3 w-64">

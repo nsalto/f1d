@@ -67,7 +67,7 @@ function getTeamIdForConstructor(constructorName: string): string {
                   :alt="d.constructorName"
                   class="w-4 h-4 object-contain"
                 />
-                <span class="text-xs text-[#8a8a8a]">{{ d.constructorName }}</span>
+                <span class="text-xs text-[#8a8a8a]">{{ d.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</span>
               </div>
             </td>
             <td class="px-3 py-2 text-center font-timing text-xs text-[#444]">{{ d.wins }}</td>

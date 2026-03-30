@@ -126,7 +126,7 @@ onUnmounted(() => clearInterval(interval))
             <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs">
               <span class="font-timing w-4 text-right text-[#444]">{{ c.position }}</span>
               <span class="w-[3px] h-4 rounded-full" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
-              <span class="flex-1 text-[#f0f0f0] font-medium">{{ c.constructorName }}</span>
+              <span class="flex-1 text-[#f0f0f0] font-medium">{{ c.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</span>
               <span class="font-timing text-[#8a8a8a]">{{ c.points }}</span>
             </div>
           </div>
