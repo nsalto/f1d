@@ -365,4 +365,24 @@ export class F1LiveTimingClient {
   getExtrapolatedClock(): ExtrapolatedClock | undefined {
     return this.state.ExtrapolatedClock
   }
+
+  getSessionStatus(): unknown {
+    return this.state.SessionStatus
+  }
+
+  getSessionData(): unknown {
+    return this.state.SessionData
+  }
+
+  getTimingStats(): unknown {
+    return this.state.TimingStats
+  }
+
+  getTimingAppData(): unknown {
+    return this.state.TimingAppData
+  }
+
+  getChampionshipPrediction(): unknown {
+    return this.state.ChampionshipPrediction
+  }
 }

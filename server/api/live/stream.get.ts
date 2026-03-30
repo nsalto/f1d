@@ -1,4 +1,4 @@
-import { useF1LiveTiming } from '../../utils/f1-live-state'
+import { liveTimingPayload, useF1LiveTiming } from '../../utils/f1-live-state'
 
 // GET /api/live/stream - SSE endpoint for real-time updates
 export default defineEventHandler(async (event) => {
@@ -24,16 +24,7 @@ export default defineEventHandler(async (event) => {
       if (state && Object.keys(state).length > 0) {
         const data = JSON.stringify({
           type: 'snapshot',
-          data: {
-            sessionInfo: client.getSessionInfo(),
-            trackStatus: client.getTrackStatus(),
-            weatherData: client.getWeatherData(),
-            lapCount: client.getLapCount(),
-            timingData: client.getTimingData(),
-            raceControlMessages: client.getRaceControlMessages(),
-            driverList: client.getDriverList(),
-            extrapolatedClock: client.getExtrapolatedClock(),
-          }
+          data: liveTimingPayload(client)
         })
         controller.enqueue(encoder.encode(`data: ${data}\n\n`))
       } else {
@@ -47,14 +38,7 @@ export default defineEventHandler(async (event) => {
           if (currentState && Object.keys(currentState).length > 0) {
             const data = JSON.stringify({
               type: 'update',
-              data: {
-                timingData: client.getTimingData(),
-                trackStatus: client.getTrackStatus(),
-                lapCount: client.getLapCount(),
-                weatherData: client.getWeatherData(),
-                raceControlMessages: client.getRaceControlMessages(),
-                extrapolatedClock: client.getExtrapolatedClock(),
-              }
+              data: liveTimingPayload(client)
             })
             controller.enqueue(encoder.encode(`data: ${data}\n\n`))
           }

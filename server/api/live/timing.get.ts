@@ -1,4 +1,4 @@
-import { useF1LiveTiming } from '../../utils/f1-live-state'
+import { liveTimingPayload, useF1LiveTiming } from '../../utils/f1-live-state'
 
 export default defineEventHandler(() => {
   const client = useF1LiveTiming()
@@ -19,14 +19,5 @@ export default defineEventHandler(() => {
     })
   }
 
-  return {
-    sessionInfo: client.getSessionInfo(),
-    trackStatus: client.getTrackStatus(),
-    weatherData: client.getWeatherData(),
-    lapCount: client.getLapCount(),
-    timingData: client.getTimingData(),
-    raceControlMessages: client.getRaceControlMessages(),
-    driverList: client.getDriverList(),
-    extrapolatedClock: client.getExtrapolatedClock(),
-  }
+  return liveTimingPayload(client)
 })

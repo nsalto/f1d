@@ -11,6 +11,11 @@ const timingData = ref<any>(null)
 const raceControlMessages = ref<any>(null)
 const driverList = ref<any>(null)
 const extrapolatedClock = ref<any>(null)
+const sessionStatus = ref<any>(null)
+const sessionData = ref<any>(null)
+const timingStats = ref<any>(null)
+const timingAppData = ref<any>(null)
+const championshipPrediction = ref<any>(null)
 
 const sortedDrivers = computed(() => {
   if (!timingData.value?.Lines || !driverList.value) return []
@@ -21,6 +26,7 @@ const sortedDrivers = computed(() => {
         number: num,
         position: parseInt(data.Position || '99'),
         tla: driver.Tla || num,
+        broadcastName: driver.BroadcastName || driver.FullName || '',
         teamColour: driver.TeamColour ? `#${driver.TeamColour}` : '#444',
         gap: data.GapToLeader || '',
         interval: data.IntervalToPositionAhead?.Value || '',
@@ -46,6 +52,24 @@ const rcMessages = computed(() => {
     .sort((a: any, b: any) => new Date(b.Utc || 0).getTime() - new Date(a.Utc || 0).getTime())
     .slice(0, 25)
 })
+
+function primitiveEntries(obj: unknown, max = 10): { key: string; value: string }[] {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return []
+  return Object.entries(obj as Record<string, unknown>)
+    .filter(([, v]) => v != null && (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean'))
+    .slice(0, max)
+    .map(([key, v]) => ({ key, value: String(v) }))
+}
+
+const sessionStatusRows = computed(() => primitiveEntries(sessionStatus.value, 14))
+
+const sessionDataRows = computed(() => primitiveEntries(sessionData.value, 10))
+
+const timingStatsRows = computed(() => primitiveEntries(timingStats.value, 10))
+
+const timingAppDataRows = computed(() => primitiveEntries(timingAppData.value, 10))
+
+const championshipRows = computed(() => primitiveEntries(championshipPrediction.value, 8))
 
 // Clock
 const clockDisplay = ref('')
@@ -82,6 +106,11 @@ function connect() {
       if (d.raceControlMessages) raceControlMessages.value = d.raceControlMessages
       if (d.driverList) driverList.value = d.driverList
       if (d.extrapolatedClock) extrapolatedClock.value = d.extrapolatedClock
+      if (d.sessionStatus !== undefined) sessionStatus.value = d.sessionStatus
+      if (d.sessionData !== undefined) sessionData.value = d.sessionData
+      if (d.timingStats !== undefined) timingStats.value = d.timingStats
+      if (d.timingAppData !== undefined) timingAppData.value = d.timingAppData
+      if (d.championshipPrediction !== undefined) championshipPrediction.value = d.championshipPrediction
     } catch { /* ignore */ }
   }
   eventSource.onerror = () => { connected.value = false; eventSource?.close(); setTimeout(connect, 5000) }
@@ -111,8 +140,10 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
         </div>
         <!-- Weather mini -->
         <div v-if="weatherData" class="hidden lg:flex gap-3 text-[10px] text-[#444]">
-          <span v-if="weatherData.AirTemp">{{ weatherData.AirTemp }}°C</span>
+          <span v-if="weatherData.AirTemp">Air {{ weatherData.AirTemp }}°C</span>
           <span v-if="weatherData.TrackTemp">Track {{ weatherData.TrackTemp }}°C</span>
+          <span v-if="weatherData.Humidity">RH {{ weatherData.Humidity }}%</span>
+          <span v-if="weatherData.WindSpeed">Wind {{ weatherData.WindSpeed }}</span>
           <span v-if="weatherData.Rainfall === '1'" class="text-blue-400">RAIN</span>
         </div>
         <div class="flex items-center gap-1.5">
@@ -167,9 +198,10 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
           <!-- Team color bar -->
           <div class="h-full w-[3px] rounded-full" :style="{ backgroundColor: d.teamColour }" />
 
-          <!-- TLA -->
-          <div class="flex items-center gap-1">
-            <span class="text-xs font-bold text-[#f0f0f0] tracking-wider">{{ d.tla }}</span>
+          <!-- TLA + nombre -->
+          <div class="flex flex-col min-w-0 justify-center">
+            <span class="text-xs font-bold text-[#f0f0f0] tracking-wider leading-tight">{{ d.tla }}</span>
+            <span v-if="d.broadcastName" class="text-[9px] text-[#5a5a5a] truncate leading-tight mt-0.5">{{ d.broadcastName }}</span>
           </div>
 
           <!-- Mini sectors -->
@@ -213,6 +245,107 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
 
       <!-- Sidebar -->
       <div class="space-y-4">
+        <!-- Circuito / sesión -->
+        <div
+          v-if="sessionInfo?.Meeting"
+          class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4 space-y-2"
+        >
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-1">Sesión</h3>
+          <p v-if="sessionInfo.Meeting.Circuit?.ShortName" class="text-sm font-semibold text-[#f0f0f0]">
+            {{ sessionInfo.Meeting.Circuit.ShortName }}
+          </p>
+          <p v-if="sessionInfo.Meeting.Location || sessionInfo.Meeting.Country?.Name" class="text-[11px] text-[#8a8a8a]">
+            <span v-if="sessionInfo.Meeting.Location">{{ sessionInfo.Meeting.Location }}</span>
+            <span v-if="sessionInfo.Meeting.Location && sessionInfo.Meeting.Country?.Name"> · </span>
+            <span v-if="sessionInfo.Meeting.Country?.Name">{{ sessionInfo.Meeting.Country.Name }}</span>
+          </p>
+          <p v-if="sessionInfo.Type" class="text-[10px] text-[#5a5a5a] uppercase tracking-wide">
+            {{ sessionInfo.Type }}
+          </p>
+        </div>
+
+        <!-- Clima (detalle) -->
+        <div v-if="weatherData" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Clima</h3>
+          <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-[11px]">
+            <dt class="text-[#5a5a5a]">Aire</dt>
+            <dd class="font-timing text-[#f0f0f0] text-right">{{ weatherData.AirTemp != null ? `${weatherData.AirTemp} °C` : '—' }}</dd>
+            <dt class="text-[#5a5a5a]">Pista</dt>
+            <dd class="font-timing text-[#f0f0f0] text-right">{{ weatherData.TrackTemp != null ? `${weatherData.TrackTemp} °C` : '—' }}</dd>
+            <dt class="text-[#5a5a5a]">Humedad</dt>
+            <dd class="font-timing text-[#f0f0f0] text-right">{{ weatherData.Humidity != null ? `${weatherData.Humidity}%` : '—' }}</dd>
+            <dt class="text-[#5a5a5a]">Presión</dt>
+            <dd class="font-timing text-[#f0f0f0] text-right">{{ weatherData.Pressure ?? '—' }}</dd>
+            <dt class="text-[#5a5a5a]">Viento</dt>
+            <dd class="font-timing text-[#f0f0f0] text-right">
+              <template v-if="weatherData.WindSpeed || weatherData.WindDirection">
+                {{ weatherData.WindSpeed || '—' }}
+                <span v-if="weatherData.WindDirection" class="text-[#8a8a8a]"> · {{ weatherData.WindDirection }}</span>
+              </template>
+              <template v-else>—</template>
+            </dd>
+            <dt class="text-[#5a5a5a]">Lluvia</dt>
+            <dd class="text-right" :class="weatherData.Rainfall === '1' ? 'text-blue-400 font-medium' : 'text-[#8a8a8a]'">
+              {{ weatherData.Rainfall === '1' ? 'Sí' : 'No' }}
+            </dd>
+          </dl>
+        </div>
+
+        <!-- SessionData (campos planos) -->
+        <div v-if="sessionDataRows.length" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Session data</h3>
+          <dl class="space-y-1.5">
+            <div v-for="row in sessionDataRows" :key="row.key" class="flex justify-between gap-2 text-[11px]">
+              <dt class="text-[#5a5a5a] truncate">{{ row.key }}</dt>
+              <dd class="font-timing text-[#c0c0c0] text-right shrink-0">{{ row.value }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Estado (feed SessionStatus) -->
+        <div v-if="sessionStatusRows.length" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Estado</h3>
+          <dl class="space-y-1.5">
+            <div v-for="row in sessionStatusRows" :key="row.key" class="flex justify-between gap-2 text-[11px]">
+              <dt class="text-[#5a5a5a] truncate">{{ row.key }}</dt>
+              <dd class="font-timing text-[#c0c0c0] text-right shrink-0">{{ row.value }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- TimingAppData -->
+        <div v-if="timingAppDataRows.length" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">App timing</h3>
+          <dl class="space-y-1.5">
+            <div v-for="row in timingAppDataRows" :key="row.key" class="flex justify-between gap-2 text-[11px]">
+              <dt class="text-[#5a5a5a] truncate">{{ row.key }}</dt>
+              <dd class="font-timing text-[#c0c0c0] text-right shrink-0">{{ row.value }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- TimingStats (campos planos que mande el feed) -->
+        <div v-if="timingStatsRows.length" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Stats</h3>
+          <dl class="space-y-1.5">
+            <div v-for="row in timingStatsRows" :key="row.key" class="flex justify-between gap-2 text-[11px]">
+              <dt class="text-[#5a5a5a] truncate">{{ row.key }}</dt>
+              <dd class="font-timing text-[#c0c0c0] text-right shrink-0">{{ row.value }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Championship prediction (resumen) -->
+        <div v-if="championshipRows.length" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
+          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Campeonato</h3>
+          <dl class="space-y-1.5">
+            <div v-for="row in championshipRows" :key="row.key" class="flex justify-between gap-2 text-[11px]">
+              <dt class="text-[#5a5a5a] truncate">{{ row.key }}</dt>
+              <dd class="font-timing text-[#c0c0c0] text-right shrink-0 max-w-[10rem] truncate">{{ row.value }}</dd>
+            </div>
+          </dl>
+        </div>
+
         <!-- Race Control -->
         <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
           <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Race Control</h3>
