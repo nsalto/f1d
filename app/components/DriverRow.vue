@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue'
 import { getTeamColor } from '~/utils/team-colors'
+import LiveMiniSectors from './live/MiniSectors.vue'
 
 const props = defineProps<{
   position?: number | string
@@ -22,6 +24,8 @@ const props = defineProps<{
   pitOut?: boolean
   retired?: boolean
   stopped?: boolean
+  sectors?: Record<string, any> | any[]
+  catching?: boolean
 }>()
 
 const teamColor = computed(() => {
@@ -39,10 +43,44 @@ const positionColor = computed(() => {
   if (pos === 3) return '#CD7F32'
   return '#f0f0f0'
 })
+
+// Normalize sectors: convert Record to array for MiniSectors
+const sectorsList = computed(() => {
+  if (!props.sectors) return []
+  if (Array.isArray(props.sectors)) return props.sectors
+  return Object.values(props.sectors)
+})
+
+// Position change animation
+const positionFlashClass = ref('')
+const flashKey = ref(0)
+
+watch(() => Number(props.position), (newPos, oldPos) => {
+  if (oldPos == null || newPos === oldPos) return
+  positionFlashClass.value = newPos < oldPos ? 'pos-gained' : 'pos-lost'
+  flashKey.value++
+  setTimeout(() => { positionFlashClass.value = '' }, 1300)
+})
+
+// Last lap change animation
+const lapFlashKey = ref(0)
+const lapFlashActive = ref(false)
+
+watch(() => props.lastLap, (newVal, oldVal) => {
+  if (oldVal && newVal && newVal !== oldVal) {
+    lapFlashActive.value = true
+    lapFlashKey.value++
+    setTimeout(() => { lapFlashActive.value = false }, 900)
+  }
+})
 </script>
 
 <template>
-  <tr class="border-b border-[#0f0f0f] hover:bg-[#0f0f0f] transition-colors" :class="{ 'opacity-30': retired || stopped }">
+  <tr
+    :key="flashKey"
+    class="border-b border-[#0f0f0f] hover:bg-[#0f0f0f] transition-colors"
+    :class="[{ 'opacity-30': retired || stopped }, positionFlashClass]"
+  >
     <!-- Position -->
     <td class="px-3 py-1.5 text-center">
       <span
@@ -74,7 +112,10 @@ const positionColor = computed(() => {
     </td>
 
     <!-- Interval -->
-    <td class="px-3 py-1.5 font-timing text-xs text-right text-[#8a8a8a]">
+    <td
+      class="px-3 py-1.5 font-timing text-xs text-right"
+      :class="catching ? 'text-[#00d25b]' : 'text-[#8a8a8a]'"
+    >
       {{ position === 1 ? '' : interval || gap }}
     </td>
 
@@ -85,12 +126,16 @@ const positionColor = computed(() => {
 
     <!-- Last lap -->
     <td
+      :key="lapFlashKey"
       class="px-3 py-1.5 font-timing text-xs text-right font-medium"
-      :class="{
-        'text-[#9f00ff]': lastLapFastest,
-        'text-[#00d25b]': lastLapPersonal && !lastLapFastest,
-        'text-[#f0f0f0]': !lastLapFastest && !lastLapPersonal
-      }"
+      :class="[
+        {
+          'data-updated': lapFlashActive,
+          'text-[#9f00ff]': lastLapFastest,
+          'text-[#00d25b]': lastLapPersonal && !lastLapFastest,
+          'text-[#f0f0f0]': !lastLapFastest && !lastLapPersonal
+        }
+      ]"
     >
       {{ lastLap }}
     </td>
@@ -99,12 +144,19 @@ const positionColor = computed(() => {
     <td class="px-3 py-1.5 font-timing text-xs text-right text-[#444]">{{ bestLap }}</td>
 
     <!-- Tyre + Pit -->
-    <td class="px-3 py-1.5 text-center flex items-center justify-center gap-2">
-      <TyreCompound v-if="compound && !retired" :compound="compound" size="xs" />
-      <span v-if="inPit" class="text-[9px] font-bold text-[#ffc906] bg-[#ffc906]/10 px-1 rounded">PIT</span>
-      <span v-else-if="pitOut" class="text-[9px] font-bold text-[#00d25b] bg-[#00d25b]/10 px-1 rounded">OUT</span>
-      <span v-else-if="retired" class="text-[9px] font-bold text-[#e10600] bg-[#e10600]/10 px-1 rounded">RET</span>
-      <span v-else-if="pitStops" class="font-timing text-[10px] text-[#2a2a2a]">{{ pitStops }}</span>
+    <td class="px-3 py-1.5 text-center">
+      <div class="flex items-center justify-center gap-2">
+        <TyreCompound v-if="compound && !retired" :compound="compound" size="xs" />
+        <span v-if="inPit" class="text-[9px] font-bold text-[#ffc906] bg-[#ffc906]/10 px-1 rounded">PIT</span>
+        <span v-else-if="pitOut" class="text-[9px] font-bold text-[#00d25b] bg-[#00d25b]/10 px-1 rounded">OUT</span>
+        <span v-else-if="retired" class="text-[9px] font-bold text-[#e10600] bg-[#e10600]/10 px-1 rounded">RET</span>
+        <span v-else-if="pitStops" class="font-timing text-[10px] text-[#2a2a2a]">{{ pitStops }}</span>
+      </div>
+    </td>
+  </tr>
+  <tr v-if="sectorsList.length" class="border-b border-[#0f0f0f]">
+    <td colspan="8" class="px-3 pb-1.5 pt-0">
+      <LiveMiniSectors :sectors="sectorsList" :compact="true" />
     </td>
   </tr>
 </template>

@@ -277,6 +277,8 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
               :pit-out="d.pitOut"
               :retired="d.retired"
               :stopped="d.stopped"
+              :catching="d.catching"
+              :sectors="d.sectors"
             />
           </tbody>
         </table>

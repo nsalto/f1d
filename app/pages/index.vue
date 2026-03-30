@@ -55,13 +55,38 @@ onUnmounted(() => clearInterval(interval))
 
           <!-- Countdown -->
           <div class="grid grid-cols-4 gap-3 max-w-sm mt-6">
-            <div v-for="(val, key) in countdown" :key="key" class="text-center">
+            <!-- Days -->
+            <div class="text-center">
               <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
-                {{ String(val).padStart(2, '0') }}
+                {{ String(countdown.days).padStart(2, '0') }}
               </div>
-              <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">
-                {{ key === 'days' ? 'Days' : key === 'hours' ? 'Hrs' : key === 'minutes' ? 'Min' : 'Secs' }}
+              <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Days</div>
+            </div>
+
+            <!-- Hours -->
+            <div class="text-center">
+              <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
+                {{ String(countdown.hours).padStart(2, '0') }}
               </div>
+              <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Hrs</div>
+            </div>
+
+            <!-- Minutes -->
+            <div class="text-center">
+              <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
+                {{ String(countdown.minutes).padStart(2, '0') }}
+              </div>
+              <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Min</div>
+            </div>
+
+            <!-- Seconds with transition -->
+            <div class="text-center">
+              <transition name="tick" mode="out-in">
+                <div :key="countdown.seconds" class="font-timing text-3xl font-bold text-[#f0f0f0]">
+                  {{ String(countdown.seconds).padStart(2, '0') }}
+                </div>
+              </transition>
+              <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Secs</div>
             </div>
           </div>
 

@@ -68,6 +68,12 @@
 }
 .pos-lost { animation: pos-loss 1.2s ease-out; }
 
+/* Countdown digit tick animation */
+.tick-enter-active { transition: transform 0.15s ease-out, opacity 0.15s; }
+.tick-leave-active { transition: transform 0.1s ease-in, opacity 0.1s; }
+.tick-enter-from   { transform: translateY(-6px); opacity: 0; }
+.tick-leave-to     { transform: translateY(6px); opacity: 0; }
+
 /* Scrollbar */
 ::-webkit-scrollbar       { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: var(--color-surface-base); }
