@@ -30,7 +30,15 @@ const circuitId = computed(() => {
   }
 
   const normalized = props.circuitName.toLowerCase().trim()
-  return circuitMap[normalized] || normalized.replace(/\s+/g, '-')
+  const mapped = circuitMap[normalized]
+
+  if (mapped) {
+    return mapped
+  }
+
+  // Fallback: just use the first word or simple normalization
+  const fallback = normalized.split(/\s+/)[0]
+  return fallback || normalized.replace(/\s+/g, '-')
 })
 </script>
 

@@ -121,7 +121,24 @@ function normalizeCircuitName(name: string | undefined): string {
   }
 
   const normalized = name.toLowerCase().trim()
-  return circuitMap[normalized] || normalized.replace(/\s+/g, '-')
+
+  // Try exact match first
+  if (circuitMap[normalized]) {
+    return circuitMap[normalized]
+  }
+
+  // Try partial match (match first meaningful word)
+  const firstWord = normalized.split(/\s+/)[0]
+  const partial = Object.entries(circuitMap).find(([key]) =>
+    key.split(/\s+/)[0] === firstWord
+  )
+
+  if (partial) {
+    return partial[1]
+  }
+
+  // Fallback: use first word or normalize with dashes
+  return firstWord || normalized.replace(/\s+/g, '-')
 }
 
 // Clock

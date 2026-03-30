@@ -46,28 +46,59 @@ export function getTeamIdByDriverNumber(driverNumber: string | number): string {
 export function getTeamIdByName(teamName: string | undefined): string {
   if (!teamName) return ''
 
-  // Special case for RB (Red Bull shorthand)
-  if (teamName.toLowerCase() === 'rb' || teamName.toLowerCase() === 'red bull racing') {
-    return 'red-bull'
+  const normalized = teamName.toLowerCase().trim()
+
+  // Special cases for API variations
+  const specialCases: Record<string, string> = {
+    'rb': 'red-bull',
+    'red bull': 'red-bull',
+    'red bull racing': 'red-bull',
+    'oracle red bull racing': 'red-bull',
+    'mclaren': 'mclaren',
+    'mclaren f1 team': 'mclaren',
+    'ferrari': 'ferrari',
+    'ferrari f1 team': 'ferrari',
+    'mercedes': 'mercedes',
+    'mercedes f1 team': 'mercedes',
+    'williams': 'williams',
+    'williams racing': 'williams',
+    'alpine': 'alpine',
+    'alpine f1 team': 'alpine',
+    'haas': 'haas',
+    'haas f1 team': 'haas',
+    'aston martin': 'aston-martin',
+    'aston martin f1 team': 'aston-martin',
+    'audi': 'audi',
+    'audi f1 team': 'audi',
+    'sauber': 'audi',
+    'kick sauber': 'audi',
+    'racing bulls': 'racing-bulls',
+    'racing bulls f1 team': 'racing-bulls',
+    'cadillac': 'cadillac'
+  }
+
+  // Check special cases first
+  if (specialCases[normalized]) {
+    return specialCases[normalized]
   }
 
   // Clean team name (remove "Oracle", " F1 Team" suffix and " Racing")
-  const cleanName = teamName
+  const cleanName = normalized
     .replace(/^oracle\s+/i, '')
-    .replace(/\s+F1\s+Team\s*$/i, '')
-    .replace(/\s+Racing\s*$/i, '')
+    .replace(/\s+f1\s+team\s*$/i, '')
+    .replace(/\s+racing\s*$/i, '')
     .trim()
 
-  // Try exact match first
-  let team = TEAMS_2026.find(t => t.name.toLowerCase() === cleanName.toLowerCase())
+  // Try exact match
+  let team = TEAMS_2026.find(t => t.name.toLowerCase() === cleanName)
   if (team) return team.id
 
-  // Try partial match (in case API returns variations)
-  team = TEAMS_2026.find(t => cleanName.toLowerCase().includes(t.name.toLowerCase()))
+  // Try partial match
+  team = TEAMS_2026.find(t => cleanName.includes(t.name.toLowerCase()))
   if (team) return team.id
 
-  // Last resort: check if the input contains team name
-  team = TEAMS_2026.find(t => teamName.toLowerCase().includes(t.name.toLowerCase()))
+  // Last resort: check if input contains team name
+  team = TEAMS_2026.find(t => normalized.includes(t.name.toLowerCase()))
   return team?.id || ''
 }
 
