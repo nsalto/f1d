@@ -264,22 +264,20 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
     <div v-else-if="connected" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
       <!-- Timing tower -->
       <div class="lg:col-span-3 rounded-xl bg-[#0a0a0a] border border-[#141414] overflow-hidden">
-        <!-- Header -->
-        <div class="px-3 py-2 border-b border-[#1f1f1f] text-[10px] text-[#444] uppercase tracking-wider font-medium">
-          <div class="flex items-center gap-2 justify-between">
-            <div class="flex-1">Pos • Driver • Team</div>
-            <div class="flex gap-4 text-right">
-              <span>INT</span>
-              <span>GAP</span>
-              <span>LAST</span>
-              <span>BEST</span>
-              <span>TYRE • PIT</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Rows using new DriverRow component -->
+        <!-- Timing table with header and rows -->
         <table class="w-full">
+          <thead>
+            <tr class="border-b border-[#1f1f1f] bg-[#050505]">
+              <th class="px-3 py-2 text-center text-[10px] text-[#444] uppercase tracking-wider font-medium w-8">Pos</th>
+              <th class="px-0 py-2 w-1"></th>
+              <th class="px-3 py-2 text-left text-[10px] text-[#444] uppercase tracking-wider font-medium">Driver</th>
+              <th class="px-3 py-2 text-right text-[10px] text-[#444] uppercase tracking-wider font-medium w-12">INT</th>
+              <th class="px-3 py-2 text-right text-[10px] text-[#444] uppercase tracking-wider font-medium w-12">GAP</th>
+              <th class="px-3 py-2 text-right text-[10px] text-[#444] uppercase tracking-wider font-medium w-16">LAST</th>
+              <th class="px-3 py-2 text-right text-[10px] text-[#444] uppercase tracking-wider font-medium w-16">BEST</th>
+              <th class="px-3 py-2 text-center text-[10px] text-[#444] uppercase tracking-wider font-medium">TYRE</th>
+            </tr>
+          </thead>
           <tbody>
             <DriverRow
               v-for="d in sortedDrivers"
