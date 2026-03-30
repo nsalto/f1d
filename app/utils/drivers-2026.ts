@@ -45,7 +45,8 @@ export function getTeamIdByDriverNumber(driverNumber: string | number): string {
 }
 
 // Map team name to team ID
-export function getTeamIdByName(teamName: string): string {
+export function getTeamIdByName(teamName: string | undefined): string {
+  if (!teamName) return ''
   const team = TEAMS_2026.find(t => t.name.toLowerCase() === teamName.toLowerCase())
   return team?.id || ''
 }

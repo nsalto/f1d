@@ -32,7 +32,8 @@ export const TEAM_COLORS: Record<string, string> = {
   'cadillac': '#FFFFFF'
 }
 
-export function getTeamColor(team: string): string {
+export function getTeamColor(team: string | undefined): string {
+  if (!team) return '#666666'
   const normalized = team.toLowerCase().replace(/\s+/g, '_')
   return TEAM_COLORS[team] || TEAM_COLORS[normalized] || '#666666'
 }
