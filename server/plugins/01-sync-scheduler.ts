@@ -4,10 +4,33 @@ import { syncAllCompletedRaces } from '../utils/sync-races'
 export default defineNitroPlugin(async () => {
   const season = String(new Date().getFullYear())
 
+  // Wait for migrations to complete with retries
+  let db: any = null
+  let schema: any = null
+  let ready = false
+
+  for (let i = 0; i < 30; i++) {
+    try {
+      const { useDB, schema: dbSchema } = await import('../database')
+      db = useDB()
+      schema = dbSchema
+      await db.select().from(schema.races).limit(1)
+      ready = true
+      break
+    } catch {
+      if (i < 29) {
+        await new Promise(r => setTimeout(r, 500))
+      }
+    }
+  }
+
+  if (!ready) {
+    console.error('[scheduler] Database not ready after retries')
+    return
+  }
+
   // Initial sync on server start if DB is empty
   try {
-    const { useDB, schema } = await import('../database')
-    const db = useDB()
     const raceCount = await db.select().from(schema.races).limit(1)
 
     if (raceCount.length === 0) {
