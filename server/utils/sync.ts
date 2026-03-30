@@ -203,7 +203,7 @@ export async function syncOpenF1Sessions(year: number = 2025) {
       dateStart: s.date_start || null,
       dateEnd: s.date_end || null,
       year
-    }).onConflictDoNothing()
+    }).onConflictDoNothing({ target: schema.sessions.sessionKey })
   }
 
   await markSynced('openf1-sessions', syncKey)

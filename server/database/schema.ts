@@ -1,8 +1,8 @@
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core'
+import { pgTable, serial, text, integer, real, boolean } from 'drizzle-orm/pg-core'
 
 // Seasons calendar
-export const races = sqliteTable('races', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const races = pgTable('races', {
+  id: serial('id').primaryKey(),
   season: text('season').notNull(),
   round: integer('round').notNull(),
   raceName: text('race_name').notNull(),
@@ -25,8 +25,8 @@ export const races = sqliteTable('races', {
 })
 
 // Driver standings
-export const driverStandings = sqliteTable('driver_standings', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const driverStandings = pgTable('driver_standings', {
+  id: serial('id').primaryKey(),
   season: text('season').notNull(),
   position: integer('position').notNull(),
   points: real('points').notNull(),
@@ -42,8 +42,8 @@ export const driverStandings = sqliteTable('driver_standings', {
 })
 
 // Constructor standings
-export const constructorStandings = sqliteTable('constructor_standings', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const constructorStandings = pgTable('constructor_standings', {
+  id: serial('id').primaryKey(),
   season: text('season').notNull(),
   position: integer('position').notNull(),
   points: real('points').notNull(),
@@ -54,8 +54,8 @@ export const constructorStandings = sqliteTable('constructor_standings', {
 })
 
 // Race results
-export const raceResults = sqliteTable('race_results', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const raceResults = pgTable('race_results', {
+  id: serial('id').primaryKey(),
   season: text('season').notNull(),
   round: integer('round').notNull(),
   position: integer('position'),
@@ -78,8 +78,8 @@ export const raceResults = sqliteTable('race_results', {
 })
 
 // Qualifying results
-export const qualifyingResults = sqliteTable('qualifying_results', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const qualifyingResults = pgTable('qualifying_results', {
+  id: serial('id').primaryKey(),
   season: text('season').notNull(),
   round: integer('round').notNull(),
   position: integer('position'),
@@ -95,7 +95,7 @@ export const qualifyingResults = sqliteTable('qualifying_results', {
 })
 
 // OpenF1 Sessions (to map session_key)
-export const sessions = sqliteTable('sessions', {
+export const sessions = pgTable('sessions', {
   sessionKey: integer('session_key').primaryKey(),
   sessionName: text('session_name').notNull(),
   sessionType: text('session_type'),
@@ -108,8 +108,8 @@ export const sessions = sqliteTable('sessions', {
 })
 
 // OpenF1 Lap data
-export const laps = sqliteTable('laps', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const laps = pgTable('laps', {
+  id: serial('id').primaryKey(),
   sessionKey: integer('session_key').notNull(),
   driverNumber: integer('driver_number').notNull(),
   lapNumber: integer('lap_number').notNull(),
@@ -120,12 +120,12 @@ export const laps = sqliteTable('laps', {
   i1Speed: real('i1_speed'),
   i2Speed: real('i2_speed'),
   stSpeed: real('st_speed'),
-  isPitOutLap: integer('is_pit_out_lap', { mode: 'boolean' })
+  isPitOutLap: boolean('is_pit_out_lap').default(false)
 })
 
 // OpenF1 Pit stops
-export const pitStops = sqliteTable('pit_stops', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const pitStops = pgTable('pit_stops', {
+  id: serial('id').primaryKey(),
   sessionKey: integer('session_key').notNull(),
   driverNumber: integer('driver_number').notNull(),
   lapNumber: integer('lap_number').notNull(),
@@ -134,8 +134,8 @@ export const pitStops = sqliteTable('pit_stops', {
 })
 
 // OpenF1 Stints (tyre strategy)
-export const stints = sqliteTable('stints', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const stints = pgTable('stints', {
+  id: serial('id').primaryKey(),
   sessionKey: integer('session_key').notNull(),
   driverNumber: integer('driver_number').notNull(),
   stintNumber: integer('stint_number').notNull(),
@@ -146,8 +146,8 @@ export const stints = sqliteTable('stints', {
 })
 
 // OpenF1 Drivers (per session, has headshots and team colors)
-export const drivers = sqliteTable('drivers', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const drivers = pgTable('drivers', {
+  id: serial('id').primaryKey(),
   sessionKey: integer('session_key').notNull(),
   driverNumber: integer('driver_number').notNull(),
   broadcastName: text('broadcast_name'),
@@ -159,8 +159,8 @@ export const drivers = sqliteTable('drivers', {
 })
 
 // Sync log to track what we've already fetched
-export const syncLog = sqliteTable('sync_log', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const syncLog = pgTable('sync_log', {
+  id: serial('id').primaryKey(),
   entity: text('entity').notNull(),
   key: text('key').notNull(),
   syncedAt: text('synced_at').notNull()

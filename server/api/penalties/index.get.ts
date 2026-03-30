@@ -1,6 +1,4 @@
 import { useF1LiveTiming } from '../../utils/f1-live-state'
-import { useDB, schema } from '../../database'
-import { eq } from 'drizzle-orm'
 
 // GET /api/penalties - Get race control messages that are penalties/investigations
 export default defineEventHandler(async () => {

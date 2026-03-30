@@ -1,0 +1,895 @@
+{
+  "id": "edd18a55-acb7-49ea-8017-dd9df2c81e9a",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.constructor_standings": {
+      "name": "constructor_standings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "season": {
+          "name": "season",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "points": {
+          "name": "points",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wins": {
+          "name": "wins",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "constructor_id": {
+          "name": "constructor_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "constructor_name": {
+          "name": "constructor_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nationality": {
+          "name": "nationality",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.driver_standings": {
+      "name": "driver_standings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "season": {
+          "name": "season",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "points": {
+          "name": "points",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wins": {
+          "name": "wins",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "driver_id": {
+          "name": "driver_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "driver_code": {
+          "name": "driver_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "driver_number": {
+          "name": "driver_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "given_name": {
+          "name": "given_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "family_name": {
+          "name": "family_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nationality": {
+          "name": "nationality",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "constructor_id": {
+          "name": "constructor_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "constructor_name": {
+          "name": "constructor_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.drivers": {
+      "name": "drivers",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "session_key": {
+          "name": "session_key",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "driver_number": {
+          "name": "driver_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "broadcast_name": {
+          "name": "broadcast_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_acronym": {
+          "name": "name_acronym",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "team_name": {
+          "name": "team_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "team_colour": {
+          "name": "team_colour",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "headshot_url": {
+          "name": "headshot_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.laps": {
+      "name": "laps",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "session_key": {
+          "name": "session_key",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "driver_number": {
+          "name": "driver_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lap_number": {
+          "name": "lap_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lap_duration": {
+          "name": "lap_duration",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sector_1": {
+          "name": "sector_1",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sector_2": {
+          "name": "sector_2",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sector_3": {
+          "name": "sector_3",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "i1_speed": {
+          "name": "i1_speed",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "i2_speed": {
+          "name": "i2_speed",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_speed": {
+          "name": "st_speed",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_pit_out_lap": {
+          "name": "is_pit_out_lap",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pit_stops": {
+      "name": "pit_stops",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "session_key": {
+          "name": "session_key",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "driver_number": {
+          "name": "driver_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lap_number": {
+          "name": "lap_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pit_duration": {
+          "name": "pit_duration",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.qualifying_results": {
+      "name": "qualifying_results",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "season": {
+          "name": "season",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "round": {
+          "name": "round",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "driver_id": {
+          "name": "driver_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "driver_code": {
+          "name": "driver_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "given_name": {
+          "name": "given_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "family_name": {
+          "name": "family_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "constructor_id": {
+          "name": "constructor_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "constructor_name": {
+          "name": "constructor_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "q1": {
+          "name": "q1",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "q2": {
+          "name": "q2",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "q3": {
+          "name": "q3",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.race_results": {
+      "name": "race_results",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "season": {
+          "name": "season",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "round": {
+          "name": "round",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "position_text": {
+          "name": "position_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "points": {
+          "name": "points",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "grid": {
+          "name": "grid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "laps": {
+          "name": "laps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "time": {
+          "name": "time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "milliseconds": {
+          "name": "milliseconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fastest_lap_rank": {
+          "name": "fastest_lap_rank",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fastest_lap_lap": {
+          "name": "fastest_lap_lap",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fastest_lap_time": {
+          "name": "fastest_lap_time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "driver_id": {
+          "name": "driver_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "driver_code": {
+          "name": "driver_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "given_name": {
+          "name": "given_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "family_name": {
+          "name": "family_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "constructor_id": {
+          "name": "constructor_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "constructor_name": {
+          "name": "constructor_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.races": {
+      "name": "races",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "season": {
+          "name": "season",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "round": {
+          "name": "round",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "race_name": {
+          "name": "race_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "circuit_id": {
+          "name": "circuit_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "circuit_name": {
+          "name": "circuit_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "locality": {
+          "name": "locality",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fp1_date": {
+          "name": "fp1_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fp1_time": {
+          "name": "fp1_time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fp2_date": {
+          "name": "fp2_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fp2_time": {
+          "name": "fp2_time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fp3_date": {
+          "name": "fp3_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fp3_time": {
+          "name": "fp3_time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "qualy_date": {
+          "name": "qualy_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "qualy_time": {
+          "name": "qualy_time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sprint_date": {
+          "name": "sprint_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sprint_time": {
+          "name": "sprint_time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sessions": {
+      "name": "sessions",
+      "schema": "",
+      "columns": {
+        "session_key": {
+          "name": "session_key",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "session_name": {
+          "name": "session_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "session_type": {
+          "name": "session_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "meeting_key": {
+          "name": "meeting_key",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "circuit_short_name": {
+          "name": "circuit_short_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "country_name": {
+          "name": "country_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "date_start": {
+          "name": "date_start",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "date_end": {
+          "name": "date_end",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "year": {
+          "name": "year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.stints": {
+      "name": "stints",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "session_key": {
+          "name": "session_key",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "driver_number": {
+          "name": "driver_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stint_number": {
+          "name": "stint_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "compound": {
+          "name": "compound",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lap_start": {
+          "name": "lap_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lap_end": {
+          "name": "lap_end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tyre_age_at_start": {
+          "name": "tyre_age_at_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sync_log": {
+      "name": "sync_log",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "entity": {
+          "name": "entity",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "synced_at": {
+          "name": "synced_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

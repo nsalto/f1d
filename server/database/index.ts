@@ -1,25 +1,27 @@
-import Database from 'better-sqlite3'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
-import { resolve } from 'path'
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+import { drizzle } from 'drizzle-orm/postgres-js'
 import * as schema from './schema'
 
-function getDBPath() {
-  // In dev, use project root. In production, use cwd
-  const base = process.env.NUXT_APP_ROOT_DIR || process.cwd()
-  return resolve(base, 'data', 'f1.db')
+function getDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL
+  if (!url) {
+    throw new Error(
+      'DATABASE_URL is not set. Add a PostgreSQL service on Railway and link it, or set DATABASE_URL locally.'
+    )
+  }
+  return url
 }
 
-let _db: ReturnType<typeof drizzle> | null = null
-let _dbPath: string | null = null
+let _sql: ReturnType<typeof postgres> | null = null
+let _db: PostgresJsDatabase<typeof schema> | null = null
 
 export function useDB() {
-  const dbPath = getDBPath()
-  if (!_db || _dbPath !== dbPath) {
-    console.log(`[db] Connecting to ${dbPath}`)
-    const sqlite = new Database(dbPath)
-    sqlite.pragma('journal_mode = WAL')
-    _db = drizzle(sqlite, { schema })
-    _dbPath = dbPath
+  if (!_db) {
+    const url = getDatabaseUrl()
+    // prepare: false works with PgBouncer / transaction poolers (Railway sometimes proxies)
+    _sql = postgres(url, { max: 10, prepare: false })
+    _db = drizzle(_sql, { schema })
   }
   return _db
 }
