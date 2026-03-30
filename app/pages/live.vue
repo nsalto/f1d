@@ -41,6 +41,7 @@ const sortedDrivers = computed(() => {
         lastLapFastest: data.LastLapTime?.OverallFastest || false,
         lastLapPersonal: data.LastLapTime?.PersonalFastest || false,
         bestLap: data.BestLapTime?.Value || '',
+        compound: data.Compound || '',
         inPit: data.InPit || false,
         pitOut: data.PitOut || false,
         pitStops: data.NumberOfPitStops || 0,
@@ -223,7 +224,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
               <span>GAP</span>
               <span>LAST</span>
               <span>BEST</span>
-              <span>PIT</span>
+              <span>TYRE • PIT</span>
             </div>
           </div>
         </div>
@@ -248,6 +249,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
               :best-lap="d.bestLap"
               :last-lap-fastest="d.lastLapFastest"
               :last-lap-personal="d.lastLapPersonal"
+              :compound="d.compound"
               :pit-stops="d.pitStops"
               :in-pit="d.inPit"
               :pit-out="d.pitOut"
@@ -260,18 +262,22 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
 
       <!-- Sidebar -->
       <div class="space-y-4">
-        <!-- Circuit map (compact) -->
-        <div v-if="sessionInfo?.Meeting?.Circuit?.ShortName" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-3">
-          <div class="flex flex-col items-center">
-            <p class="text-[10px] font-semibold text-[#444] uppercase tracking-wider mb-2">{{ sessionInfo.Meeting.Circuit.ShortName }}</p>
-            <img
-              :src="`/tracks/svg/${sessionInfo.Meeting.Circuit.ShortName.toLowerCase().replace(/\\s+/g, '-')}.svg`"
-              :alt="sessionInfo.Meeting.Circuit.ShortName"
-              class="w-20 h-20 object-contain mb-1"
-            />
-            <p v-if="sessionInfo.Meeting.Country?.Name" class="text-[9px] text-[#8a8a8a]">
-              {{ sessionInfo.Meeting.Country.Name }}
-            </p>
+        <!-- Circuit map (prominent) -->
+        <div v-if="sessionInfo?.Meeting?.Circuit?.ShortName" class="rounded-xl bg-gradient-to-br from-[#0f0f0f] to-[#0a0a0a] border border-[#1f1f1f] p-4">
+          <div class="flex flex-col items-center gap-3">
+            <div class="text-center">
+              <p class="text-sm font-bold text-[#f0f0f0]">{{ sessionInfo.Meeting.Circuit.ShortName }}</p>
+              <p v-if="sessionInfo.Meeting.Country?.Name" class="text-[10px] text-[#8a8a8a]">
+                {{ sessionInfo.Meeting.Country.Name }}
+              </p>
+            </div>
+            <div class="w-full bg-[#000] rounded-lg p-2 flex items-center justify-center">
+              <img
+                :src="`/tracks/svg/${sessionInfo.Meeting.Circuit.ShortName.toLowerCase().replace(/\\s+/g, '-')}.svg`"
+                :alt="sessionInfo.Meeting.Circuit.ShortName"
+                class="w-24 h-24 object-contain"
+              />
+            </div>
           </div>
         </div>
 

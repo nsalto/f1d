@@ -57,24 +57,36 @@ export default defineEventHandler(async () => {
       .orderBy(desc(schema.laps.lapNumber))
       .limit(22) // One per driver (approximate)
 
+    // Get compound for each driver from stints (latest compound)
+    const driverCompounds: Record<number, string> = {}
+    for (const stint of stints) {
+      if (stint.driverNumber) {
+        driverCompounds[stint.driverNumber] = stint.compound || 'UNKNOWN'
+      }
+    }
+
     // Build timing data structure similar to live timing
     const timingData = {
       Lines: Object.fromEntries(
-        results.map(r => [
-          r.driverId || r.givenName,
-          {
-            Position: r.position,
-            GapToLeader: r.grid === 1 ? '0.000' : r.milliseconds ? `+${(r.milliseconds / 1000).toFixed(3)}` : '-',
-            LastLapTime: { Value: r.fastestLapTime || '-', OverallFastest: false, PersonalFastest: false },
-            BestLapTime: { Value: r.fastestLapTime || '-' },
-            NumberOfPitStops: 0,
-            Retired: r.status !== 'Finished',
-            Stopped: false,
-            InPit: false,
-            PitOut: false,
-            Sectors: []
-          }
-        ])
+        results.map(r => {
+          const driverNum = parseInt(r.driverId || '0')
+          return [
+            r.driverId || r.givenName,
+            {
+              Position: r.position,
+              GapToLeader: r.grid === 1 ? '0.000' : r.milliseconds ? `+${(r.milliseconds / 1000).toFixed(3)}` : '-',
+              LastLapTime: { Value: r.fastestLapTime || '-', OverallFastest: false, PersonalFastest: false },
+              BestLapTime: { Value: r.fastestLapTime || '-' },
+              Compound: driverCompounds[driverNum] || '',
+              NumberOfPitStops: 0,
+              Retired: r.status !== 'Finished',
+              Stopped: false,
+              InPit: false,
+              PitOut: false,
+              Sectors: []
+            }
+          ]
+        })
       )
     }
 
