@@ -1,5 +1,7 @@
 import { eq, and } from 'drizzle-orm'
 import { useDB, schema } from '../database'
+import { fetchJolpica } from './jolpica'
+import { fetchOpenF1 } from './openf1'
 
 const CURRENT_SEASON = String(new Date().getFullYear())
 
