@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   circuitName?: string
   country?: string
   showMap?: boolean
