@@ -3,6 +3,8 @@ definePageMeta({ layout: 'default' })
 
 const connected = ref(false)
 const noSession = ref(false)
+const isHistory = ref(false)
+const historyMessage = ref('')
 const sessionInfo = ref<any>(null)
 const trackStatus = ref<any>(null)
 const weatherData = ref<any>(null)
@@ -88,6 +90,35 @@ function updateClock() {
   }
 }
 
+// Load last race data for testing
+async function loadHistory() {
+  try {
+    const res = await $fetch<any>('/api/live/history')
+    if (res.type === 'history' && res.data) {
+      isHistory.value = true
+      historyMessage.value = res.message || 'Last race data'
+      const d = res.data
+      if (d.sessionInfo) sessionInfo.value = d.sessionInfo
+      if (d.trackStatus) trackStatus.value = d.trackStatus
+      if (d.weatherData) weatherData.value = d.weatherData
+      if (d.lapCount) lapCount.value = d.lapCount
+      if (d.timingData) timingData.value = d.timingData
+      if (d.raceControlMessages) raceControlMessages.value = d.raceControlMessages
+      if (d.driverList) driverList.value = d.driverList
+      if (d.extrapolatedClock) extrapolatedClock.value = d.extrapolatedClock
+      if (d.sessionStatus) sessionStatus.value = d.sessionStatus
+      if (d.sessionData) sessionData.value = d.sessionData
+      if (d.timingStats) timingStats.value = d.timingStats
+      if (d.timingAppData) timingAppData.value = d.timingAppData
+      if (d.championshipPrediction) championshipPrediction.value = d.championshipPrediction
+      connected.value = true
+      noSession.value = false
+    }
+  } catch (error) {
+    console.error('Error loading history:', error)
+  }
+}
+
 // SSE
 let eventSource: EventSource | null = null
 function connect() {
@@ -95,8 +126,8 @@ function connect() {
   eventSource.onmessage = (event) => {
     try {
       const msg = JSON.parse(event.data)
-      if (msg.type === 'no-session') { noSession.value = true; connected.value = false; return }
-      noSession.value = false; connected.value = true
+      if (msg.type === 'no-session') { noSession.value = true; connected.value = false; isHistory.value = false; return }
+      noSession.value = false; connected.value = true; isHistory.value = false
       const d = msg.data
       if (d.sessionInfo) sessionInfo.value = d.sessionInfo
       if (d.trackStatus) trackStatus.value = d.trackStatus
@@ -125,8 +156,11 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
     <!-- Header bar -->
     <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
       <div class="flex items-center gap-3">
-        <h1 class="text-lg font-bold text-[#f0f0f0]">Live Timing</h1>
-        <LiveTrackStatusBanner v-if="trackStatus?.Status" :status="trackStatus.Status" />
+        <h1 class="text-lg font-bold text-[#f0f0f0]">{{ isHistory ? 'Last Race' : 'Live Timing' }}</h1>
+        <span v-if="isHistory" class="text-xs px-2 py-1 rounded bg-[#ffc906]/10 text-[#ffc906]">
+          {{ historyMessage }}
+        </span>
+        <LiveTrackStatusBanner v-if="trackStatus?.Status && !isHistory" :status="trackStatus.Status" />
       </div>
 
       <div class="flex items-center gap-4">
@@ -147,23 +181,29 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
           <span v-if="weatherData.Rainfall === '1'" class="text-blue-400">RAIN</span>
         </div>
         <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full" :class="connected ? 'bg-[#00d25b] animate-pulse' : 'bg-[#e10600]'" />
-          <span class="text-[10px] font-bold tracking-wider" :class="connected ? 'text-[#00d25b]' : 'text-[#444]'">
-            {{ connected ? 'LIVE' : 'OFF' }}
+          <span class="w-2 h-2 rounded-full" :class="connected ? (isHistory ? 'bg-[#ffc906]' : 'bg-[#00d25b] animate-pulse') : 'bg-[#e10600]'" />
+          <span class="text-[10px] font-bold tracking-wider" :class="connected ? (isHistory ? 'text-[#ffc906]' : 'text-[#00d25b]') : 'text-[#444]'">
+            {{ connected ? (isHistory ? 'LAST RACE' : 'LIVE') : 'OFF' }}
           </span>
         </div>
       </div>
     </div>
 
     <!-- No session -->
-    <div v-if="noSession" class="text-center py-24">
+    <div v-if="noSession && !isHistory" class="text-center py-24">
       <div class="w-16 h-16 rounded-full bg-[#0f0f0f] border border-[#1f1f1f] flex items-center justify-center mx-auto mb-4">
         <UIcon name="i-lucide-radio" class="w-6 h-6 text-[#444]" />
       </div>
       <h2 class="text-base font-bold text-[#8a8a8a] mb-1">No hay sesion activa</h2>
-      <p class="text-xs text-[#444] max-w-sm mx-auto">
+      <p class="text-xs text-[#444] max-w-sm mx-auto mb-6">
         Se conecta automaticamente cuando hay Practice, Qualifying o Carrera.
       </p>
+      <button
+        @click="loadHistory"
+        class="px-4 py-2 rounded-lg bg-[#0f0f0f] border border-[#1f1f1f] text-xs font-semibold text-[#f0f0f0] hover:bg-[#141414] transition-colors"
+      >
+        Ver última carrera
+      </button>
     </div>
 
     <!-- Live content -->
