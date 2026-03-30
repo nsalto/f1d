@@ -43,6 +43,12 @@ export default defineNitroPlugin(async () => {
       } catch (e) {
         console.log('[scheduler] OpenF1 sessions sync skipped (may be live)')
       }
+      // Sync completed race results after calendar is populated
+      try {
+        await syncAllCompletedRaces(season)
+      } catch (e) {
+        console.log('[scheduler] Race results sync failed:', e)
+      }
       console.log('[scheduler] Initial sync complete')
     }
   } catch (e) {
