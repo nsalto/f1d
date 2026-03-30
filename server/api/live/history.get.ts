@@ -88,6 +88,7 @@ export default defineEventHandler(async () => {
           BroadcastName: `${driver2026.givenName} ${driver2026.familyName}`,
           FullName: `${driver2026.givenName} ${driver2026.familyName}`,
           TeamName: driver2026.team,
+          TeamId: driver2026.teamId, // Add teamId for logo resolution
           TeamColour: teamColor.substring(1) // Remove # for API format (API expects "FF0000" not "#FF0000")
         }
       }

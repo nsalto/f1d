@@ -31,7 +31,8 @@ const sortedDrivers = computed(() => {
       const teamNameClean = cleanTeamName(driver.TeamName)
 
       // Use driver number to get the correct teamId from mapping
-      const teamId = getTeamIdByDriverNumber(num) || getTeamIdByName(teamNameClean) || ''
+      // First try driver.TeamId (from history), then getTeamIdByDriverNumber, then getTeamIdByName
+      const teamId = driver.TeamId || getTeamIdByDriverNumber(num) || getTeamIdByName(teamNameClean) || ''
 
       // Format broadcast name properly (handles "ARVID_LINDBLAD" -> "Arvid Lindblad")
       const formatName = (name?: string) => {
