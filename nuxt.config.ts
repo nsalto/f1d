@@ -50,6 +50,20 @@ export default defineNuxtConfig({
         'fetch-cookie',
         'node-fetch'
       ]
+    },
+    // Ship SQL migrations next to the server entry (Railway cwd may omit repo-root drizzle/)
+    hooks: {
+      compiled: async (nitro) => {
+        const { cpSync, existsSync } = await import('node:fs')
+        const { join, resolve } = await import('node:path')
+        const src = resolve(nitro.options.rootDir, 'drizzle')
+        const dest = join(nitro.options.output.serverDir, 'drizzle')
+        if (existsSync(src)) {
+          cpSync(src, dest, { recursive: true })
+        } else {
+          console.warn('[f1-dashboard] drizzle/ not found at build time; commit migrations or tables will be missing in prod')
+        }
+      }
     }
   },
 
