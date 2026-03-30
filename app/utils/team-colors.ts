@@ -14,7 +14,6 @@ export const TEAM_COLORS: Record<string, string> = {
 
   // Aliases / Fallbacks
   'Red Bull Racing': '#E30118',
-  'RB': '#FFFFFF',
   'Sauber': '#E5001C',
   'Kick Sauber': '#E5001C',
 
