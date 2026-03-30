@@ -260,24 +260,13 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
 
       <!-- Sidebar -->
       <div class="space-y-4">
-        <!-- Circuito / sesión -->
-        <div
-          v-if="sessionInfo?.Meeting"
-          class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4 space-y-2"
-        >
-          <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-1">Sesión</h3>
-          <p v-if="sessionInfo.Meeting.Circuit?.ShortName" class="text-sm font-semibold text-[#f0f0f0]">
-            {{ sessionInfo.Meeting.Circuit.ShortName }}
-          </p>
-          <p v-if="sessionInfo.Meeting.Location || sessionInfo.Meeting.Country?.Name" class="text-[11px] text-[#8a8a8a]">
-            <span v-if="sessionInfo.Meeting.Location">{{ sessionInfo.Meeting.Location }}</span>
-            <span v-if="sessionInfo.Meeting.Location && sessionInfo.Meeting.Country?.Name"> · </span>
-            <span v-if="sessionInfo.Meeting.Country?.Name">{{ sessionInfo.Meeting.Country.Name }}</span>
-          </p>
-          <p v-if="sessionInfo.Type" class="text-[10px] text-[#5a5a5a] uppercase tracking-wide">
-            {{ sessionInfo.Type }}
-          </p>
-        </div>
+        <!-- Circuit display -->
+        <CircuitDisplay
+          v-if="sessionInfo?.Meeting?.Circuit?.ShortName"
+          :circuit-name="sessionInfo.Meeting.Circuit.ShortName"
+          :country="sessionInfo.Meeting.Country?.Name"
+          show-map
+        />
 
         <!-- Clima (detalle) -->
         <div v-if="weatherData" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
