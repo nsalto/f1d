@@ -1,6 +1,6 @@
 import { useDB, schema } from '../../database'
 import { desc, sql } from 'drizzle-orm'
-import { DRIVERS_2026 } from '../../utils/drivers-2026'
+import { DRIVERS_2026, getTeamIdByName } from '../../utils/drivers-2026'
 import { getTeamColor } from '../../utils/team-colors'
 
 // GET /api/live/history - Get the last race data for development/testing
