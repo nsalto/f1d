@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getTeamColor } from '~/utils/team-colors'
 
-defineProps<{
+const props = defineProps<{
   position?: number | string
   number?: string
   given: string

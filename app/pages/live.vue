@@ -80,6 +80,12 @@ const timingAppDataRows = computed(() => primitiveEntries(timingAppData.value, 1
 
 const championshipRows = computed(() => primitiveEntries(championshipPrediction.value, 8))
 
+// Normalize circuit name for SVG path
+function normalizeCircuitName(name: string | undefined): string {
+  if (!name) return ''
+  return name.toLowerCase().replace(/\s+/g, '-')
+}
+
 // Clock
 const clockDisplay = ref('')
 let clockInterval: ReturnType<typeof setInterval>
@@ -275,7 +281,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
             </div>
             <div class="w-full bg-[#000] rounded-lg p-2 flex items-center justify-center">
               <img
-                :src="`/tracks/svg/${sessionInfo.Meeting.Circuit.ShortName.toLowerCase().replace(/\\s+/g, '-')}.svg`"
+                :src="`/tracks/svg/${normalizeCircuitName(sessionInfo.Meeting.Circuit.ShortName)}.svg`"
                 :alt="sessionInfo.Meeting.Circuit.ShortName"
                 class="w-24 h-24 object-contain"
               />
