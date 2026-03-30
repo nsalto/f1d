@@ -45,8 +45,15 @@ export function getTeamIdByDriverNumber(driverNumber: string | number): string {
 
 export function getTeamIdByName(teamName: string | undefined): string {
   if (!teamName) return ''
-  // Clean team name (remove " F1 Team" suffix and " Racing")
+
+  // Special case for RB (Red Bull shorthand)
+  if (teamName.toLowerCase() === 'rb' || teamName.toLowerCase() === 'red bull racing') {
+    return 'red-bull'
+  }
+
+  // Clean team name (remove "Oracle", " F1 Team" suffix and " Racing")
   const cleanName = teamName
+    .replace(/^oracle\s+/i, '')
     .replace(/\s+F1\s+Team\s*$/i, '')
     .replace(/\s+Racing\s*$/i, '')
     .trim()
@@ -57,6 +64,10 @@ export function getTeamIdByName(teamName: string | undefined): string {
 
   // Try partial match (in case API returns variations)
   team = TEAMS_2026.find(t => cleanName.toLowerCase().includes(t.name.toLowerCase()))
+  if (team) return team.id
+
+  // Last resort: check if the input contains team name
+  team = TEAMS_2026.find(t => teamName.toLowerCase().includes(t.name.toLowerCase()))
   return team?.id || ''
 }
 
