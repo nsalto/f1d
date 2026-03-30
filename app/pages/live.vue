@@ -260,13 +260,20 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
 
       <!-- Sidebar -->
       <div class="space-y-4">
-        <!-- Circuit display -->
-        <CircuitDisplay
-          v-if="sessionInfo?.Meeting?.Circuit?.ShortName"
-          :circuit-name="sessionInfo.Meeting.Circuit.ShortName"
-          :country="sessionInfo.Meeting.Country?.Name"
-          show-map
-        />
+        <!-- Circuit map (compact) -->
+        <div v-if="sessionInfo?.Meeting?.Circuit?.ShortName" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-3">
+          <div class="flex flex-col items-center">
+            <p class="text-[10px] font-semibold text-[#444] uppercase tracking-wider mb-2">{{ sessionInfo.Meeting.Circuit.ShortName }}</p>
+            <img
+              :src="`/tracks/svg/${sessionInfo.Meeting.Circuit.ShortName.toLowerCase().replace(/\\s+/g, '-')}.svg`"
+              :alt="sessionInfo.Meeting.Circuit.ShortName"
+              class="w-20 h-20 object-contain mb-1"
+            />
+            <p v-if="sessionInfo.Meeting.Country?.Name" class="text-[9px] text-[#8a8a8a]">
+              {{ sessionInfo.Meeting.Country.Name }}
+            </p>
+          </div>
+        </div>
 
         <!-- Clima (detalle) -->
         <div v-if="weatherData" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
