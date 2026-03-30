@@ -69,18 +69,26 @@ export default defineEventHandler(async () => {
 
     // Build driverList with correct team info from DRIVERS_2026
     const driverList: Record<string, any> = {}
-    const driverMap = new Map(DRIVERS_2026.map(d => [d.number, d]))
 
     for (const r of results) {
-      const driverNum = r.driverId || ''
-      const driver2026 = driverMap.get(driverNum)
+      // Map by driver number from the result's implicit driver info
+      // Find driver in DRIVERS_2026 by name match
+      const driver2026 = DRIVERS_2026.find(d =>
+        d.givenName.toLowerCase() === (r.givenName || '').toLowerCase() &&
+        d.familyName.toLowerCase() === (r.familyName || '').toLowerCase()
+      )
+
       if (driver2026) {
+        // Use driver number as the key (matches live timing)
+        const driverNum = driver2026.number
+        const teamColor = getTeamColor(driver2026.team)
+
         driverList[driverNum] = {
           Tla: driver2026.nameAcronym,
           BroadcastName: `${driver2026.givenName} ${driver2026.familyName}`,
           FullName: `${driver2026.givenName} ${driver2026.familyName}`,
           TeamName: driver2026.team,
-          TeamColour: getTeamColor(driver2026.team).substring(1) // Remove # for API format
+          TeamColour: teamColor.substring(1) // Remove # for API format (API expects "FF0000" not "#FF0000")
         }
       }
     }
@@ -89,10 +97,20 @@ export default defineEventHandler(async () => {
     const timingData = {
       Lines: Object.fromEntries(
         results.map(r => {
-          const driverNum = parseInt(r.driverId || '0')
-          const driver2026 = driverMap.get(r.driverId || '')
+          // Find driver number from DRIVERS_2026 by name match
+          const driver2026 = DRIVERS_2026.find(d =>
+            d.givenName.toLowerCase() === (r.givenName || '').toLowerCase() &&
+            d.familyName.toLowerCase() === (r.familyName || '').toLowerCase()
+          )
+
+          if (!driver2026) {
+            return [] // Skip if not found
+          }
+
+          const driverNum = parseInt(driver2026.number) || 0
+
           return [
-            r.driverId || r.givenName,
+            driver2026.number, // Use driver number as key (matches live timing)
             {
               Position: r.position,
               GapToLeader: r.grid === 1 ? '0.000' : r.milliseconds ? `+${(r.milliseconds / 1000).toFixed(3)}` : '-',
@@ -107,7 +125,7 @@ export default defineEventHandler(async () => {
               Sectors: []
             }
           ]
-        })
+        }).filter(entry => entry.length > 0) // Filter out skipped drivers
       )
     }
 

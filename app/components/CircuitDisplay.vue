@@ -7,7 +7,30 @@ const props = defineProps<{
 
 const circuitId = computed(() => {
   if (!props.circuitName) return ''
-  return props.circuitName.toLowerCase().replace(/\s+/g, '-')
+
+  // Map full circuit names to SVG file names
+  const circuitMap: Record<string, string> = {
+    'bahrain international circuit': 'bahrain',
+    'jeddah corniche circuit': 'jeddah',
+    'miami international autodrome': 'miami',
+    'circuit de monaco': 'monaco',
+    'circuit de barcelona-catalunya': 'barcelona',
+    'red bull ring': 'austria',
+    'silverstone circuit': 'silverstone',
+    'hungaroring': 'hungary',
+    'spa-francorchamps': 'spa',
+    'autodromo di monza': 'monza',
+    'marina bay street circuit': 'singapore',
+    'suzuka circuit': 'suzuka',
+    'lusail international circuit': 'qatar',
+    'circuit of the americas': 'austin',
+    'autodromo hermanos rodriguez': 'mexico-city',
+    'autodromo jose maria guizado': 'sao-paulo',
+    'yas marina circuit': 'abu-dhabi'
+  }
+
+  const normalized = props.circuitName.toLowerCase().trim()
+  return circuitMap[normalized] || normalized.replace(/\s+/g, '-')
 })
 </script>
 
