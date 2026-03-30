@@ -1,0 +1,75 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Surfaces */
+  --color-surface-base:   #080808;
+  --color-surface-raised: #0f0f0f;
+  --color-surface-overlay:#161616;
+  --color-surface-inset:  #0a0a0a;
+
+  /* Borders */
+  --color-border-default: #1f1f1f;
+  --color-border-subtle:  #141414;
+  --color-border-accent:  #2a2a2a;
+
+  /* Text */
+  --color-text-primary:   #f0f0f0;
+  --color-text-secondary: #8a8a8a;
+  --color-text-muted:     #444444;
+
+  /* F1 Brand */
+  --color-f1-red: #e10600;
+
+  /* Flags */
+  --color-flag-green:  #00d25b;
+  --color-flag-yellow: #ffc906;
+  --color-flag-red:    #e10600;
+
+  /* Sectors */
+  --color-sector-yellow: #ffc906;
+  --color-sector-green:  #00d25b;
+  --color-sector-purple: #9f00ff;
+
+  /* Tyres */
+  --color-tyre-soft:   #ff3333;
+  --color-tyre-medium: #ffc300;
+  --color-tyre-hard:   #e8e8e8;
+  --color-tyre-inter:  #47c340;
+  --color-tyre-wet:    #0072c6;
+}
+
+/* Timing monospace */
+.font-timing {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Data flash animations */
+@keyframes data-flash {
+  0%   { background-color: rgba(255, 201, 6, 0.15); }
+  100% { background-color: transparent; }
+}
+.data-updated { animation: data-flash 0.8s ease-out; }
+
+@keyframes pos-gain {
+  0%   { background-color: rgba(0, 210, 91, 0.15); }
+  100% { background-color: transparent; }
+}
+.pos-gained { animation: pos-gain 1.2s ease-out; }
+
+@keyframes pos-loss {
+  0%   { background-color: rgba(225, 6, 0, 0.15); }
+  100% { background-color: transparent; }
+}
+.pos-lost { animation: pos-loss 1.2s ease-out; }
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--color-surface-base); }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
