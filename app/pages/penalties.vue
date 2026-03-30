@@ -1,7 +1,21 @@
 <script setup lang="ts">
+import { DRIVERS_2026 } from '~/utils/drivers-2026'
+import { getTeamColor } from '~/utils/team-colors'
+
 definePageMeta({ layout: 'default' })
 
 const { data: penaltyData, refresh } = useFetch('/api/penalties')
+
+// Get driver TLA and team by driver number
+function getDriverInfo(driverNumber: string | number) {
+  const driver = DRIVERS_2026.find(d => d.number === String(driverNumber))
+  if (!driver) return null
+  return {
+    tla: driver.nameAcronym,
+    team: driver.team,
+    color: getTeamColor(driver.team)
+  }
+}
 
 // Auto refresh every 30 seconds
 let interval: ReturnType<typeof setInterval>
@@ -62,7 +76,15 @@ function getTag(msg: any): { label: string; color: string } | null {
                 :class="['text-[10px] font-bold px-2 py-0.5 rounded-full', getTag(msg)!.color]">
                 {{ getTag(msg)!.label }}
               </span>
-              <span v-if="msg.driver" class="font-timing text-[10px] text-[#444]">#{{ msg.driver }}</span>
+              <span v-if="msg.driver && getDriverInfo(msg.driver)"
+                class="font-timing text-[10px] font-bold px-2 py-0.5 rounded"
+                :style="{ color: getDriverInfo(msg.driver)!.color, backgroundColor: `${getDriverInfo(msg.driver)!.color}15` }">
+                {{ getDriverInfo(msg.driver)!.tla }}
+              </span>
+              <span v-else-if="msg.driver" class="font-timing text-[10px] text-[#444]">#{{ msg.driver }}</span>
+              <span v-if="msg.driver && getDriverInfo(msg.driver)" class="text-[10px] text-[#8a8a8a]">
+                {{ getDriverInfo(msg.driver)!.team }}
+              </span>
               <span v-if="msg.lap" class="text-[10px] text-[#2a2a2a]">Lap {{ msg.lap }}</span>
             </div>
             <p class="text-sm text-[#f0f0f0]">{{ msg.message }}</p>
