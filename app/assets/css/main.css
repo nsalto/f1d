@@ -103,6 +103,11 @@
 }
 .number-updated { animation: number-change 0.4s ease-out; }
 
+/* Circuit SVG styling — filter converts black strokes to F1 red on dark backgrounds */
+.circuit-svg {
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(320deg) brightness(0.9);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar       { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: var(--color-surface-base); }

@@ -342,8 +342,8 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
             </p>
           </div>
 
-          <!-- SVG grande, ocupa todo el ancho -->
-          <div class="relative w-full aspect-square flex items-center justify-center bg-[#050505] rounded-lg">
+          <!-- SVG grande con trazada fina -->
+          <div class="relative w-full aspect-square flex items-center justify-center bg-[#050505] rounded-lg overflow-hidden">
             <img
               :src="`/tracks/svg/${normalizeCircuitName(sessionInfo.Meeting.Circuit.ShortName)}.svg`"
               :alt="sessionInfo.Meeting.Circuit.ShortName"
@@ -469,9 +469,3 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
   </div>
 </template>
 
-<style scoped>
-/* Make SVG circuit visible: invert black stroke to red F1 color */
-.circuit-svg {
-  filter: invert(1) sepia(1) saturate(3) hue-rotate(320deg) brightness(0.9);
-}
-</style>

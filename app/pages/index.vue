@@ -87,75 +87,68 @@ function normalizeCircuitName(name: string | undefined): string {
           <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-6 mb-6 -mx-6"
                style="width: calc(100% + 3rem)" />
 
-          <!-- Layout: Columna vertical -->
-          <div class="flex flex-col gap-6">
-            <!-- Texto + info -->
-            <div>
-              <div class="flex items-center gap-2 text-[10px] text-[#444] uppercase tracking-widest mb-2">
-                <span>Next Race</span>
-                <span class="font-timing bg-[#141414] px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
-              </div>
-
-              <h2 class="text-3xl font-bold text-[#f0f0f0] tracking-tight mb-1">
-                {{ getCountryFlag(nextRace.country || '') }} {{ nextRace.raceName }}
-              </h2>
-              <p class="text-sm text-[#8a8a8a]">{{ nextRace.circuitName }}</p>
-              <p class="text-xs text-[#444]">{{ nextRace.locality }}, {{ nextRace.country }}</p>
-            </div>
-
-            <!-- Countdown -->
-            <div class="grid grid-cols-4 gap-3 max-w-sm">
-              <!-- Days -->
-              <div class="text-center">
-                <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
-                  {{ String(countdown.days).padStart(2, '0') }}
+          <!-- Layout: Info izquierda + Circuito derecha -->
+          <div class="flex items-stretch gap-6">
+            <!-- Texto + countdown -->
+            <div class="flex-1 min-w-0 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2 text-[10px] text-[#444] uppercase tracking-widest mb-2">
+                  <span>Next Race</span>
+                  <span class="font-timing bg-[#141414] px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
                 </div>
-                <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Days</div>
+
+                <h2 class="text-2xl font-bold text-[#f0f0f0] tracking-tight mb-1">
+                  {{ getCountryFlag(nextRace.country || '') }} {{ nextRace.raceName }}
+                </h2>
+                <p class="text-sm text-[#8a8a8a]">{{ nextRace.circuitName }}</p>
+                <p class="text-xs text-[#444]">{{ nextRace.locality }}, {{ nextRace.country }}</p>
               </div>
 
-              <!-- Hours -->
-              <div class="text-center">
-                <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
-                  {{ String(countdown.hours).padStart(2, '0') }}
-                </div>
-                <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Hrs</div>
-              </div>
-
-              <!-- Minutes -->
-              <div class="text-center">
-                <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
-                  {{ String(countdown.minutes).padStart(2, '0') }}
-                </div>
-                <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Min</div>
-              </div>
-
-              <!-- Seconds with transition -->
-              <div class="text-center">
-                <transition name="tick" mode="out-in">
-                  <div :key="countdown.seconds" class="font-timing text-3xl font-bold text-[#f0f0f0]">
-                    {{ String(countdown.seconds).padStart(2, '0') }}
+              <!-- Countdown -->
+              <div class="mt-4">
+                <div class="grid grid-cols-4 gap-3 max-w-xs">
+                  <div class="text-center">
+                    <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
+                      {{ String(countdown.days).padStart(2, '0') }}
+                    </div>
+                    <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Days</div>
                   </div>
-                </transition>
-                <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Secs</div>
+                  <div class="text-center">
+                    <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
+                      {{ String(countdown.hours).padStart(2, '0') }}
+                    </div>
+                    <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Hrs</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
+                      {{ String(countdown.minutes).padStart(2, '0') }}
+                    </div>
+                    <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Min</div>
+                  </div>
+                  <div class="text-center">
+                    <transition name="tick" mode="out-in">
+                      <div :key="countdown.seconds" class="font-timing text-2xl font-bold text-[#f0f0f0]">
+                        {{ String(countdown.seconds).padStart(2, '0') }}
+                      </div>
+                    </transition>
+                    <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Secs</div>
+                  </div>
+                </div>
+                <div class="mt-2 text-[10px] text-[#2a2a2a]">
+                  {{ new Date(nextRace.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) }}
+                </div>
               </div>
             </div>
 
-            <div class="text-[10px] text-[#2a2a2a]">
-              {{ new Date(nextRace.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) }}
-            </div>
-
-            <!-- Circuito grande debajo -->
-            <div class="flex flex-col items-center gap-3 pt-2 border-t border-[#1f1f1f]">
-              <div class="bg-[#0a0a0a] rounded-lg p-4 w-full flex items-center justify-center aspect-square max-h-[280px]">
+            <!-- Circuito a la derecha, proporcionado -->
+            <div class="shrink-0 w-[180px] flex flex-col items-center justify-center">
+              <div class="bg-[#0a0a0a] rounded-lg p-3 w-full aspect-square flex items-center justify-center">
                 <img
                   :src="`/tracks/svg/${normalizeCircuitName(nextRace.circuitName)}.svg`"
                   :alt="nextRace.circuitName"
                   class="w-full h-full object-contain circuit-svg"
                 />
               </div>
-              <p class="text-[10px] text-[#8a8a8a] uppercase tracking-wider">
-                {{ nextRace.country }}
-              </p>
             </div>
           </div>
         </div>
@@ -212,9 +205,3 @@ function normalizeCircuitName(name: string | undefined): string {
   </div>
 </template>
 
-<style scoped>
-/* Make SVG circuit visible: invert black stroke to red F1 color */
-.circuit-svg {
-  filter: invert(1) sepia(1) saturate(3) hue-rotate(320deg) brightness(0.9);
-}
-</style>

@@ -78,9 +78,3 @@ const circuitId = computed(() => {
   </div>
 </template>
 
-<style scoped>
-/* Make SVG circuit visible: invert black stroke to red F1 color */
-.circuit-svg {
-  filter: invert(1) sepia(1) saturate(3) hue-rotate(320deg) brightness(0.9);
-}
-</style>

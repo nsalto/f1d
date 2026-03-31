@@ -34,6 +34,20 @@ export const TEAM_COLORS: Record<string, string> = {
 
 export function getTeamColor(team: string | undefined): string {
   if (!team) return '#666666'
-  const normalized = team.toLowerCase().replace(/\s+/g, '_')
-  return TEAM_COLORS[team] || TEAM_COLORS[normalized] || '#666666'
+
+  // Try exact match first
+  if (TEAM_COLORS[team]) return TEAM_COLORS[team]
+
+  // Clean the name: remove "F1 Team", "Racing", "Oracle" prefixes/suffixes
+  const cleaned = team
+    .replace(/^oracle\s+/i, '')
+    .replace(/\s+f1\s+team\s*$/i, '')
+    .replace(/\s+racing\s*$/i, '')
+    .trim()
+
+  if (TEAM_COLORS[cleaned]) return TEAM_COLORS[cleaned]
+
+  // Lowercase underscore fallback
+  const normalized = cleaned.toLowerCase().replace(/\s+/g, '_')
+  return TEAM_COLORS[normalized] || '#666666'
 }
