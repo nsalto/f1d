@@ -3,7 +3,17 @@ const props = defineProps<{
   circuitName?: string
   country?: string
   showMap?: boolean
+  size?: 'sm' | 'md' | 'lg'
 }>()
+
+const sizeClasses = computed(() => {
+  const sizes = {
+    sm: { container: 'min-h-[80px]', img: 'max-w-[72px] max-h-[72px]' },
+    md: { container: 'min-h-[140px]', img: 'max-w-[120px] max-h-[120px]' },
+    lg: { container: 'min-h-[260px]', img: 'max-w-[240px] max-h-[240px]' },
+  }
+  return sizes[props.size || 'md']
+})
 
 const circuitId = computed(() => {
   if (!props.circuitName) return ''
@@ -47,11 +57,12 @@ const circuitId = computed(() => {
     <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Circuito</h3>
 
     <!-- Circuit map/SVG -->
-    <div v-if="showMap && circuitId" class="mb-4 bg-[#0a0a0a] rounded-lg p-3 flex items-center justify-center min-h-[140px]">
+    <div v-if="showMap && circuitId" class="mb-4 bg-[#0a0a0a] rounded-lg p-3 flex items-center justify-center" :class="sizeClasses.container">
       <img
         :src="`/tracks/svg/${circuitId}.svg`"
         :alt="circuitName"
-        class="w-full h-full max-w-[120px] max-h-[120px] object-contain"
+        class="w-full h-full object-contain circuit-svg"
+        :class="sizeClasses.img"
       />
     </div>
 
@@ -66,3 +77,10 @@ const circuitId = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Make SVG circuit visible: invert black stroke to red F1 color */
+.circuit-svg {
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(320deg) brightness(0.9);
+}
+</style>

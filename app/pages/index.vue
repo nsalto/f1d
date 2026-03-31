@@ -51,19 +51,23 @@ onUnmounted(() => clearInterval(interval))
           <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-6 mb-6 -mx-6"
                style="width: calc(100% + 3rem)" />
 
-          <div class="flex items-center gap-2 text-[10px] text-[#444] uppercase tracking-widest mb-2">
-            <span>Next Race</span>
-            <span class="font-timing bg-[#141414] px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
-          </div>
+          <!-- Layout: Texto a la izquierda, circuito a la derecha -->
+          <div class="flex items-start justify-between gap-6">
+            <!-- Texto + countdown -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 text-[10px] text-[#444] uppercase tracking-widest mb-2">
+                <span>Next Race</span>
+                <span class="font-timing bg-[#141414] px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
+              </div>
 
-          <h2 class="text-3xl font-bold text-[#f0f0f0] tracking-tight mb-1">
-            {{ getCountryFlag(nextRace.country || '') }} {{ nextRace.raceName }}
-          </h2>
-          <p class="text-sm text-[#8a8a8a]">{{ nextRace.circuitName }}</p>
-          <p class="text-xs text-[#444]">{{ nextRace.locality }}, {{ nextRace.country }}</p>
+              <h2 class="text-3xl font-bold text-[#f0f0f0] tracking-tight mb-1">
+                {{ getCountryFlag(nextRace.country || '') }} {{ nextRace.raceName }}
+              </h2>
+              <p class="text-sm text-[#8a8a8a]">{{ nextRace.circuitName }}</p>
+              <p class="text-xs text-[#444]">{{ nextRace.locality }}, {{ nextRace.country }}</p>
 
-          <!-- Countdown -->
-          <div class="grid grid-cols-4 gap-3 max-w-sm mt-6">
+              <!-- Countdown -->
+              <div class="grid grid-cols-4 gap-3 max-w-sm mt-6">
             <!-- Days -->
             <div class="text-center">
               <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
@@ -97,10 +101,26 @@ onUnmounted(() => clearInterval(interval))
               </transition>
               <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Secs</div>
             </div>
-          </div>
+              </div>
 
-          <div class="mt-4 text-[10px] text-[#2a2a2a]">
-            {{ new Date(nextRace.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) }}
+              <div class="mt-4 text-[10px] text-[#2a2a2a]">
+                {{ new Date(nextRace.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) }}
+              </div>
+            </div>
+
+            <!-- Circuito compacto a la derecha -->
+            <div class="shrink-0 flex flex-col items-center gap-2 w-[100px]">
+              <div class="bg-[#0a0a0a] rounded-lg p-2 w-full flex items-center justify-center h-[90px]">
+                <img
+                  :src="`/tracks/svg/${normalizeCircuitName(nextRace.circuitName)}.svg`"
+                  :alt="nextRace.circuitName"
+                  class="w-[74px] h-[74px] object-contain circuit-svg"
+                />
+              </div>
+              <p class="text-[9px] text-[#444] text-center uppercase tracking-wider leading-tight">
+                {{ nextRace.country }}
+              </p>
+            </div>
           </div>
         </div>
         <div v-else class="p-6 text-[#444] text-sm">Loading data...</div>
@@ -153,14 +173,12 @@ onUnmounted(() => clearInterval(interval))
         </div>
       </div>
     </div>
-
-    <!-- Next Circuit Preview -->
-    <CircuitDisplay
-      v-if="nextRace"
-      :circuit-name="nextRace.circuitName"
-      :country="nextRace.country"
-      :show-map="true"
-      class="mt-4"
-    />
   </div>
 </template>
+
+<style scoped>
+/* Make SVG circuit visible: invert black stroke to red F1 color */
+.circuit-svg {
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(320deg) brightness(0.9);
+}
+</style>

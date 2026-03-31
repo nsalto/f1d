@@ -329,22 +329,26 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
 
       <!-- Sidebar -->
       <div class="space-y-4">
-        <!-- Circuit map (prominent) -->
-        <div v-if="sessionInfo?.Meeting?.Circuit?.ShortName" class="rounded-xl bg-gradient-to-br from-[#0f0f0f] to-[#0a0a0a] border border-[#1f1f1f] p-4">
-          <div class="flex flex-col items-center gap-3">
-            <div class="text-center">
-              <p class="text-sm font-bold text-[#f0f0f0]">{{ sessionInfo.Meeting.Circuit.ShortName }}</p>
-              <p v-if="sessionInfo.Meeting.Country?.Name" class="text-[10px] text-[#8a8a8a]">
-                {{ sessionInfo.Meeting.Country.Name }}
-              </p>
-            </div>
-            <div class="w-full bg-[#000] rounded-lg p-2 flex items-center justify-center">
-              <img
-                :src="`/tracks/svg/${normalizeCircuitName(sessionInfo.Meeting.Circuit.ShortName)}.svg`"
-                :alt="sessionInfo.Meeting.Circuit.ShortName"
-                class="w-24 h-24 object-contain"
-              />
-            </div>
+        <!-- Circuit map (prominent - full width) -->
+        <div v-if="sessionInfo?.Meeting?.Circuit?.ShortName" class="rounded-xl bg-[#0a0a0a] border border-[#1f1f1f] p-4 overflow-hidden">
+          <!-- Accent line rojo -->
+          <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-4 mb-4 -mx-4" style="width: calc(100% + 2rem)" />
+
+          <!-- Nombre del circuito -->
+          <div class="mb-3">
+            <p class="text-sm font-bold text-[#f0f0f0]">{{ sessionInfo.Meeting.Circuit.ShortName }}</p>
+            <p v-if="sessionInfo.Meeting.Country?.Name" class="text-[10px] text-[#8a8a8a]">
+              {{ sessionInfo.Meeting.Country.Name }}
+            </p>
+          </div>
+
+          <!-- SVG grande, ocupa todo el ancho -->
+          <div class="relative w-full aspect-square flex items-center justify-center bg-[#050505] rounded-lg">
+            <img
+              :src="`/tracks/svg/${normalizeCircuitName(sessionInfo.Meeting.Circuit.ShortName)}.svg`"
+              :alt="sessionInfo.Meeting.Circuit.ShortName"
+              class="w-full h-full object-contain circuit-svg"
+            />
           </div>
         </div>
 
@@ -464,3 +468,10 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Make SVG circuit visible: invert black stroke to red F1 color */
+.circuit-svg {
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(320deg) brightness(0.9);
+}
+</style>
