@@ -51,28 +51,57 @@
 
 /* Data flash animations */
 @keyframes data-flash {
-  0%   { background-color: rgba(255, 201, 6, 0.15); }
+  0%   { background-color: rgba(255, 201, 6, 0.2); }
+  50%  { background-color: rgba(255, 201, 6, 0.1); }
   100% { background-color: transparent; }
 }
-.data-updated { animation: data-flash 0.8s ease-out; }
+.data-updated { animation: data-flash 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
 
 @keyframes pos-gain {
-  0%   { background-color: rgba(0, 210, 91, 0.15); }
+  0%   { background-color: rgba(0, 210, 91, 0.25); box-shadow: inset 0 0 8px rgba(0, 210, 91, 0.3); }
+  50%  { background-color: rgba(0, 210, 91, 0.1); }
   100% { background-color: transparent; }
 }
-.pos-gained { animation: pos-gain 1.2s ease-out; }
+.pos-gained { animation: pos-gain 1.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
 @keyframes pos-loss {
+  0%   { background-color: rgba(225, 6, 0, 0.25); box-shadow: inset 0 0 8px rgba(225, 6, 0, 0.3); }
+  50%  { background-color: rgba(225, 6, 0, 0.1); }
+  100% { background-color: transparent; }
+}
+.pos-lost { animation: pos-loss 1.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* Pulse for live indicator */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+/* Highlight for updated data */
+@keyframes highlight-pulse {
   0%   { background-color: rgba(225, 6, 0, 0.15); }
   100% { background-color: transparent; }
 }
-.pos-lost { animation: pos-loss 1.2s ease-out; }
+.data-highlight { animation: highlight-pulse 1.2s ease-out; }
 
 /* Countdown digit tick animation */
 .tick-enter-active { transition: transform 0.15s ease-out, opacity 0.15s; }
 .tick-leave-active { transition: transform 0.1s ease-in, opacity 0.1s; }
 .tick-enter-from   { transform: translateY(-6px); opacity: 0; }
 .tick-leave-to     { transform: translateY(6px); opacity: 0; }
+
+/* Row transitions */
+.row-update-enter-active,
+.row-update-leave-active { transition: all 0.3s ease; }
+.row-update-enter-from { opacity: 0; transform: translateX(-8px); }
+.row-update-leave-to { opacity: 0; transform: translateX(8px); }
+
+/* Smooth number transitions */
+@keyframes number-change {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+.number-updated { animation: number-change 0.4s ease-out; }
 
 /* Scrollbar */
 ::-webkit-scrollbar       { width: 4px; height: 4px; }

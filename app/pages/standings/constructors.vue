@@ -35,9 +35,9 @@ function getTeamIdForConstructor(constructorName: string): string {
 
     <div v-if="standings?.length" class="space-y-2">
       <div v-for="c in standings" :key="c.constructorId"
-        class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4 flex items-center gap-4 hover:border-[#2a2a2a] transition-colors">
+        class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4 flex items-center gap-4 hover:bg-[#141414] hover:border-[#2a2a2a] transition-all duration-200 cursor-pointer">
         <LivePositionBadge :position="c.position" size="lg" />
-        <div class="w-1 h-10 rounded-full" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
+        <div class="w-1 h-10 rounded-full transition-all" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
         <img
           :src="`/teams/logos/${getTeamIdForConstructor(c.constructorName)}.webp`"
           :alt="c.constructorName"
@@ -45,7 +45,7 @@ function getTeamIdForConstructor(constructorName: string): string {
         />
         <div class="flex-1">
           <h3 class="text-base font-bold text-[#f0f0f0]">{{ c.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</h3>
-          <p class="text-[10px] text-[#444]">{{ c.wins }} wins</p>
+          <p class="text-[10px] text-[#8a8a8a]">{{ c.wins }} wins</p>
         </div>
         <div class="flex items-center gap-3 w-64">
           <div class="flex-1 h-2 bg-[#0a0a0a] rounded-full overflow-hidden">

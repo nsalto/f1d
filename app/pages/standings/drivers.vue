@@ -47,7 +47,7 @@ function getTeamIdForConstructor(constructorName: string): string {
         </thead>
         <tbody>
           <tr v-for="d in standings" :key="d.driverId"
-            class="border-b border-[#0f0f0f] hover:bg-[#0f0f0f] transition-colors">
+            class="border-b border-[#0f0f0f] hover:bg-[#141414] hover:border-[#1f1f1f] transition-all duration-200 cursor-pointer">
             <td class="px-3 py-2">
               <LivePositionBadge :position="d.position" size="sm" />
             </td>
@@ -61,7 +61,7 @@ function getTeamIdForConstructor(constructorName: string): string {
             </td>
             <td class="px-3 py-2">
               <div class="flex items-center gap-2">
-                <span class="w-[3px] h-4 rounded-full" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
+                <span class="w-[3px] h-4 rounded-full transition-all" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
                 <img
                   :src="`/teams/logos/${getTeamIdForConstructor(d.constructorName || '')}.webp`"
                   :alt="d.constructorName"
@@ -70,11 +70,11 @@ function getTeamIdForConstructor(constructorName: string): string {
                 <span class="text-xs text-[#8a8a8a]">{{ d.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</span>
               </div>
             </td>
-            <td class="px-3 py-2 text-center font-timing text-xs text-[#444]">{{ d.wins }}</td>
+            <td class="px-3 py-2 text-center font-timing text-xs text-[#8a8a8a]">{{ d.wins }}</td>
             <td class="px-3 py-2">
               <div class="flex items-center gap-2 justify-end">
                 <div class="w-24 h-1.5 bg-[#0f0f0f] rounded-full overflow-hidden">
-                  <div class="h-full rounded-full transition-all"
+                  <div class="h-full rounded-full transition-all duration-700"
                     :style="{ width: `${(d.points/maxPoints)*100}%`, backgroundColor: getTeamColor(d.constructorName || '') }" />
                 </div>
                 <span class="font-timing font-bold text-xs text-[#f0f0f0] w-8 text-right">{{ d.points }}</span>

@@ -170,17 +170,17 @@ function normalizeCircuitName(name: string | undefined): string {
             <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Drivers Championship</span>
             <NuxtLink to="/standings/drivers" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
-          <div v-if="topDrivers.length" class="space-y-2 max-h-96 overflow-y-auto">
-            <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] transition-colors">
-              <span class="font-timing w-5 text-right text-[#444]">{{ d.position }}</span>
-              <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
+          <div v-if="topDrivers.length" class="space-y-1 max-h-96 overflow-y-auto">
+            <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] hover:border-l-2 hover:border-l-[#e10600] transition-all duration-150 cursor-pointer">
+              <span class="font-timing w-5 text-right text-[#8a8a8a]">{{ d.position }}</span>
+              <span class="w-1 h-5 rounded-full transition-all" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
               <img
                 :src="`/teams/logos/${getTeamLogo(d.constructorName || '')}.webp`"
                 :alt="d.constructorName"
                 class="w-4 h-4 object-contain"
               />
               <span class="flex-1 text-[#f0f0f0] font-medium truncate">{{ d.familyName }}</span>
-              <span class="font-timing text-[#8a8a8a] ml-1">{{ d.points }}</span>
+              <span class="font-timing text-[#f0f0f0] ml-1 font-semibold">{{ d.points }}</span>
             </div>
           </div>
           <p v-else class="text-[#2a2a2a] text-xs">Loading...</p>
@@ -192,17 +192,17 @@ function normalizeCircuitName(name: string | undefined): string {
             <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Constructors</span>
             <NuxtLink to="/standings/constructors" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
-          <div v-if="topConstructors.length" class="space-y-2 max-h-96 overflow-y-auto">
-            <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] transition-colors">
-              <span class="font-timing w-5 text-right text-[#444]">{{ c.position }}</span>
-              <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
+          <div v-if="topConstructors.length" class="space-y-1 max-h-96 overflow-y-auto">
+            <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] hover:border-l-2 hover:border-l-[#e10600] transition-all duration-150 cursor-pointer">
+              <span class="font-timing w-5 text-right text-[#8a8a8a]">{{ c.position }}</span>
+              <span class="w-1 h-5 rounded-full transition-all" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
               <img
                 :src="`/teams/logos/${getTeamLogo(c.constructorName)}.webp`"
                 :alt="c.constructorName"
                 class="w-4 h-4 object-contain"
               />
               <span class="flex-1 text-[#f0f0f0] font-medium truncate">{{ c.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</span>
-              <span class="font-timing text-[#8a8a8a] ml-1">{{ c.points }}</span>
+              <span class="font-timing text-[#f0f0f0] ml-1 font-semibold">{{ c.points }}</span>
             </div>
           </div>
           <p v-else class="text-[#2a2a2a] text-xs">Loading...</p>
