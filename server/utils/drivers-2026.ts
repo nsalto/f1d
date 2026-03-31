@@ -52,6 +52,7 @@ export function getTeamIdByName(teamName: string | undefined): string {
   const specialCases: Record<string, string> = {
     'rb': 'red-bull',
     'red bull': 'red-bull',
+    'red bull f1 team': 'red-bull',
     'red bull racing': 'red-bull',
     'oracle red bull racing': 'red-bull',
     'mclaren': 'mclaren',

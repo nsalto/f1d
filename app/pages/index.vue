@@ -87,10 +87,10 @@ function normalizeCircuitName(name: string | undefined): string {
           <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-6 mb-6 -mx-6"
                style="width: calc(100% + 3rem)" />
 
-          <!-- Layout: Texto a la izquierda, circuito a la derecha -->
-          <div class="flex items-start justify-between gap-6">
-            <!-- Texto + countdown -->
-            <div class="flex-1 min-w-0">
+          <!-- Layout: Columna vertical -->
+          <div class="flex flex-col gap-6">
+            <!-- Texto + info -->
+            <div>
               <div class="flex items-center gap-2 text-[10px] text-[#444] uppercase tracking-widest mb-2">
                 <span>Next Race</span>
                 <span class="font-timing bg-[#141414] px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
@@ -101,59 +101,59 @@ function normalizeCircuitName(name: string | undefined): string {
               </h2>
               <p class="text-sm text-[#8a8a8a]">{{ nextRace.circuitName }}</p>
               <p class="text-xs text-[#444]">{{ nextRace.locality }}, {{ nextRace.country }}</p>
-
-              <!-- Countdown -->
-              <div class="grid grid-cols-4 gap-3 max-w-sm mt-6">
-            <!-- Days -->
-            <div class="text-center">
-              <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
-                {{ String(countdown.days).padStart(2, '0') }}
-              </div>
-              <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Days</div>
             </div>
 
-            <!-- Hours -->
-            <div class="text-center">
-              <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
-                {{ String(countdown.hours).padStart(2, '0') }}
-              </div>
-              <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Hrs</div>
-            </div>
-
-            <!-- Minutes -->
-            <div class="text-center">
-              <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
-                {{ String(countdown.minutes).padStart(2, '0') }}
-              </div>
-              <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Min</div>
-            </div>
-
-            <!-- Seconds with transition -->
-            <div class="text-center">
-              <transition name="tick" mode="out-in">
-                <div :key="countdown.seconds" class="font-timing text-3xl font-bold text-[#f0f0f0]">
-                  {{ String(countdown.seconds).padStart(2, '0') }}
+            <!-- Countdown -->
+            <div class="grid grid-cols-4 gap-3 max-w-sm">
+              <!-- Days -->
+              <div class="text-center">
+                <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
+                  {{ String(countdown.days).padStart(2, '0') }}
                 </div>
-              </transition>
-              <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Secs</div>
-            </div>
+                <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Days</div>
               </div>
 
-              <div class="mt-4 text-[10px] text-[#2a2a2a]">
-                {{ new Date(nextRace.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) }}
+              <!-- Hours -->
+              <div class="text-center">
+                <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
+                  {{ String(countdown.hours).padStart(2, '0') }}
+                </div>
+                <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Hrs</div>
+              </div>
+
+              <!-- Minutes -->
+              <div class="text-center">
+                <div class="font-timing text-3xl font-bold text-[#f0f0f0]">
+                  {{ String(countdown.minutes).padStart(2, '0') }}
+                </div>
+                <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Min</div>
+              </div>
+
+              <!-- Seconds with transition -->
+              <div class="text-center">
+                <transition name="tick" mode="out-in">
+                  <div :key="countdown.seconds" class="font-timing text-3xl font-bold text-[#f0f0f0]">
+                    {{ String(countdown.seconds).padStart(2, '0') }}
+                  </div>
+                </transition>
+                <div class="text-[10px] text-[#444] uppercase tracking-wider mt-1">Secs</div>
               </div>
             </div>
 
-            <!-- Circuito compacto a la derecha -->
-            <div class="shrink-0 flex flex-col items-center gap-2 w-[100px]">
-              <div class="bg-[#0a0a0a] rounded-lg p-2 w-full flex items-center justify-center h-[90px]">
+            <div class="text-[10px] text-[#2a2a2a]">
+              {{ new Date(nextRace.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) }}
+            </div>
+
+            <!-- Circuito grande debajo -->
+            <div class="flex flex-col items-center gap-3 pt-2 border-t border-[#1f1f1f]">
+              <div class="bg-[#0a0a0a] rounded-lg p-4 w-full flex items-center justify-center aspect-square max-h-[280px]">
                 <img
                   :src="`/tracks/svg/${normalizeCircuitName(nextRace.circuitName)}.svg`"
                   :alt="nextRace.circuitName"
-                  class="w-[74px] h-[74px] object-contain circuit-svg"
+                  class="w-full h-full object-contain circuit-svg"
                 />
               </div>
-              <p class="text-[9px] text-[#444] text-center uppercase tracking-wider leading-tight">
+              <p class="text-[10px] text-[#8a8a8a] uppercase tracking-wider">
                 {{ nextRace.country }}
               </p>
             </div>
@@ -172,15 +172,15 @@ function normalizeCircuitName(name: string | undefined): string {
           </div>
           <div v-if="topDrivers.length" class="space-y-2 max-h-96 overflow-y-auto">
             <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] transition-colors">
-              <span class="font-timing w-4 text-right text-[#444]">{{ d.position }}</span>
+              <span class="font-timing w-5 text-right text-[#444]">{{ d.position }}</span>
               <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
               <img
                 :src="`/teams/logos/${getTeamLogo(d.constructorName || '')}.webp`"
                 :alt="d.constructorName"
                 class="w-4 h-4 object-contain"
               />
-              <span class="flex-1 text-[#f0f0f0] font-medium">{{ d.familyName }}</span>
-              <span class="font-timing text-[#8a8a8a]">{{ d.points }}</span>
+              <span class="flex-1 text-[#f0f0f0] font-medium truncate">{{ d.familyName }}</span>
+              <span class="font-timing text-[#8a8a8a] ml-1">{{ d.points }}</span>
             </div>
           </div>
           <p v-else class="text-[#2a2a2a] text-xs">Loading...</p>
@@ -194,15 +194,15 @@ function normalizeCircuitName(name: string | undefined): string {
           </div>
           <div v-if="topConstructors.length" class="space-y-2 max-h-96 overflow-y-auto">
             <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] transition-colors">
-              <span class="font-timing w-4 text-right text-[#444]">{{ c.position }}</span>
+              <span class="font-timing w-5 text-right text-[#444]">{{ c.position }}</span>
               <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
               <img
                 :src="`/teams/logos/${getTeamLogo(c.constructorName)}.webp`"
                 :alt="c.constructorName"
                 class="w-4 h-4 object-contain"
               />
-              <span class="flex-1 text-[#f0f0f0] font-medium">{{ c.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</span>
-              <span class="font-timing text-[#8a8a8a]">{{ c.points }}</span>
+              <span class="flex-1 text-[#f0f0f0] font-medium truncate">{{ c.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</span>
+              <span class="font-timing text-[#8a8a8a] ml-1">{{ c.points }}</span>
             </div>
           </div>
           <p v-else class="text-[#2a2a2a] text-xs">Loading...</p>
