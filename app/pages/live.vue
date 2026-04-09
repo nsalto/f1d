@@ -95,51 +95,6 @@ const timingAppDataRows = computed(() => primitiveEntries(timingAppData.value, 1
 
 const championshipRows = computed(() => primitiveEntries(championshipPrediction.value, 8))
 
-// Normalize circuit name for SVG path
-function normalizeCircuitName(name: string | undefined): string {
-  if (!name) return ''
-
-  // Map full circuit names to SVG file names
-  const circuitMap: Record<string, string> = {
-    'bahrain international circuit': 'bahrain',
-    'jeddah corniche circuit': 'jeddah',
-    'miami international autodrome': 'miami',
-    'circuit de monaco': 'monaco',
-    'circuit de barcelona-catalunya': 'barcelona',
-    'red bull ring': 'austria',
-    'silverstone circuit': 'silverstone',
-    'hungaroring': 'hungary',
-    'spa-francorchamps': 'spa',
-    'autodromo di monza': 'monza',
-    'marina bay street circuit': 'singapore',
-    'suzuka circuit': 'suzuka',
-    'lusail international circuit': 'qatar',
-    'circuit of the americas': 'austin',
-    'autodromo hermanos rodriguez': 'mexico-city',
-    'autodromo jose maria guizado': 'sao-paulo',
-    'yas marina circuit': 'abu-dhabi'
-  }
-
-  const normalized = name.toLowerCase().trim()
-
-  // Try exact match first
-  if (circuitMap[normalized]) {
-    return circuitMap[normalized]
-  }
-
-  // Try partial match (match first meaningful word)
-  const firstWord = normalized.split(/\s+/)[0]
-  const partial = Object.entries(circuitMap).find(([key]) =>
-    key.split(/\s+/)[0] === firstWord
-  )
-
-  if (partial) {
-    return partial[1]
-  }
-
-  // Fallback: use first word or normalize with dashes
-  return firstWord || normalized.replace(/\s+/g, '-')
-}
 
 // Clock
 const clockDisplay = ref('')
@@ -252,8 +207,8 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
           <span v-if="weatherData.WindSpeed">Wind {{ weatherData.WindSpeed }}</span>
           <span v-if="weatherData.Rainfall === '1'" class="text-blue-400">RAIN</span>
         </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full" :class="connected ? (isHistory ? 'bg-[#ffc906]' : 'bg-[#00d25b] animate-pulse') : 'bg-[#e10600]'" />
+        <div class="flex items-center gap-1.5" role="status" :aria-label="`Connection: ${connected ? (isHistory ? 'Last race data' : 'Live') : 'Disconnected'}`">
+          <span class="w-2 h-2 rounded-full" :class="connected ? (isHistory ? 'bg-[#ffc906]' : 'bg-[#00d25b] animate-pulse') : 'bg-[#e10600]'" aria-hidden="true" />
           <span class="text-[10px] font-bold tracking-wider" :class="connected ? (isHistory ? 'text-[#ffc906]' : 'text-[#00d25b]') : 'text-[#444]'">
             {{ connected ? (isHistory ? 'LAST RACE' : 'LIVE') : 'OFF' }}
           </span>
@@ -264,7 +219,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
     <!-- No session -->
     <div v-if="noSession && !isHistory" class="text-center py-24">
       <div class="w-16 h-16 rounded-full bg-[#0f0f0f] border border-[#1f1f1f] flex items-center justify-center mx-auto mb-4">
-        <UIcon name="i-lucide-radio" class="w-6 h-6 text-[#444]" />
+        <UIcon name="i-lucide-radio" class="w-6 h-6 text-[#444]" aria-hidden="true" />
       </div>
       <h2 class="text-base font-bold text-[#8a8a8a] mb-1">No active session</h2>
       <p class="text-xs text-[#444] max-w-sm mx-auto mb-6">
@@ -272,7 +227,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
       </p>
       <button
         @click="loadHistory"
-        class="px-4 py-2 rounded-lg bg-[#0f0f0f] border border-[#1f1f1f] text-xs font-semibold text-[#f0f0f0] hover:bg-[#141414] transition-colors"
+        class="px-4 py-2 rounded-lg bg-[#0f0f0f] border border-[#1f1f1f] text-xs font-semibold text-[#f0f0f0] hover:bg-[#141414] focus-visible:ring-2 focus-visible:ring-[#e10600] focus-visible:outline-none transition-colors"
       >
         View last race
       </button>
@@ -329,27 +284,15 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
 
       <!-- Sidebar -->
       <div class="space-y-4">
-        <!-- Circuit map (prominent - full width) -->
+        <!-- Circuit map -->
         <div v-if="sessionInfo?.Meeting?.Circuit?.ShortName" class="rounded-xl bg-[#0a0a0a] border border-[#1f1f1f] p-4 overflow-hidden">
-          <!-- Accent line rojo -->
           <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-4 mb-4 -mx-4" style="width: calc(100% + 2rem)" />
-
-          <!-- Nombre del circuito -->
-          <div class="mb-3">
-            <p class="text-sm font-bold text-[#f0f0f0]">{{ sessionInfo.Meeting.Circuit.ShortName }}</p>
-            <p v-if="sessionInfo.Meeting.Country?.Name" class="text-[10px] text-[#8a8a8a]">
-              {{ sessionInfo.Meeting.Country.Name }}
-            </p>
-          </div>
-
-          <!-- SVG grande con trazada fina -->
-          <div class="relative w-full aspect-square flex items-center justify-center bg-[#050505] rounded-lg overflow-hidden">
-            <img
-              :src="`/tracks/svg/${normalizeCircuitName(sessionInfo.Meeting.Circuit.ShortName)}.svg`"
-              :alt="sessionInfo.Meeting.Circuit.ShortName"
-              class="w-full h-full object-contain circuit-svg"
-            />
-          </div>
+          <CircuitDisplay
+            :circuit-name="sessionInfo.Meeting.Circuit.ShortName"
+            :country="sessionInfo.Meeting.Country?.Name"
+            show-label
+            size="full"
+          />
         </div>
 
         <!-- Weather (detailed) -->
@@ -437,7 +380,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
         <!-- Race Control -->
         <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
           <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Race Control</h3>
-          <div class="space-y-2 max-h-[500px] overflow-y-auto">
+          <div role="log" aria-live="polite" class="space-y-2 max-h-[500px] overflow-y-auto">
             <div
               v-for="(msg, i) in rcMessages"
               :key="i"
@@ -464,7 +407,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
     <!-- Loading -->
     <div v-else class="text-center py-24">
       <div class="inline-block w-6 h-6 border-2 border-[#e10600] border-t-transparent rounded-full animate-spin mb-3" />
-      <p class="text-xs text-[#444]">Connecting to live timing...</p>
+      <p class="text-xs text-[#444]">Connecting to live timing\u2026</p>
     </div>
   </div>
 </template>

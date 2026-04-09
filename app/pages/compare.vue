@@ -6,8 +6,15 @@ definePageMeta({ layout: 'default' })
 const { currentSeason } = useSeason()
 const { data: allDrivers } = useFetch(`/api/standings/drivers/${currentSeason}`)
 
-const driver1 = ref('')
-const driver2 = ref('')
+const route = useRoute()
+const router = useRouter()
+
+const driver1 = ref((route.query.d1 as string) || '')
+const driver2 = ref((route.query.d2 as string) || '')
+
+watch([driver1, driver2], ([d1, d2]) => {
+  router.replace({ query: { ...route.query, ...(d1 ? { d1 } : {}), ...(d2 ? { d2 } : {}) } })
+})
 
 const driverOptions = computed(() =>
   (allDrivers.value || []).map(d => ({
@@ -28,18 +35,24 @@ const d2 = computed(() => allDrivers.value?.find(d => d.driverId === driver2.val
 
     <!-- Selectors -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <select v-model="driver1"
-        class="w-full bg-[#0f0f0f] border border-[#1f1f1f] rounded-lg px-4 py-2.5 text-sm text-[#f0f0f0]
-               focus:border-[#e10600] focus:outline-none">
-        <option value="" disabled>Driver 1</option>
-        <option v-for="d in driverOptions" :key="d.value" :value="d.value">{{ d.label }} ({{ d.team }})</option>
-      </select>
-      <select v-model="driver2"
-        class="w-full bg-[#0f0f0f] border border-[#1f1f1f] rounded-lg px-4 py-2.5 text-sm text-[#f0f0f0]
-               focus:border-[#e10600] focus:outline-none">
-        <option value="" disabled>Driver 2</option>
-        <option v-for="d in driverOptions" :key="d.value" :value="d.value">{{ d.label }} ({{ d.team }})</option>
-      </select>
+      <div>
+        <label for="driver1-select" class="sr-only">Driver 1</label>
+        <select id="driver1-select" v-model="driver1" autocomplete="off"
+          class="w-full bg-[#0f0f0f] border border-[#1f1f1f] rounded-lg px-4 py-2.5 text-sm text-[#f0f0f0]
+                 focus-visible:ring-2 focus-visible:ring-[#e10600] focus-visible:outline-none">
+          <option value="" disabled>Driver 1</option>
+          <option v-for="d in driverOptions" :key="d.value" :value="d.value">{{ d.label }} ({{ d.team }})</option>
+        </select>
+      </div>
+      <div>
+        <label for="driver2-select" class="sr-only">Driver 2</label>
+        <select id="driver2-select" v-model="driver2" autocomplete="off"
+          class="w-full bg-[#0f0f0f] border border-[#1f1f1f] rounded-lg px-4 py-2.5 text-sm text-[#f0f0f0]
+                 focus-visible:ring-2 focus-visible:ring-[#e10600] focus-visible:outline-none">
+          <option value="" disabled>Driver 2</option>
+          <option v-for="d in driverOptions" :key="d.value" :value="d.value">{{ d.label }} ({{ d.team }})</option>
+        </select>
+      </div>
     </div>
 
     <div v-if="d1 && d2" class="space-y-4">
@@ -48,7 +61,7 @@ const d2 = computed(() => allDrivers.value?.find(d => d.driverId === driver2.val
         <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden">
           <div class="h-[3px]" :style="{ backgroundColor: getTeamColor(d1.constructorName || '') }" />
           <div class="p-4 text-center">
-            <p class="text-xl font-bold text-[#f0f0f0]">{{ d1.givenName }} {{ d1.familyName }}</p>
+            <p class="text-xl font-bold text-[#f0f0f0] truncate">{{ d1.givenName }} {{ d1.familyName }}</p>
             <p class="text-xs" :style="{ color: getTeamColor(d1.constructorName || '') }">{{ d1.constructorName }}</p>
             <p class="font-timing text-3xl font-bold text-[#f0f0f0] mt-2">{{ d1.points }}</p>
             <p class="text-[10px] text-[#444] uppercase">points</p>
@@ -57,7 +70,7 @@ const d2 = computed(() => allDrivers.value?.find(d => d.driverId === driver2.val
         <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden">
           <div class="h-[3px]" :style="{ backgroundColor: getTeamColor(d2.constructorName || '') }" />
           <div class="p-4 text-center">
-            <p class="text-xl font-bold text-[#f0f0f0]">{{ d2.givenName }} {{ d2.familyName }}</p>
+            <p class="text-xl font-bold text-[#f0f0f0] truncate">{{ d2.givenName }} {{ d2.familyName }}</p>
             <p class="text-xs" :style="{ color: getTeamColor(d2.constructorName || '') }">{{ d2.constructorName }}</p>
             <p class="font-timing text-3xl font-bold text-[#f0f0f0] mt-2">{{ d2.points }}</p>
             <p class="text-[10px] text-[#444] uppercase">points</p>

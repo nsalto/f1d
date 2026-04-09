@@ -14,14 +14,6 @@ const topDrivers = computed(() => drivers.value || [])
 const topConstructors = computed(() => constructors.value || [])
 const maxPoints = computed(() => topDrivers.value[0]?.points || 1)
 
-// Helper to get team logo ID
-function getTeamLogo(teamName: string): string {
-  const teamId = getTeamIdByName(teamName)
-  if (teamId) return teamId
-  // Fallback
-  return teamName.replace(/\s+F1\s+Team\s*$/i, '').toLowerCase().replace(/\s+/g, '-')
-}
-
 // Countdown
 const countdown = ref({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 let interval: ReturnType<typeof setInterval>
@@ -41,41 +33,6 @@ function updateCountdown() {
 onMounted(() => { updateCountdown(); interval = setInterval(updateCountdown, 1000) })
 onUnmounted(() => clearInterval(interval))
 
-// Normalize circuit names to SVG filenames
-function normalizeCircuitName(name: string | undefined): string {
-  if (!name) return ''
-  const circuitMap: Record<string, string> = {
-    'bahrain international circuit': 'bahrain',
-    'jeddah corniche circuit': 'jeddah',
-    'miami international autodrome': 'miami',
-    'circuit de monaco': 'monaco',
-    'circuit de barcelona-catalunya': 'barcelona',
-    'red bull ring': 'austria',
-    'silverstone circuit': 'silverstone',
-    'hungaroring': 'hungary',
-    'spa-francorchamps': 'spa',
-    'autodromo di monza': 'monza',
-    'marina bay street circuit': 'singapore',
-    'suzuka circuit': 'suzuka',
-    'lusail international circuit': 'qatar',
-    'circuit of the americas': 'austin',
-    'autodromo hermanos rodriguez': 'mexico-city',
-    'autodromo jose maria guizado': 'sao-paulo',
-    'yas marina circuit': 'abu-dhabi'
-  }
-  const normalized = name.toLowerCase().trim()
-  if (circuitMap[normalized]) {
-    return circuitMap[normalized]
-  }
-  const firstWord = normalized.split(/\s+/)[0]
-  const partial = Object.entries(circuitMap).find(([key]) =>
-    key.split(/\s+/)[0] === firstWord
-  )
-  if (partial) {
-    return partial[1]
-  }
-  return firstWord || normalized.replace(/\s+/g, '-')
-}
 </script>
 
 <template>
@@ -97,7 +54,7 @@ function normalizeCircuitName(name: string | undefined): string {
                   <span class="font-timing bg-[#141414] px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
                 </div>
 
-                <h2 class="text-2xl font-bold text-[#f0f0f0] tracking-tight mb-1">
+                <h2 class="text-2xl font-bold text-[#f0f0f0] tracking-tight mb-1 text-balance">
                   {{ getCountryFlag(nextRace.country || '') }} {{ nextRace.raceName }}
                 </h2>
                 <p class="text-sm text-[#8a8a8a]">{{ nextRace.circuitName }}</p>
@@ -135,24 +92,18 @@ function normalizeCircuitName(name: string | undefined): string {
                   </div>
                 </div>
                 <div class="mt-2 text-[10px] text-[#2a2a2a]">
-                  {{ new Date(nextRace.date).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) }}
+                  {{ new Date(nextRace.date).toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }) }}
                 </div>
               </div>
             </div>
 
-            <!-- Circuito a la derecha, proporcionado -->
-            <div class="shrink-0 w-[180px] flex flex-col items-center justify-center">
-              <div class="bg-[#0a0a0a] rounded-lg p-3 w-full aspect-square flex items-center justify-center">
-                <img
-                  :src="`/tracks/svg/${normalizeCircuitName(nextRace.circuitName)}.svg`"
-                  :alt="nextRace.circuitName"
-                  class="w-full h-full object-contain circuit-svg"
-                />
-              </div>
+            <!-- Circuit map -->
+            <div class="shrink-0 w-[180px] flex items-center justify-center">
+              <CircuitDisplay :circuit-name="nextRace.circuitName" size="lg" />
             </div>
           </div>
         </div>
-        <div v-else class="p-6 text-[#444] text-sm">Loading data...</div>
+        <div v-else class="p-6 text-[#444] text-sm">Loading data\u2026</div>
       </div>
 
       <!-- Mini Standings -->
@@ -164,19 +115,22 @@ function normalizeCircuitName(name: string | undefined): string {
             <NuxtLink to="/standings/drivers" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
           <div v-if="topDrivers.length" class="space-y-1 max-h-96 overflow-y-auto">
-            <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] hover:border-l-2 hover:border-l-[#e10600] transition-all duration-150 cursor-pointer">
+            <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] hover:border-l-2 hover:border-l-[#e10600] transition-colors duration-150 cursor-pointer">
               <span class="font-timing w-5 text-right text-[#8a8a8a]">{{ d.position }}</span>
-              <span class="w-1 h-5 rounded-full transition-all" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
+              <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
               <img
-                :src="`/teams/logos/${getTeamLogo(d.constructorName || '')}.webp`"
+                :src="`/teams/logos/${getTeamIdByName(d.constructorName || '')}.webp`"
                 :alt="d.constructorName"
+                width="16"
+                height="16"
+                loading="lazy"
                 class="w-4 h-4 object-contain"
               />
               <span class="flex-1 text-[#f0f0f0] font-medium truncate">{{ d.familyName }}</span>
               <span class="font-timing text-[#f0f0f0] ml-1 font-semibold">{{ d.points }}</span>
             </div>
           </div>
-          <p v-else class="text-[#2a2a2a] text-xs">Loading...</p>
+          <p v-else class="text-[#2a2a2a] text-xs">Loading\u2026</p>
         </div>
 
         <!-- Constructors -->
@@ -186,19 +140,22 @@ function normalizeCircuitName(name: string | undefined): string {
             <NuxtLink to="/standings/constructors" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
           <div v-if="topConstructors.length" class="space-y-1 max-h-96 overflow-y-auto">
-            <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] hover:border-l-2 hover:border-l-[#e10600] transition-all duration-150 cursor-pointer">
+            <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] hover:border-l-2 hover:border-l-[#e10600] transition-colors duration-150 cursor-pointer">
               <span class="font-timing w-5 text-right text-[#8a8a8a]">{{ c.position }}</span>
-              <span class="w-1 h-5 rounded-full transition-all" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
+              <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
               <img
-                :src="`/teams/logos/${getTeamLogo(c.constructorName)}.webp`"
+                :src="`/teams/logos/${getTeamIdByName(c.constructorName)}.webp`"
                 :alt="c.constructorName"
+                width="16"
+                height="16"
+                loading="lazy"
                 class="w-4 h-4 object-contain"
               />
               <span class="flex-1 text-[#f0f0f0] font-medium truncate">{{ c.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</span>
               <span class="font-timing text-[#f0f0f0] ml-1 font-semibold">{{ c.points }}</span>
             </div>
           </div>
-          <p v-else class="text-[#2a2a2a] text-xs">Loading...</p>
+          <p v-else class="text-[#2a2a2a] text-xs">Loading\u2026</p>
         </div>
       </div>
     </div>

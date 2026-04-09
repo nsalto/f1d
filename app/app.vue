@@ -1,10 +1,12 @@
 <script setup>
 useHead({
   meta: [
-    { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { name: 'theme-color', content: '#080808' }
   ],
   htmlAttrs: {
-    lang: 'es'
+    lang: 'es',
+    style: 'color-scheme: dark'
   }
 })
 

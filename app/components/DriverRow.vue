@@ -102,6 +102,9 @@ watch(() => props.lastLap, (newVal, oldVal) => {
         <img
           :src="`/teams/logos/${teamId}.webp`"
           :alt="team"
+          width="20"
+          height="20"
+          loading="lazy"
           class="w-5 h-5 object-contain"
         />
         <div class="flex flex-col min-w-0">

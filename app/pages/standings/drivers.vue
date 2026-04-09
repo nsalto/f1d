@@ -8,18 +8,6 @@ definePageMeta({ layout: 'default' })
 const { currentSeason } = useSeason()
 const { data: standings } = useFetch(`/api/standings/drivers/${currentSeason}`)
 const maxPoints = computed(() => standings.value?.[0]?.points || 1)
-
-function getTeamIdForConstructor(constructorName: string): string {
-  // getTeamIdByName handles all cleaning and variations
-  const teamId = getTeamIdByName(constructorName)
-  if (teamId) return teamId
-
-  // Fallback: convert name to id format
-  return constructorName
-    .replace(/\s+F1\s+Team\s*$/i, '')
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-}
 </script>
 
 <template>
@@ -63,8 +51,11 @@ function getTeamIdForConstructor(constructorName: string): string {
               <div class="flex items-center gap-2">
                 <span class="w-[3px] h-4 rounded-full transition-all" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
                 <img
-                  :src="`/teams/logos/${getTeamIdForConstructor(d.constructorName || '')}.webp`"
+                  :src="`/teams/logos/${getTeamIdByName(d.constructorName || '')}.webp`"
                   :alt="d.constructorName"
+                  width="16"
+                  height="16"
+                  loading="lazy"
                   class="w-4 h-4 object-contain"
                 />
                 <span class="text-xs text-[#8a8a8a]">{{ d.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</span>
@@ -84,6 +75,6 @@ function getTeamIdForConstructor(constructorName: string): string {
         </tbody>
       </table>
     </div>
-    <p v-else class="text-[#444] text-sm text-center py-12">Loading standings...</p>
+    <p v-else class="text-[#444] text-sm text-center py-12">Loading standings\u2026</p>
   </div>
 </template>

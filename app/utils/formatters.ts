@@ -48,6 +48,48 @@ export function getCountryFlag(nationality: string): string {
   return flags[nationality] || '🏁'
 }
 
+// Normalize circuit name to SVG filename
+export function normalizeCircuitName(name: string | undefined): string {
+  if (!name) return ''
+
+  const circuitMap: Record<string, string> = {
+    'bahrain international circuit': 'bahrain',
+    'jeddah corniche circuit': 'jeddah',
+    'miami international autodrome': 'miami',
+    'circuit de monaco': 'monaco',
+    'circuit de barcelona-catalunya': 'barcelona',
+    'red bull ring': 'austria',
+    'silverstone circuit': 'silverstone',
+    'hungaroring': 'hungary',
+    'spa-francorchamps': 'spa',
+    'autodromo di monza': 'monza',
+    'marina bay street circuit': 'singapore',
+    'suzuka circuit': 'suzuka',
+    'lusail international circuit': 'qatar',
+    'circuit of the americas': 'austin',
+    'autodromo hermanos rodriguez': 'mexico-city',
+    'autodromo jose maria guizado': 'sao-paulo',
+    'yas marina circuit': 'abu-dhabi',
+    'albert park circuit': 'melbourne',
+    'circuit gilles villeneuve': 'montreal',
+    'circuit zandvoort': 'zandvoort',
+    'baku city circuit': 'baku',
+    'autodromo internazionale enzo e dino ferrari': 'imola'
+  }
+
+  const normalized = name.toLowerCase().trim()
+
+  if (circuitMap[normalized]) return circuitMap[normalized]
+
+  const firstWord = normalized.split(/\s+/)[0]
+  const partial = Object.entries(circuitMap).find(([key]) =>
+    key.split(/\s+/)[0] === firstWord
+  )
+  if (partial) return partial[1]
+
+  return firstWord || normalized.replace(/\s+/g, '-')
+}
+
 export function getCompoundColor(compound: string): string {
   const colors: Record<string, string> = {
     SOFT: '#FF3333',

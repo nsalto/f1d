@@ -108,6 +108,20 @@
   filter: invert(1) sepia(1) saturate(3) hue-rotate(320deg) brightness(0.9);
 }
 
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .data-updated,
+  .pos-gained,
+  .pos-lost,
+  .data-highlight,
+  .number-updated { animation: none; }
+
+  .tick-enter-active,
+  .tick-leave-active,
+  .row-update-enter-active,
+  .row-update-leave-active { transition: none; }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar       { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: var(--color-surface-base); }

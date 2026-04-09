@@ -16,7 +16,13 @@ const { data: results } = useFetch(`/api/races/${season}/${round}/results`)
 const { data: qualifying } = useFetch(`/api/races/${season}/${round}/qualifying`)
 const { data: openf1Data } = useFetch('/api/openf1/race-data', { query: { season, round } })
 
-const activeTab = ref('results')
+const router = useRouter()
+
+const activeTab = ref((route.query.tab as string) || 'results')
+
+watch(activeTab, (tab) => {
+  router.replace({ query: { ...route.query, tab } })
+})
 
 const syncing = ref(false)
 async function syncRace() {
@@ -66,7 +72,7 @@ const maxLap = computed(() => {
           </h1>
           <h1 v-else class="text-2xl font-bold text-[#f0f0f0]">Round {{ round }}</h1>
           <p v-if="race" class="text-xs text-[#8a8a8a] mt-0.5">
-            {{ race.circuitName }} | {{ new Date(race.date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) }}
+            {{ race.circuitName }} | {{ new Date(race.date).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' }) }}
           </p>
         </div>
         <UButton v-if="isDev" icon="i-lucide-refresh-cw" variant="outline" color="neutral" size="xs" :loading="syncing" @click="syncRace">Sync</UButton>
@@ -74,7 +80,7 @@ const maxLap = computed(() => {
     </div>
 
     <!-- Tabs -->
-    <div class="flex gap-1 mb-5">
+    <div role="tablist" class="flex gap-1 mb-5">
       <button
         v-for="tab in [
           { id: 'results', label: 'Race' },
@@ -83,8 +89,11 @@ const maxLap = computed(() => {
           { id: 'pitstops', label: 'Pit Stops' }
         ]"
         :key="tab.id"
+        role="tab"
+        :aria-selected="activeTab === tab.id"
+        :aria-controls="`tabpanel-${tab.id}`"
         :class="[
-          'px-3 py-1.5 rounded text-xs font-medium transition-all',
+          'px-3 py-1.5 rounded text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-[#e10600] focus-visible:outline-none',
           activeTab === tab.id ? 'bg-[#141414] text-[#f0f0f0]' : 'text-[#444] hover:text-[#8a8a8a]'
         ]"
         @click="activeTab = tab.id"
@@ -129,7 +138,7 @@ const maxLap = computed(() => {
           </tbody>
         </table>
       </div>
-      <p v-else class="text-[#444] text-xs text-center py-12">Results not available yet.</p>
+      <p v-else class="text-[#444] text-xs text-center py-12">Results not available yet\u2026</p>
     </div>
 
     <!-- Qualifying -->
@@ -166,7 +175,7 @@ const maxLap = computed(() => {
           </tbody>
         </table>
       </div>
-      <p v-else class="text-[#444] text-xs text-center py-12">Qualifying not available yet.</p>
+      <p v-else class="text-[#444] text-xs text-center py-12">Qualifying not available yet\u2026</p>
     </div>
 
     <!-- Tyre Strategy -->
@@ -201,7 +210,7 @@ const maxLap = computed(() => {
           </div>
         </div>
       </div>
-      <p v-else class="text-[#444] text-xs text-center py-12">Strategy not available yet.</p>
+      <p v-else class="text-[#444] text-xs text-center py-12">Strategy not available yet\u2026</p>
     </div>
 
     <!-- Pit Stops -->
@@ -229,7 +238,7 @@ const maxLap = computed(() => {
           </tbody>
         </table>
       </div>
-      <p v-else class="text-[#444] text-xs text-center py-12">Pit stops not available yet.</p>
+      <p v-else class="text-[#444] text-xs text-center py-12">Pit stops not available yet\u2026</p>
     </div>
   </div>
 </template>

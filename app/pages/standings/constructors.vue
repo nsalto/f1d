@@ -7,18 +7,6 @@ definePageMeta({ layout: 'default' })
 const { currentSeason } = useSeason()
 const { data: standings } = useFetch(`/api/standings/constructors/${currentSeason}`)
 const maxPoints = computed(() => standings.value?.[0]?.points || 1)
-
-function getTeamIdForConstructor(constructorName: string): string {
-  // getTeamIdByName handles all cleaning and variations
-  const teamId = getTeamIdByName(constructorName)
-  if (teamId) return teamId
-
-  // Fallback: convert name to id format
-  return constructorName
-    .replace(/\s+F1\s+Team\s*$/i, '')
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-}
 </script>
 
 <template>
@@ -35,12 +23,15 @@ function getTeamIdForConstructor(constructorName: string): string {
 
     <div v-if="standings?.length" class="space-y-2">
       <div v-for="c in standings" :key="c.constructorId"
-        class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4 flex items-center gap-4 hover:bg-[#141414] hover:border-[#2a2a2a] transition-all duration-200 cursor-pointer">
+        class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4 flex items-center gap-4 hover:bg-[#141414] hover:border-[#2a2a2a] transition-colors duration-200 cursor-pointer">
         <LivePositionBadge :position="c.position" size="lg" />
         <div class="w-1 h-10 rounded-full transition-all" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
         <img
-          :src="`/teams/logos/${getTeamIdForConstructor(c.constructorName)}.webp`"
+          :src="`/teams/logos/${getTeamIdByName(c.constructorName)}.webp`"
           :alt="c.constructorName"
+          width="24"
+          height="24"
+          loading="lazy"
           class="w-6 h-6 object-contain"
         />
         <div class="flex-1">
@@ -56,6 +47,6 @@ function getTeamIdForConstructor(constructorName: string): string {
         </div>
       </div>
     </div>
-    <p v-else class="text-[#444] text-sm text-center py-12">Loading standings...</p>
+    <p v-else class="text-[#444] text-sm text-center py-12">Loading standings\u2026</p>
   </div>
 </template>

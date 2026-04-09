@@ -17,6 +17,8 @@ const current = computed(() => statusMap[props.status] || {
 
 <template>
   <div
+    role="status"
+    aria-live="assertive"
     :class="['inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#1f1f1f]', current.bg, current.glow]"
   >
     <span :class="['w-2 h-2 rounded-full flex-shrink-0', current.dot]" />

@@ -33,6 +33,6 @@ function getRaceStatus(date: string): 'completed' | 'next' | 'upcoming' {
         :status="getRaceStatus(race.date)"
       />
     </div>
-    <p v-else class="text-[#444] text-sm text-center py-12">Loading calendar...</p>
+    <p v-else class="text-[#444] text-sm text-center py-12">Loading calendar\u2026</p>
   </div>
 </template>

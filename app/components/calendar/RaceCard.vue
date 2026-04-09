@@ -52,7 +52,7 @@ defineProps<{
 
       <div class="mt-3 pt-3 border-t border-[#141414] flex items-center justify-between">
         <span class="text-xs text-[#8a8a8a]">
-          {{ new Date(date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) }}
+          {{ new Date(date).toLocaleDateString('es', { day: 'numeric', month: 'short' }) }}
         </span>
         <span v-if="time" class="font-timing text-[10px] text-[#444]">
           {{ time.replace(':00Z', '') }} UTC

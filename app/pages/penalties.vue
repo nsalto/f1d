@@ -87,7 +87,7 @@ function getTag(msg: any): { label: string; color: string } | null {
               </span>
               <span v-if="msg.lap" class="text-[10px] text-[#2a2a2a]">Lap {{ msg.lap }}</span>
             </div>
-            <p class="text-sm text-[#f0f0f0]">{{ msg.message }}</p>
+            <p class="text-sm text-[#f0f0f0] break-words">{{ msg.message }}</p>
             <p class="text-[10px] text-[#444] mt-1">
               {{ msg.gp }} — {{ msg.session }}
               <span v-if="msg.utc" class="ml-2">{{ new Date(msg.utc).toLocaleTimeString() }}</span>
@@ -99,7 +99,7 @@ function getTag(msg: any): { label: string; color: string } | null {
 
     <div v-else class="text-center py-20">
       <div class="w-16 h-16 rounded-full bg-[#0f0f0f] border border-[#1f1f1f] flex items-center justify-center mx-auto mb-4">
-        <UIcon name="i-lucide-shield-alert" class="w-6 h-6 text-[#444]" />
+        <UIcon name="i-lucide-shield-alert" class="w-6 h-6 text-[#444]" aria-hidden="true" />
       </div>
       <h2 class="text-sm font-bold text-[#8a8a8a] mb-1">No recent penalties</h2>
       <p class="text-xs text-[#444] max-w-sm mx-auto">
