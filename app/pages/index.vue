@@ -38,72 +38,75 @@ onUnmounted(() => clearInterval(interval))
 <template>
   <div>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <!-- Next Race Hero -->
-      <div class="lg:col-span-2 rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden">
-        <div v-if="nextRace" class="p-6">
-          <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-6 mb-6 -mx-6"
-               style="width: calc(100% + 3rem)" />
+      <!-- Next Race Hero + Circuit -->
+      <div class="lg:col-span-2 space-y-4">
+        <!-- Next Race Info -->
+        <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden">
+          <div v-if="nextRace" class="p-6">
+            <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-6 mb-6 -mx-6"
+                 style="width: calc(100% + 3rem)" />
 
-          <!-- Layout: Info izquierda + Circuito derecha -->
-          <div class="flex items-stretch gap-6">
-            <!-- Texto + countdown -->
-            <div class="flex-1 min-w-0 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center gap-2 text-[10px] text-[#444] uppercase tracking-widest mb-2">
-                  <span>Next Race</span>
-                  <span class="font-timing bg-[#141414] px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
-                </div>
-
-                <h2 class="text-2xl font-bold text-[#f0f0f0] tracking-tight mb-1 text-balance">
-                  {{ getCountryFlag(nextRace.country || '') }} {{ nextRace.raceName }}
-                </h2>
-                <p class="text-sm text-[#8a8a8a]">{{ nextRace.circuitName }}</p>
-                <p class="text-xs text-[#444]">{{ nextRace.locality }}, {{ nextRace.country }}</p>
-              </div>
-
-              <!-- Countdown -->
-              <div class="mt-4">
-                <div class="grid grid-cols-4 gap-3 max-w-xs">
-                  <div class="text-center">
-                    <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
-                      {{ String(countdown.days).padStart(2, '0') }}
-                    </div>
-                    <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Days</div>
-                  </div>
-                  <div class="text-center">
-                    <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
-                      {{ String(countdown.hours).padStart(2, '0') }}
-                    </div>
-                    <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Hrs</div>
-                  </div>
-                  <div class="text-center">
-                    <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
-                      {{ String(countdown.minutes).padStart(2, '0') }}
-                    </div>
-                    <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Min</div>
-                  </div>
-                  <div class="text-center">
-                    <transition name="tick" mode="out-in">
-                      <div :key="countdown.seconds" class="font-timing text-2xl font-bold text-[#f0f0f0]">
-                        {{ String(countdown.seconds).padStart(2, '0') }}
-                      </div>
-                    </transition>
-                    <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Secs</div>
-                  </div>
-                </div>
-                <div class="mt-2 text-[10px] text-[#2a2a2a]">
-                  {{ new Date(nextRace.date).toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }) }}
-                </div>
-              </div>
+            <div class="flex items-center gap-2 text-[10px] text-[#444] uppercase tracking-widest mb-2">
+              <span>Next Race</span>
+              <span class="font-timing bg-[#141414] px-2 py-0.5 rounded">R{{ nextRace.round }}</span>
             </div>
 
-            <!-- Circuit map -->
-            <div class="shrink-0 w-[180px] flex items-center justify-center">
-              <CircuitDisplay :circuit-name="nextRace.circuitName" size="lg" />
+            <h2 class="text-2xl font-bold text-[#f0f0f0] tracking-tight mb-1 text-balance">
+              {{ getCountryFlag(nextRace.country || '') }} {{ nextRace.raceName }}
+            </h2>
+            <p class="text-sm text-[#8a8a8a]">{{ nextRace.circuitName }}</p>
+            <p class="text-xs text-[#444]">{{ nextRace.locality }}, {{ nextRace.country }}</p>
+
+            <!-- Countdown -->
+            <div class="mt-4">
+              <div class="grid grid-cols-4 gap-3 max-w-xs">
+                <div class="text-center">
+                  <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
+                    {{ String(countdown.days).padStart(2, '0') }}
+                  </div>
+                  <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Days</div>
+                </div>
+                <div class="text-center">
+                  <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
+                    {{ String(countdown.hours).padStart(2, '0') }}
+                  </div>
+                  <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Hrs</div>
+                </div>
+                <div class="text-center">
+                  <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
+                    {{ String(countdown.minutes).padStart(2, '0') }}
+                  </div>
+                  <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Min</div>
+                </div>
+                <div class="text-center">
+                  <transition name="tick" mode="out-in">
+                    <div :key="countdown.seconds" class="font-timing text-2xl font-bold text-[#f0f0f0]">
+                      {{ String(countdown.seconds).padStart(2, '0') }}
+                    </div>
+                  </transition>
+                  <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Secs</div>
+                </div>
+              </div>
+              <div class="mt-2 text-[10px] text-[#2a2a2a]">
+                {{ new Date(nextRace.date).toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }) }}
+              </div>
             </div>
           </div>
+          <div v-else class="p-6 text-[#444] text-sm">Loading data\u2026</div>
         </div>
-        <div v-else class="p-6 text-[#444] text-sm">Loading data\u2026</div>
+
+        <!-- Circuit Map Card -->
+        <div v-if="nextRace" class="rounded-xl bg-[#0a0a0a] border border-[#1f1f1f] p-5 overflow-hidden">
+          <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-5 mb-5 -mx-5"
+               style="width: calc(100% + 2.5rem)" />
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Circuit</span>
+            <span class="text-[10px] text-[#8a8a8a]">{{ nextRace.circuitName }}</span>
+          </div>
+          <div class="flex items-center justify-center bg-[#050505] rounded-lg p-6 min-h-[280px]">
+            <CircuitDisplay :circuit-name="nextRace.circuitName" size="full" />
+          </div>
+        </div>
       </div>
 
       <!-- Mini Standings -->

@@ -15,7 +15,7 @@ const sizeClasses = computed(() => {
     sm: 'w-[80px] h-[80px]',
     md: 'w-[140px] h-[140px]',
     lg: 'w-[200px] h-[200px]',
-    full: 'w-full aspect-square'
+    full: 'w-full min-h-[200px]'
   }
   return sizes[props.size || 'md']
 })
