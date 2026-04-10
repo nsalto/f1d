@@ -25,7 +25,7 @@ const sizeClasses = computed(() => {
   <div class="flex flex-col items-center">
     <div
       v-if="circuitId"
-      :class="['flex items-center justify-center bg-[#050505] rounded-lg overflow-hidden p-3', sizeClasses]"
+      :class="['flex items-center justify-center rounded-lg overflow-hidden p-4', sizeClasses]"
     >
       <img
         :src="`/tracks/svg/${circuitId}.svg`"

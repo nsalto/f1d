@@ -50,7 +50,7 @@ function getTag(msg: any): { label: string; color: string } | null {
   <div>
     <div class="flex items-center justify-between mb-4">
       <div>
-        <h1 class="text-lg font-bold text-[#f0f0f0]">Penalties & Decisions</h1>
+        <h1 class="text-xl font-bold text-[#f0f0f0]">Penalties & Decisions</h1>
         <p class="text-xs text-[#444]">Race control messages, investigations and penalties</p>
       </div>
       <div v-if="penaltyData?.sessionActive" class="flex items-center gap-1.5">
@@ -85,7 +85,7 @@ function getTag(msg: any): { label: string; color: string } | null {
               <span v-if="msg.driver && getDriverInfo(msg.driver)" class="text-[10px] text-[#8a8a8a]">
                 {{ getDriverInfo(msg.driver)!.team }}
               </span>
-              <span v-if="msg.lap" class="text-[10px] text-[#2a2a2a]">Lap {{ msg.lap }}</span>
+              <span v-if="msg.lap" class="text-[10px] text-[#444]">Lap {{ msg.lap }}</span>
             </div>
             <p class="text-sm text-[#f0f0f0] break-words">{{ msg.message }}</p>
             <p class="text-[10px] text-[#444] mt-1">

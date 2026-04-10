@@ -212,7 +212,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
     <!-- Header bar -->
     <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
       <div class="flex items-center gap-3">
-        <h1 class="text-lg font-bold text-[#f0f0f0]">{{ isHistory ? 'Last Race' : 'Live Timing' }}</h1>
+        <h1 class="text-xl font-bold text-[#f0f0f0]">{{ isHistory ? 'Last Race' : 'Live Timing' }}</h1>
         <span v-if="isHistory" class="text-xs px-2 py-1 rounded bg-[#ffc906]/10 text-[#ffc906]">
           {{ historyMessage }}
         </span>
@@ -265,7 +265,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
     <!-- Live content -->
     <div v-else-if="connected" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
       <!-- Timing tower -->
-      <div class="lg:col-span-3 rounded-xl bg-[#0a0a0a] border border-[#141414] overflow-hidden relative">
+      <div class="lg:col-span-3 rounded-xl bg-[#0a0a0a] border border-[#141414] overflow-x-auto relative">
         <!-- Fastest lap banner -->
         <transition name="fastest-lap">
           <div v-if="fastestLapFlash" class="absolute inset-x-0 top-0 z-20 bg-gradient-to-b from-[#9f00ff]/20 to-transparent h-16 pointer-events-none" />
@@ -427,12 +427,12 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
               }"
             >
               <p class="text-[#8a8a8a]">{{ msg.Message }}</p>
-              <p class="text-[#2a2a2a] mt-0.5">
+              <p class="text-[#444] mt-0.5">
                 {{ msg.Utc ? new Date(msg.Utc).toLocaleTimeString() : '' }}
                 <span v-if="msg.Lap" class="ml-1">L{{ msg.Lap }}</span>
               </p>
             </div>
-            <p v-if="!rcMessages.length" class="text-[#2a2a2a] text-xs">No messages</p>
+            <p v-if="!rcMessages.length" class="text-[#444] text-xs">No messages</p>
           </div>
         </div>
       </div>

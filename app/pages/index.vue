@@ -59,7 +59,7 @@ onUnmounted(() => clearInterval(interval))
 
             <!-- Flip Countdown -->
             <div class="mt-5">
-              <div class="grid grid-cols-4 gap-3 max-w-sm">
+              <div class="grid grid-cols-4 gap-3 max-w-md">
                 <div v-for="unit in [
                   { value: countdown.days, label: 'Days' },
                   { value: countdown.hours, label: 'Hrs' },
@@ -77,7 +77,7 @@ onUnmounted(() => clearInterval(interval))
                   <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1.5 font-medium">{{ unit.label }}</div>
                 </div>
               </div>
-              <div class="mt-3 text-[10px] text-[#2a2a2a]">
+              <div class="mt-3 text-[10px] text-[#444]">
                 {{ new Date(nextRace.date).toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }) }}
               </div>
             </div>
@@ -111,12 +111,10 @@ onUnmounted(() => clearInterval(interval))
           <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-5 mb-5 -mx-5"
                style="width: calc(100% + 2.5rem)" />
           <div class="flex items-center gap-2 mb-4">
-            <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Circuit</span>
-            <span class="text-[10px] text-[#8a8a8a]">{{ nextRace.circuitName }}</span>
+            <span class="text-xs text-[#444] uppercase tracking-widest font-semibold">Circuit</span>
+            <span class="text-xs text-[#8a8a8a]">{{ nextRace.circuitName }}</span>
           </div>
-          <div class="flex items-center justify-center bg-[#050505] rounded-lg p-6 min-h-[280px]">
-            <CircuitDisplay :circuit-name="nextRace.circuitName" size="full" />
-          </div>
+          <CircuitDisplay :circuit-name="nextRace.circuitName" size="full" />
         </div>
       </div>
 
@@ -125,11 +123,11 @@ onUnmounted(() => clearInterval(interval))
         <!-- Drivers -->
         <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
           <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Drivers Championship</span>
+            <span class="text-xs text-[#444] uppercase tracking-widest font-semibold">Drivers Championship</span>
             <NuxtLink to="/standings/drivers" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
           <div v-if="topDrivers.length" class="space-y-1 max-h-96 overflow-y-auto">
-            <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] hover:border-l-2 hover:border-l-[#e10600] transition-colors duration-150 cursor-pointer">
+            <div v-for="d in topDrivers" :key="d.driverId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded border-l-2 border-l-transparent hover:bg-[#141414] hover:border-l-[#e10600] transition-colors duration-150 cursor-pointer">
               <span class="font-timing w-5 text-right text-[#8a8a8a]">{{ d.position }}</span>
               <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
               <img
@@ -150,11 +148,11 @@ onUnmounted(() => clearInterval(interval))
         <!-- Constructors -->
         <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
           <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-[#444] uppercase tracking-widest font-medium">Constructors</span>
+            <span class="text-xs text-[#444] uppercase tracking-widest font-semibold">Constructors</span>
             <NuxtLink to="/standings/constructors" class="text-[10px] text-[#e10600] hover:text-[#ff3333]">View all</NuxtLink>
           </div>
           <div v-if="topConstructors.length" class="space-y-1 max-h-96 overflow-y-auto">
-            <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded hover:bg-[#141414] hover:border-l-2 hover:border-l-[#e10600] transition-colors duration-150 cursor-pointer">
+            <div v-for="c in topConstructors" :key="c.constructorId" class="flex items-center gap-2 text-xs px-2 py-1.5 rounded border-l-2 border-l-transparent hover:bg-[#141414] hover:border-l-[#e10600] transition-colors duration-150 cursor-pointer">
               <span class="font-timing w-5 text-right text-[#8a8a8a]">{{ c.position }}</span>
               <span class="w-1 h-5 rounded-full" :style="{ backgroundColor: getTeamColor(c.constructorName) }" />
               <img

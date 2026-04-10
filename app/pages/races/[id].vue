@@ -93,8 +93,8 @@ const maxLap = computed(() => {
         :aria-selected="activeTab === tab.id"
         :aria-controls="`tabpanel-${tab.id}`"
         :class="[
-          'px-3 py-1.5 rounded text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-[#e10600] focus-visible:outline-none',
-          activeTab === tab.id ? 'bg-[#141414] text-[#f0f0f0]' : 'text-[#444] hover:text-[#8a8a8a]'
+          'px-3 py-1.5 rounded text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-[#e10600] focus-visible:outline-none border-b-2',
+          activeTab === tab.id ? 'bg-[#141414] text-[#f0f0f0] border-[#e10600]' : 'text-[#444] hover:text-[#8a8a8a] border-transparent'
         ]"
         @click="activeTab = tab.id"
       >
@@ -150,8 +150,8 @@ const maxLap = computed(() => {
               </td>
               <td class="px-3 py-1.5 text-center font-timing text-xs text-[#444]">{{ r.grid }}</td>
               <td class="px-3 py-1.5 text-right font-timing text-xs text-[#8a8a8a]">{{ r.time || '-' }}</td>
-              <td class="px-3 py-1.5 text-center font-timing text-xs" :class="r.points && r.points > 0 ? 'text-[#00d25b] font-bold' : 'text-[#2a2a2a]'">{{ r.points || 0 }}</td>
-              <td class="px-3 py-1.5 text-[10px]" :class="r.status === 'Finished' ? 'text-[#2a2a2a]' : 'text-[#ffc906]'">{{ r.status }}</td>
+              <td class="px-3 py-1.5 text-center font-timing text-xs" :class="r.points && r.points > 0 ? 'text-[#00d25b] font-bold' : 'text-[#444]'">{{ r.points || 0 }}</td>
+              <td class="px-3 py-1.5 text-[10px]" :class="r.status === 'Finished' ? 'text-[#444]' : 'text-[#ffc906]'">{{ r.status }}</td>
             </tr>
           </tbody>
         </table>

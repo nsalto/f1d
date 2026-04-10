@@ -23,8 +23,8 @@ const navigation = [
       <div class="max-w-screen-2xl mx-auto px-4 h-12 flex items-center gap-6">
         <NuxtLink to="/" class="flex items-center gap-1.5 flex-shrink-0">
           <span class="font-timing text-base font-bold text-[#e10600] tracking-tight">F1</span>
-          <span class="text-[10px] font-medium text-[#444] uppercase tracking-widest mt-px">DASHBOARD</span>
-          <span class="font-timing text-[10px] text-[#2a2a2a] ml-1">{{ currentSeason }}</span>
+          <span class="text-[10px] font-semibold text-[#8a8a8a] uppercase tracking-widest mt-px">DASHBOARD</span>
+          <span class="font-timing text-[10px] text-[#444] ml-1">{{ currentSeason }}</span>
         </NuxtLink>
 
         <div class="w-px h-4 bg-[#1f1f1f] hidden md:block" aria-hidden="true" />
@@ -57,7 +57,7 @@ const navigation = [
 
     <!-- Footer -->
     <footer class="border-t border-[#141414] mt-12 py-4">
-      <div class="max-w-screen-2xl mx-auto px-4 text-center text-[10px] text-[#2a2a2a]">
+      <div class="max-w-screen-2xl mx-auto px-4 text-center text-[10px] text-[#444]">
         Data: <a href="https://api.jolpi.ca" target="_blank" class="text-[#444] hover:text-[#8a8a8a]">Jolpica</a>
         + <a href="https://openf1.org" target="_blank" class="text-[#444] hover:text-[#8a8a8a]">OpenF1</a>
         + <a href="https://www.formula1.com" target="_blank" class="text-[#444] hover:text-[#8a8a8a]">F1 Live Timing</a>

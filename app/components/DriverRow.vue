@@ -168,7 +168,7 @@ watch(() => props.lastLap, (newVal, oldVal) => {
         <span v-if="inPit" class="text-[9px] font-bold text-[#ffc906] bg-[#ffc906]/10 px-1 rounded">PIT</span>
         <span v-else-if="pitOut" class="text-[9px] font-bold text-[#00d25b] bg-[#00d25b]/10 px-1 rounded">OUT</span>
         <span v-else-if="retired" class="text-[9px] font-bold text-[#e10600] bg-[#e10600]/10 px-1 rounded">RET</span>
-        <span v-else-if="pitStops" class="font-timing text-[10px] text-[#2a2a2a]">{{ pitStops }}</span>
+        <span v-else-if="pitStops" class="font-timing text-[10px] text-[#444]">{{ pitStops }}</span>
       </div>
     </td>
   </tr>

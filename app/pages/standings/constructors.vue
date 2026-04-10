@@ -12,7 +12,7 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
 <template>
   <div>
     <div class="flex items-center gap-3 mb-4">
-      <h1 class="text-lg font-bold text-[#f0f0f0]">Constructors {{ currentSeason }}</h1>
+      <h1 class="text-xl font-bold text-[#f0f0f0]">Constructors {{ currentSeason }}</h1>
       <div class="flex gap-1">
         <NuxtLink to="/standings/drivers"
           class="text-[10px] font-bold px-2.5 py-1 rounded text-[#444] hover:text-[#8a8a8a]">Drivers</NuxtLink>
@@ -29,10 +29,10 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
         <img
           :src="`/teams/logos/${getTeamIdByName(c.constructorName)}.webp`"
           :alt="c.constructorName"
-          width="24"
-          height="24"
+          width="32"
+          height="32"
           loading="lazy"
-          class="w-6 h-6 object-contain"
+          class="w-8 h-8 object-contain"
         />
         <div class="flex-1">
           <h3 class="text-base font-bold text-[#f0f0f0]">{{ c.constructorName.replace(/\s+F1\s+Team\s*$/i, '') }}</h3>

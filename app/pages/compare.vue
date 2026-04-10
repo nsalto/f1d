@@ -31,7 +31,7 @@ const d2 = computed(() => allDrivers.value?.find(d => d.driverId === driver2.val
 
 <template>
   <div>
-    <h1 class="text-lg font-bold text-[#f0f0f0] mb-4">Compare Drivers</h1>
+    <h1 class="text-xl font-bold text-[#f0f0f0] mb-4">Compare Drivers</h1>
 
     <!-- Selectors -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -90,7 +90,13 @@ const d2 = computed(() => allDrivers.value?.find(d => d.driverId === driver2.val
     </div>
 
     <div v-else class="text-center py-20">
-      <p class="text-xs text-[#444]">Select two drivers to compare</p>
+      <div class="w-16 h-16 rounded-full bg-[#0f0f0f] border border-[#1f1f1f] flex items-center justify-center mx-auto mb-4">
+        <UIcon name="i-lucide-git-compare-arrows" class="w-6 h-6 text-[#444]" aria-hidden="true" />
+      </div>
+      <h2 class="text-sm font-bold text-[#8a8a8a] mb-1">Compare Drivers</h2>
+      <p class="text-xs text-[#444] max-w-sm mx-auto">
+        Select two drivers from the dropdowns above to see a head-to-head comparison.
+      </p>
     </div>
   </div>
 </template>
