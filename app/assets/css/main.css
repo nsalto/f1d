@@ -42,6 +42,312 @@
   --color-tyre-wet:    #0072c6;
 }
 
+/* ═══════════════════════════════════════════════════
+   EPIC VISUAL SYSTEM — F1 BROADCAST GRADE
+   ═══════════════════════════════════════════════════ */
+
+/* --- Noise texture overlay sutil --- */
+body {
+  background-color: #080808;
+  /* Grain SVG inline como data URI */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* --- Card base con glass morphism --- */
+.card-glass {
+  background: linear-gradient(135deg, rgba(15,15,15,0.95) 0%, rgba(10,10,10,0.98) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer interior muy sutil en cards */
+.card-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(225,6,0,0.01) 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* --- Glow rojo en cards principales --- */
+.card-glow {
+  box-shadow:
+    0 0 0 1px rgba(225, 6, 0, 0.08),
+    0 4px 24px rgba(0, 0, 0, 0.6),
+    0 0 60px rgba(225, 6, 0, 0.04);
+  transition: box-shadow 0.3s ease;
+}
+
+.card-glow:hover {
+  box-shadow:
+    0 0 0 1px rgba(225, 6, 0, 0.18),
+    0 8px 32px rgba(0, 0, 0, 0.7),
+    0 0 80px rgba(225, 6, 0, 0.08);
+}
+
+/* --- Glow intenso para card NEXT RACE --- */
+.card-hero-glow {
+  box-shadow:
+    0 0 0 1px rgba(225, 6, 0, 0.15),
+    0 8px 40px rgba(0, 0, 0, 0.8),
+    0 0 100px rgba(225, 6, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition: box-shadow 0.4s ease;
+}
+
+.card-hero-glow:hover {
+  box-shadow:
+    0 0 0 1px rgba(225, 6, 0, 0.25),
+    0 12px 50px rgba(0, 0, 0, 0.9),
+    0 0 120px rgba(225, 6, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* --- Scan line effect tipo broadcast --- */
+.scan-lines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-lines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --- Scan line muy sutil para header --- */
+.header-broadcast {
+  position: relative;
+}
+
+.header-broadcast::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.04) 3px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- Red accent line con glow --- */
+.accent-line-red {
+  height: 2px;
+  background: linear-gradient(90deg, #e10600 0%, rgba(225,6,0,0.4) 60%, transparent 100%);
+  box-shadow: 0 0 8px rgba(225, 6, 0, 0.5), 0 0 20px rgba(225, 6, 0, 0.2);
+}
+
+/* --- Corner cut decorativo tipo F1 timing tower --- */
+.corner-cut {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+
+.corner-cut-sm {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+/* --- Diagonal stripe accent (top-left) --- */
+.stripe-accent {
+  position: relative;
+}
+
+.stripe-accent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #e10600 0%, rgba(225,6,0,0.1) 100%);
+  box-shadow: 0 0 10px rgba(225, 6, 0, 0.4);
+}
+
+/* --- Flip card countdown con glow --- */
+.flip-card { perspective: 400px; }
+.flip-number-glow {
+  text-shadow: 0 0 20px rgba(225, 6, 0, 0.3), 0 0 40px rgba(225, 6, 0, 0.1);
+}
+
+/* --- Live badge pulsante --- */
+@keyframes live-pulse-ring {
+  0%   { transform: scale(1); opacity: 0.8; }
+  70%  { transform: scale(1.8); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.live-indicator {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-indicator::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e10600;
+  box-shadow: 0 0 8px #e10600;
+  flex-shrink: 0;
+  animation: live-pulse-ring 1.8s ease-out infinite;
+}
+
+/* --- Gradient background sutil para page body --- */
+.page-bg-gradient {
+  background:
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(225,6,0,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 30% at 80% 100%, rgba(225,6,0,0.02) 0%, transparent 70%),
+    #080808;
+}
+
+/* --- Row highlight mejorado para standings --- */
+.standings-row {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.standings-row::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background: rgba(225, 6, 0, 0.06);
+  transition: width 0.25s ease;
+  pointer-events: none;
+}
+
+.standings-row:hover::after {
+  width: 100%;
+}
+
+/* --- Points bar mejorada --- */
+.points-bar {
+  position: relative;
+  height: 3px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.points-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* --- Hover glow en nav links --- */
+.nav-link-hover {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.nav-link-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1px;
+  background: #e10600;
+  box-shadow: 0 0 6px #e10600;
+  transition: width 0.25s ease;
+}
+
+.nav-link-hover:hover::after,
+.nav-link-hover.router-link-exact-active::after {
+  width: 70%;
+}
+
+/* --- Active nav con glow rojo --- */
+.nav-active-glow {
+  box-shadow: 0 0 12px rgba(225, 6, 0, 0.2);
+  background: rgba(225, 6, 0, 0.06) !important;
+  color: #f0f0f0 !important;
+}
+
+/* --- Countdown flip mejorado --- */
+.countdown-unit {
+  background: linear-gradient(180deg, #111111 0%, #0a0a0a 50%, #111111 100%);
+  border: 1px solid #1f1f1f;
+  border-radius: 10px;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 0 0 1px rgba(225,6,0,0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.countdown-unit::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(225, 6, 0, 0.15);
+  box-shadow: 0 0 4px rgba(225, 6, 0, 0.3);
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+/* --- Race card NEXT con glow rojo intenso --- */
+.race-card-next {
+  box-shadow:
+    0 0 0 1px rgba(225, 6, 0, 0.2),
+    0 4px 30px rgba(0,0,0,0.7),
+    0 0 60px rgba(225, 6, 0, 0.06);
+}
+
+/* --- Table row hover con borde izquierdo animado --- */
+.table-row-epic {
+  transition: background-color 0.15s ease, border-left-color 0.15s ease;
+  border-left: 2px solid transparent;
+}
+
+.table-row-epic:hover {
+  background-color: rgba(225, 6, 0, 0.03);
+  border-left-color: #e10600;
+}
+
+/* --- Glow en position badge podium --- */
+.podium-p1 {
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.25), 0 0 4px rgba(255, 215, 0, 0.4);
+}
+.podium-p2 {
+  box-shadow: 0 0 10px rgba(192, 192, 192, 0.2);
+}
+.podium-p3 {
+  box-shadow: 0 0 10px rgba(205, 127, 50, 0.2);
+}
+
 /* Timing monospace */
 .font-timing {
   font-family: var(--font-mono);
@@ -147,6 +453,38 @@
 .fastest-lap-enter-from { opacity: 0; }
 .fastest-lap-leave-to { opacity: 0; }
 
+/* --- Glow pulsante para card activa (LIVE) --- */
+@keyframes card-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(225, 6, 0, 0.15),
+      0 8px 40px rgba(0, 0, 0, 0.8),
+      0 0 100px rgba(225, 6, 0, 0.06);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(225, 6, 0, 0.25),
+      0 8px 40px rgba(0, 0, 0, 0.8),
+      0 0 120px rgba(225, 6, 0, 0.10);
+  }
+}
+
+.card-live-pulse {
+  animation: card-glow-pulse 3s ease-in-out infinite;
+}
+
+/* --- Accent line pulsante para LIVE --- */
+@keyframes accent-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(225, 6, 0, 0.5); }
+  50%       { opacity: 0.7; box-shadow: 0 0 16px rgba(225, 6, 0, 0.8); }
+}
+
+.accent-line-live {
+  height: 2px;
+  background: linear-gradient(90deg, #e10600 0%, rgba(225,6,0,0.4) 60%, transparent 100%);
+  animation: accent-pulse 2s ease-in-out infinite;
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .data-updated,
@@ -154,7 +492,9 @@
   .pos-lost,
   .data-highlight,
   .number-updated,
-  .battle-row { animation: none; }
+  .battle-row,
+  .card-live-pulse,
+  .accent-line-live { animation: none; }
 
   .tick-enter-active,
   .tick-leave-active,
