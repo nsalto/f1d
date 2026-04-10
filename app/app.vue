@@ -4,6 +4,10 @@ useHead({
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     { name: 'theme-color', content: '#080808' }
   ],
+  link: [
+    { rel: 'preconnect', href: 'https://media.formula1.com' },
+    { rel: 'dns-prefetch', href: 'https://media.formula1.com' }
+  ],
   htmlAttrs: {
     lang: 'es',
     style: 'color-scheme: dark'

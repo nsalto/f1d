@@ -1,10 +1,14 @@
 // F1 2026 Driver Roster
-// Photo URLs from formula1.com Cloudinary CDN
+// Photo URLs from formula1.com Cloudinary CDN — size param controls quality/speed tradeoff
 const F1_IMG = 'https://media.formula1.com/image/upload'
-const F1_PHOTO = (team: string, id: string) =>
-  `${F1_IMG}/f_auto,c_limit,w_360,q_auto/v1740000001/common/f1/2026/${team}/${id}/2026${team}${id}right`
-const F1_NUMBER = (team: string, id: string) =>
-  `${F1_IMG}/f_auto,c_fit,w_256,q_auto/v1740000001/common/f1/2026/${team}/${id}/2026${team}${id}numberwhitefrless`
+const F1_PHOTO_BASE = (team: string, id: string) =>
+  `v1740000001/common/f1/2026/${team}/${id}/2026${team}${id}right`
+const F1_NUMBER_BASE = (team: string, id: string) =>
+  `v1740000001/common/f1/2026/${team}/${id}/2026${team}${id}numberwhitefrless`
+
+// Size presets: sm=48px thumbs, md=100px cards, lg=200px hero
+const PHOTO_SIZES = { sm: 64, md: 120, lg: 240 } as const
+type PhotoSize = keyof typeof PHOTO_SIZES
 
 export const DRIVERS_2026 = [
   { number: '1', givenName: 'Max', familyName: 'Verstappen', nameAcronym: 'VER', team: 'Red Bull', teamId: 'red-bull', nationality: 'Dutch', f1Id: 'maxver01', f1Team: 'redbullracing' },
@@ -31,27 +35,29 @@ export const DRIVERS_2026 = [
   { number: '77', givenName: 'Valtteri', familyName: 'Bottas', nameAcronym: 'BOT', team: 'Cadillac', teamId: 'cadillac', nationality: 'Finnish', f1Id: 'valbot01', f1Team: 'cadillac' }
 ]
 
-// Get driver photo URL
-export function getDriverPhoto(driverIdOrName: string): string {
-  const driver = DRIVERS_2026.find(d =>
+// Find driver by any identifier
+function findDriver(driverIdOrName: string) {
+  return DRIVERS_2026.find(d =>
     d.nameAcronym === driverIdOrName ||
     d.familyName.toLowerCase() === driverIdOrName.toLowerCase() ||
     d.number === driverIdOrName ||
     `${d.givenName} ${d.familyName}`.toLowerCase() === driverIdOrName.toLowerCase()
   )
+}
+
+// Get driver photo URL — size: sm (thumbs 32-48px), md (cards 100px), lg (hero 200px+)
+export function getDriverPhoto(driverIdOrName: string, size: PhotoSize = 'md'): string {
+  const driver = findDriver(driverIdOrName)
   if (!driver) return ''
-  return F1_PHOTO(driver.f1Team, driver.f1Id)
+  const w = PHOTO_SIZES[size]
+  return `${F1_IMG}/f_auto,c_limit,w_${w},q_auto/${F1_PHOTO_BASE(driver.f1Team, driver.f1Id)}`
 }
 
 // Get driver number graphic URL
 export function getDriverNumberImg(driverIdOrName: string): string {
-  const driver = DRIVERS_2026.find(d =>
-    d.nameAcronym === driverIdOrName ||
-    d.familyName.toLowerCase() === driverIdOrName.toLowerCase() ||
-    d.number === driverIdOrName
-  )
+  const driver = findDriver(driverIdOrName)
   if (!driver) return ''
-  return F1_NUMBER(driver.f1Team, driver.f1Id)
+  return `${F1_IMG}/f_auto,c_fit,w_128,q_auto/${F1_NUMBER_BASE(driver.f1Team, driver.f1Id)}`
 }
 
 export const TEAMS_2026 = [

@@ -64,7 +64,7 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
               <div class="flex items-center gap-2.5">
                 <img
                   v-if="getDriverPhoto(d.familyName)"
-                  :src="getDriverPhoto(d.familyName)"
+                  :src="getDriverPhoto(d.familyName, 'sm')"
                   :alt="d.familyName"
                   width="32"
                   height="32"
