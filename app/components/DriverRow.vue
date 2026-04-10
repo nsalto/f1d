@@ -20,6 +20,7 @@ const props = defineProps<{
   lastLapPersonal?: boolean
   pitStops?: number
   compound?: string
+  tyreAge?: number
   inPit?: boolean
   pitOut?: boolean
   retired?: boolean
@@ -161,14 +162,19 @@ watch(() => props.lastLap, (newVal, oldVal) => {
     <!-- Best lap -->
     <td class="px-3 py-1.5 font-timing text-xs text-right text-[#444]">{{ bestLap }}</td>
 
-    <!-- Tyre + Pit -->
+    <!-- Tyre + Age + Pit -->
     <td class="px-3 py-1.5 text-center">
-      <div class="flex items-center justify-center gap-2">
+      <div class="flex items-center justify-center gap-1.5">
         <TyreCompound v-if="compound && !retired" :compound="compound" size="xs" />
+        <span v-if="compound && !retired && tyreAge" class="font-timing text-[10px] text-[#8a8a8a]">
+          L{{ tyreAge }}
+        </span>
         <span v-if="inPit" class="text-[9px] font-bold text-[#ffc906] bg-[#ffc906]/10 px-1 rounded">PIT</span>
         <span v-else-if="pitOut" class="text-[9px] font-bold text-[#00d25b] bg-[#00d25b]/10 px-1 rounded">OUT</span>
         <span v-else-if="retired" class="text-[9px] font-bold text-[#e10600] bg-[#e10600]/10 px-1 rounded">RET</span>
-        <span v-else-if="pitStops" class="font-timing text-[10px] text-[#444]">{{ pitStops }}</span>
+        <span v-if="pitStops && !inPit && !pitOut && !retired" class="font-timing text-[10px] text-[#444] border-l border-[#1f1f1f] pl-1.5 ml-0.5">
+          {{ pitStops }}s
+        </span>
       </div>
     </td>
   </tr>

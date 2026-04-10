@@ -59,6 +59,7 @@ const sortedDrivers = computed(() => {
         lastLapPersonal: data.LastLapTime?.PersonalFastest || false,
         bestLap: data.BestLapTime?.Value || '',
         compound: data.Compound || '',
+        tyreAge: data.NumberOfLaps || 0,
         inPit: data.InPit || false,
         pitOut: data.PitOut || false,
         pitStops: data.NumberOfPitStops || 0,
@@ -303,6 +304,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
               :last-lap-fastest="d.lastLapFastest"
               :last-lap-personal="d.lastLapPersonal"
               :compound="d.compound"
+              :tyre-age="d.tyreAge"
               :pit-stops="d.pitStops"
               :in-pit="d.inPit"
               :pit-out="d.pitOut"
