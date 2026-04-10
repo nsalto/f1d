@@ -413,6 +413,9 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
           </dl>
         </div>
 
+        <!-- Pit Stop Feed -->
+        <LivePitFeed :drivers="sortedDrivers" />
+
         <!-- Race Control -->
         <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4">
           <h3 class="text-[10px] font-medium text-[#444] uppercase tracking-widest mb-3">Race Control</h3>

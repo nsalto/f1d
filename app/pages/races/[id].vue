@@ -177,37 +177,95 @@ const maxLap = computed(() => {
 
     <!-- Qualifying -->
     <div v-if="activeTab === 'qualifying'">
-      <div v-if="qualifying?.length" class="rounded-xl bg-[#0a0a0a] border border-[#141414] overflow-hidden">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-[#1f1f1f] text-[10px] text-[#444] uppercase tracking-wider">
-              <th class="px-3 py-2 text-left w-10">Pos</th>
-              <th class="px-3 py-2 text-left">Driver</th>
-              <th class="px-3 py-2 text-left">Team</th>
-              <th class="px-3 py-2 text-right">Q1</th>
-              <th class="px-3 py-2 text-right">Q2</th>
-              <th class="px-3 py-2 text-right">Q3</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="q in qualifying" :key="q.driverId" class="border-b border-[#0f0f0f] hover:bg-[#0f0f0f]">
-              <td class="px-3 py-1.5"><LivePositionBadge :position="q.position || 99" size="sm" /></td>
-              <td class="px-3 py-1.5">
-                <span class="text-[#8a8a8a] text-xs">{{ q.givenName }} </span>
-                <span class="text-[#f0f0f0] text-xs font-bold">{{ q.familyName }}</span>
-              </td>
-              <td class="px-3 py-1.5">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-[3px] h-4 rounded-full" :style="{ backgroundColor: getTeamColor(q.constructorName || '') }" />
-                  <span class="text-xs text-[#8a8a8a]">{{ q.constructorName }}</span>
-                </div>
-              </td>
-              <td class="px-3 py-1.5 text-right font-timing text-xs text-[#8a8a8a]">{{ q.q1 || '-' }}</td>
-              <td class="px-3 py-1.5 text-right font-timing text-xs text-[#8a8a8a]">{{ q.q2 || '-' }}</td>
-              <td class="px-3 py-1.5 text-right font-timing text-xs" :class="q.position === 1 ? 'text-[#9f00ff] font-bold' : 'text-[#f0f0f0]'">{{ q.q3 || '-' }}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div v-if="qualifying?.length" class="space-y-4">
+        <!-- Knockout zone legend -->
+        <div class="flex items-center gap-4 text-[10px]">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm bg-[#9f00ff]" /> Pole</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm bg-[#00d25b]" /> Q3</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm bg-[#ffc906]" /> Q2 knockout</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm bg-[#e10600]" /> Q1 knockout</span>
+        </div>
+
+        <div class="card-glass card-glow rounded-2xl overflow-hidden">
+          <div class="accent-line-red w-full" />
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-[#141414] text-[9px] text-[#333] uppercase tracking-[0.15em]"
+                  style="background: rgba(225,6,0,0.02);">
+                <th class="px-3 py-2.5 text-left w-10">Pos</th>
+                <th class="px-3 py-2.5 text-left">Driver</th>
+                <th class="px-3 py-2.5 text-left">Team</th>
+                <th class="px-3 py-2.5 text-right">Q1</th>
+                <th class="px-3 py-2.5 text-right">Q2</th>
+                <th class="px-3 py-2.5 text-right">Q3</th>
+                <th class="px-3 py-2.5 text-right w-20">Gap</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="q in qualifying" :key="q.driverId"
+                class="border-b border-[#0c0c0c] transition-colors group"
+                :class="{
+                  'hover:bg-[rgba(159,0,255,0.03)]': q.position === 1,
+                  'hover:bg-[rgba(255,255,255,0.015)]': q.position > 1 && q.position <= 10,
+                  'bg-[rgba(255,201,6,0.02)] hover:bg-[rgba(255,201,6,0.04)]': q.position > 10 && q.position <= 15,
+                  'bg-[rgba(225,6,0,0.02)] hover:bg-[rgba(225,6,0,0.04)]': q.position > 15
+                }">
+                <td class="px-3 py-2">
+                  <LivePositionBadge :position="q.position || 99" size="sm" />
+                </td>
+                <td class="px-3 py-2">
+                  <div class="flex items-center gap-2">
+                    <img
+                      v-if="getDriverPhoto(q.familyName)"
+                      :src="getDriverPhoto(q.familyName, 'sm')"
+                      :alt="q.familyName"
+                      width="28"
+                      height="28"
+                      loading="lazy"
+                      class="w-7 h-7 rounded-lg object-cover object-top shrink-0"
+                    />
+                    <div>
+                      <span class="text-[#555] text-xs">{{ q.givenName }} </span>
+                      <span class="text-[#f0f0f0] text-xs font-black tracking-tight group-hover:text-white transition-colors">{{ q.familyName }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 py-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-[3px] h-4 rounded-full" :style="{ backgroundColor: getTeamColor(q.constructorName || '') }" />
+                    <span class="text-xs text-[#555]">{{ (q.constructorName || '').replace(/\s+F1\s+Team\s*$/i, '') }}</span>
+                  </div>
+                </td>
+                <td class="px-3 py-2 text-right font-timing text-xs"
+                    :class="q.position > 15 ? 'text-[#e10600]/70' : 'text-[#8a8a8a]'">
+                  {{ q.q1 || '-' }}
+                </td>
+                <td class="px-3 py-2 text-right font-timing text-xs"
+                    :class="q.position > 10 && q.position <= 15 ? 'text-[#ffc906]/70' : 'text-[#8a8a8a]'">
+                  {{ q.q2 || '-' }}
+                </td>
+                <td class="px-3 py-2 text-right font-timing text-xs font-bold"
+                    :class="{
+                      'text-[#9f00ff]': q.position === 1,
+                      'text-[#00d25b]': q.position > 1 && q.position <= 10 && q.q3,
+                      'text-[#444]': !q.q3
+                    }"
+                    :style="q.position === 1 ? 'text-shadow: 0 0 8px rgba(159,0,255,0.5)' : ''">
+                  {{ q.q3 || '-' }}
+                </td>
+                <td class="px-3 py-2 text-right font-timing text-[10px] text-[#333]">
+                  <template v-if="q.position === 1">
+                    <span class="text-[#9f00ff] font-bold">POLE</span>
+                  </template>
+                  <template v-else-if="qualifying[0]?.q3 && q.q3">
+                    +{{ (parseFloat(q.q3.replace(/[^\d.]/g, '')) - parseFloat(qualifying[0].q3.replace(/[^\d.]/g, ''))).toFixed(3) }}
+                  </template>
+                  <template v-else>-</template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <p v-else class="text-[#444] text-xs text-center py-12">Qualifying not available yet\u2026</p>
     </div>

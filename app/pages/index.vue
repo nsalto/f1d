@@ -157,6 +157,9 @@ onUnmounted(() => clearInterval(interval))
            ╚══════════════════════════════╝ -->
       <div class="space-y-5">
 
+        <!-- Weather -->
+        <WeatherWidget />
+
         <!-- Drivers Championship -->
         <div class="card-glass card-glow rounded-2xl overflow-hidden">
           <div class="accent-line-red w-full" />
