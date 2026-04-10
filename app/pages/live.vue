@@ -70,6 +70,35 @@ const sortedDrivers = computed(() => {
     .sort((a, b) => a.position - b.position)
 })
 
+// Battle detection: drivers within 1s of each other (DRS range)
+const battleDrivers = computed(() => {
+  const battles = new Set<string>()
+  const drivers = sortedDrivers.value
+  for (let i = 1; i < drivers.length; i++) {
+    const interval = drivers[i].interval
+    if (!interval) continue
+    const gap = parseFloat(interval.replace('+', ''))
+    if (!isNaN(gap) && gap > 0 && gap < 1.0) {
+      battles.add(drivers[i].number)
+      battles.add(drivers[i - 1].number)
+    }
+  }
+  return battles
+})
+
+// Fastest lap flash
+const fastestLapFlash = ref(false)
+const prevFastestDriver = ref('')
+
+watch(sortedDrivers, (drivers) => {
+  const fastest = drivers.find(d => d.lastLapFastest)
+  if (fastest && fastest.tla !== prevFastestDriver.value) {
+    prevFastestDriver.value = fastest.tla
+    fastestLapFlash.value = true
+    setTimeout(() => { fastestLapFlash.value = false }, 3000)
+  }
+})
+
 const rcMessages = computed(() => {
   if (!raceControlMessages.value?.Messages) return []
   return Object.values(raceControlMessages.value.Messages as Record<string, any>)
@@ -236,7 +265,11 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
     <!-- Live content -->
     <div v-else-if="connected" class="grid grid-cols-1 lg:grid-cols-4 gap-4">
       <!-- Timing tower -->
-      <div class="lg:col-span-3 rounded-xl bg-[#0a0a0a] border border-[#141414] overflow-hidden">
+      <div class="lg:col-span-3 rounded-xl bg-[#0a0a0a] border border-[#141414] overflow-hidden relative">
+        <!-- Fastest lap banner -->
+        <transition name="fastest-lap">
+          <div v-if="fastestLapFlash" class="absolute inset-x-0 top-0 z-20 bg-gradient-to-b from-[#9f00ff]/20 to-transparent h-16 pointer-events-none" />
+        </transition>
         <!-- Timing table with header and rows -->
         <table class="w-full">
           <thead>
@@ -277,6 +310,7 @@ onUnmounted(() => { eventSource?.close(); clearInterval(clockInterval) })
               :stopped="d.stopped"
               :catching="d.catching"
               :sectors="d.sectors"
+              :in-battle="battleDrivers.has(d.number)"
             />
           </tbody>
         </table>

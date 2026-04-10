@@ -75,6 +75,13 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
         </tbody>
       </table>
     </div>
-    <p v-else class="text-[#444] text-sm text-center py-12">Loading standings\u2026</p>
+    <div v-else class="rounded-xl bg-[#0a0a0a] border border-[#141414] p-4">
+      <SkeletonCard :lines="10" show-bar />
+    </div>
+
+    <!-- Points Progression Chart -->
+    <div class="mt-4">
+      <PointsChart :season="currentSeason" />
+    </div>
   </div>
 </template>

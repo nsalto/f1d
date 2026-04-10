@@ -33,6 +33,22 @@ function getRaceStatus(date: string): 'completed' | 'next' | 'upcoming' {
         :status="getRaceStatus(race.date)"
       />
     </div>
-    <p v-else class="text-[#444] text-sm text-center py-12">Loading calendar\u2026</p>
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div v-for="i in 8" :key="i" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4 animate-pulse">
+        <div class="flex justify-between mb-3">
+          <div class="h-3 bg-[#1a1a1a] rounded w-10" />
+          <div class="w-6 h-6 bg-[#1a1a1a] rounded" />
+        </div>
+        <div class="space-y-2">
+          <div class="h-4 bg-[#1a1a1a] rounded w-3/4" />
+          <div class="h-3 bg-[#141414] rounded w-1/2" />
+          <div class="h-2 bg-[#141414] rounded w-2/5" />
+        </div>
+        <div class="mt-3 pt-3 border-t border-[#141414] flex justify-between">
+          <div class="h-3 bg-[#1a1a1a] rounded w-16" />
+          <div class="h-3 bg-[#141414] rounded w-14" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>

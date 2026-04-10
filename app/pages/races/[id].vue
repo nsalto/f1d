@@ -104,6 +104,24 @@ const maxLap = computed(() => {
 
     <!-- Race Results -->
     <div v-if="activeTab === 'results'">
+      <!-- Podium -->
+      <div v-if="results?.length && results.length >= 3" class="grid grid-cols-3 gap-3 mb-4 items-end">
+        <div v-for="(pos, idx) in [1, 0, 2]" :key="idx"
+          class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden text-center podium-card"
+          :style="{ animationDelay: `${idx * 0.15}s` }">
+          <div class="h-[3px]" :style="{ backgroundColor: getTeamColor(results[pos].constructorName || '') }" />
+          <div :class="['py-4 px-3', pos === 0 ? 'pb-6' : 'pb-3']">
+            <LivePositionBadge :position="results[pos].position || pos + 1" :size="pos === 0 ? 'lg' : 'md'" class="mx-auto mb-2" />
+            <p class="text-sm font-bold text-[#f0f0f0]">{{ results[pos].familyName }}</p>
+            <p class="text-[10px] text-[#8a8a8a]">{{ results[pos].givenName }}</p>
+            <p class="text-[10px] mt-1" :style="{ color: getTeamColor(results[pos].constructorName || '') }">
+              {{ (results[pos].constructorName || '').replace(/\s+F1\s+Team\s*$/i, '') }}
+            </p>
+            <p class="font-timing text-xs text-[#444] mt-1">{{ results[pos].time || '' }}</p>
+          </div>
+        </div>
+      </div>
+
       <div v-if="results?.length" class="rounded-xl bg-[#0a0a0a] border border-[#141414] overflow-hidden">
         <table class="w-full text-sm">
           <thead>

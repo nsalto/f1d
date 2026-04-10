@@ -84,11 +84,12 @@
 }
 .data-highlight { animation: highlight-pulse 1.2s ease-out; }
 
-/* Countdown digit tick animation */
-.tick-enter-active { transition: transform 0.15s ease-out, opacity 0.15s; }
-.tick-leave-active { transition: transform 0.1s ease-in, opacity 0.1s; }
-.tick-enter-from   { transform: translateY(-6px); opacity: 0; }
-.tick-leave-to     { transform: translateY(6px); opacity: 0; }
+/* Flip card countdown animation */
+.flip-card { perspective: 400px; }
+.flip-enter-active { transition: transform 0.3s ease-out, opacity 0.2s ease-out; }
+.flip-leave-active { transition: transform 0.2s ease-in, opacity 0.15s ease-in; }
+.flip-enter-from   { transform: rotateX(90deg); opacity: 0; }
+.flip-leave-to     { transform: rotateX(-90deg); opacity: 0; }
 
 /* Row transitions */
 .row-update-enter-active,
@@ -103,10 +104,48 @@
 }
 .number-updated { animation: number-change 0.4s ease-out; }
 
+/* Podium card entrance */
+@keyframes podium-rise {
+  0%   { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.podium-card {
+  animation: podium-rise 0.5s ease-out both;
+}
+
+/* Page transitions */
+.page-enter-active { transition: opacity 0.2s ease-out, transform 0.2s ease-out; }
+.page-leave-active { transition: opacity 0.15s ease-in, transform 0.15s ease-in; }
+.page-enter-from   { opacity: 0; transform: translateY(8px); }
+.page-leave-to     { opacity: 0; transform: translateY(-4px); }
+
 /* Circuit SVG styling — filter converts black strokes to F1 red on dark backgrounds */
 .circuit-svg {
   filter: invert(1) sepia(1) saturate(3) hue-rotate(320deg) brightness(0.9);
 }
+
+/* Battle row highlight (DRS range) */
+@keyframes battle-pulse {
+  0%, 100% { border-left-color: rgba(225, 6, 0, 0.6); }
+  50%      { border-left-color: rgba(225, 6, 0, 0.2); }
+}
+.battle-row {
+  border-left: 3px solid rgba(225, 6, 0, 0.5);
+  background-color: rgba(225, 6, 0, 0.03);
+  animation: battle-pulse 2s ease-in-out infinite;
+}
+
+/* Position arrow fade */
+.arrow-fade-enter-active { transition: opacity 0.3s, transform 0.3s; }
+.arrow-fade-leave-active { transition: opacity 0.8s, transform 0.8s; }
+.arrow-fade-enter-from { opacity: 0; transform: scale(0.5); }
+.arrow-fade-leave-to { opacity: 0; transform: scale(0.5); }
+
+/* Fastest lap purple flash */
+.fastest-lap-enter-active { transition: opacity 0.3s ease-out; }
+.fastest-lap-leave-active { transition: opacity 1.5s ease-out; }
+.fastest-lap-enter-from { opacity: 0; }
+.fastest-lap-leave-to { opacity: 0; }
 
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
@@ -114,7 +153,8 @@
   .pos-gained,
   .pos-lost,
   .data-highlight,
-  .number-updated { animation: none; }
+  .number-updated,
+  .battle-row { animation: none; }
 
   .tick-enter-active,
   .tick-leave-active,

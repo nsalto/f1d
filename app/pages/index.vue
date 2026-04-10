@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getCountryFlag } from '~/utils/formatters'
+import { getCountryFlag, normalizeCircuitName } from '~/utils/formatters'
 import { getTeamColor } from '~/utils/team-colors'
 import { getTeamIdByName } from '~/utils/drivers-2026'
 
@@ -41,8 +41,8 @@ onUnmounted(() => clearInterval(interval))
       <!-- Next Race Hero + Circuit -->
       <div class="lg:col-span-2 space-y-4">
         <!-- Next Race Info -->
-        <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden">
-          <div v-if="nextRace" class="p-6">
+        <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden relative">
+          <div v-if="nextRace" class="p-6 relative z-10">
             <div class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent -mt-6 mb-6 -mx-6"
                  style="width: calc(100% + 3rem)" />
 
@@ -57,42 +57,53 @@ onUnmounted(() => clearInterval(interval))
             <p class="text-sm text-[#8a8a8a]">{{ nextRace.circuitName }}</p>
             <p class="text-xs text-[#444]">{{ nextRace.locality }}, {{ nextRace.country }}</p>
 
-            <!-- Countdown -->
-            <div class="mt-4">
-              <div class="grid grid-cols-4 gap-3 max-w-xs">
-                <div class="text-center">
-                  <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
-                    {{ String(countdown.days).padStart(2, '0') }}
+            <!-- Flip Countdown -->
+            <div class="mt-5">
+              <div class="grid grid-cols-4 gap-3 max-w-sm">
+                <div v-for="unit in [
+                  { value: countdown.days, label: 'Days' },
+                  { value: countdown.hours, label: 'Hrs' },
+                  { value: countdown.minutes, label: 'Min' },
+                  { value: countdown.seconds, label: 'Sec' }
+                ]" :key="unit.label" class="text-center">
+                  <div class="flip-card relative bg-[#0a0a0a] border border-[#1f1f1f] rounded-lg overflow-hidden">
+                    <div class="h-[1px] absolute top-1/2 left-0 right-0 bg-[#1f1f1f] z-10" />
+                    <transition name="flip" mode="out-in">
+                      <div :key="unit.value" class="font-timing text-3xl font-bold text-[#f0f0f0] py-3">
+                        {{ String(unit.value).padStart(2, '0') }}
+                      </div>
+                    </transition>
                   </div>
-                  <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Days</div>
-                </div>
-                <div class="text-center">
-                  <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
-                    {{ String(countdown.hours).padStart(2, '0') }}
-                  </div>
-                  <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Hrs</div>
-                </div>
-                <div class="text-center">
-                  <div class="font-timing text-2xl font-bold text-[#f0f0f0]">
-                    {{ String(countdown.minutes).padStart(2, '0') }}
-                  </div>
-                  <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Min</div>
-                </div>
-                <div class="text-center">
-                  <transition name="tick" mode="out-in">
-                    <div :key="countdown.seconds" class="font-timing text-2xl font-bold text-[#f0f0f0]">
-                      {{ String(countdown.seconds).padStart(2, '0') }}
-                    </div>
-                  </transition>
-                  <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1">Secs</div>
+                  <div class="text-[9px] text-[#444] uppercase tracking-wider mt-1.5 font-medium">{{ unit.label }}</div>
                 </div>
               </div>
-              <div class="mt-2 text-[10px] text-[#2a2a2a]">
+              <div class="mt-3 text-[10px] text-[#2a2a2a]">
                 {{ new Date(nextRace.date).toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }) }}
               </div>
             </div>
+
+            <!-- Circuit background watermark -->
+            <img
+              v-if="nextRace.circuitName"
+              :src="`/tracks/svg/${normalizeCircuitName(nextRace.circuitName)}.svg`"
+              alt=""
+              aria-hidden="true"
+              class="absolute right-4 top-1/2 -translate-y-1/2 w-[45%] h-[80%] object-contain opacity-[0.03] circuit-svg pointer-events-none"
+            />
           </div>
-          <div v-else class="p-6 text-[#444] text-sm">Loading data\u2026</div>
+          <div v-else class="p-6">
+            <div class="animate-pulse space-y-4">
+              <div class="h-2 bg-[#1a1a1a] rounded w-24" />
+              <div class="h-6 bg-[#1a1a1a] rounded w-2/3" />
+              <div class="h-3 bg-[#141414] rounded w-1/3" />
+              <div class="grid grid-cols-4 gap-3 max-w-xs mt-4">
+                <div v-for="i in 4" :key="i" class="text-center space-y-2">
+                  <div class="h-8 bg-[#1a1a1a] rounded" />
+                  <div class="h-2 bg-[#141414] rounded w-2/3 mx-auto" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Circuit Map Card -->
@@ -133,7 +144,7 @@ onUnmounted(() => clearInterval(interval))
               <span class="font-timing text-[#f0f0f0] ml-1 font-semibold">{{ d.points }}</span>
             </div>
           </div>
-          <p v-else class="text-[#2a2a2a] text-xs">Loading\u2026</p>
+          <SkeletonCard v-else :lines="5" />
         </div>
 
         <!-- Constructors -->
@@ -158,7 +169,7 @@ onUnmounted(() => clearInterval(interval))
               <span class="font-timing text-[#f0f0f0] ml-1 font-semibold">{{ c.points }}</span>
             </div>
           </div>
-          <p v-else class="text-[#2a2a2a] text-xs">Loading\u2026</p>
+          <SkeletonCard v-else :lines="5" />
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getCountryFlag } from '~/utils/formatters'
+import { getCountryFlag, normalizeCircuitName } from '~/utils/formatters'
 
 defineProps<{
   round: number
@@ -28,7 +28,16 @@ defineProps<{
   >
     <div v-if="status === 'next'" class="h-[2px] w-full bg-gradient-to-r from-[#e10600] to-transparent" />
 
-    <div class="p-4">
+    <!-- Circuit watermark -->
+    <img
+      v-if="circuitName"
+      :src="`/tracks/svg/${normalizeCircuitName(circuitName)}.svg`"
+      alt=""
+      aria-hidden="true"
+      class="absolute right-2 bottom-8 w-[40%] h-[50%] object-contain opacity-[0.04] circuit-svg pointer-events-none"
+    />
+
+    <div class="p-4 relative z-10">
       <div class="flex items-start justify-between mb-3">
         <div class="flex items-center gap-2">
           <span class="font-timing text-[10px] text-[#444] font-medium">R{{ round }}</span>

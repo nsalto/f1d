@@ -47,6 +47,19 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
         </div>
       </div>
     </div>
-    <p v-else class="text-[#444] text-sm text-center py-12">Loading standings\u2026</p>
+    <div v-else class="space-y-2">
+      <div v-for="i in 6" :key="i" class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] p-4 animate-pulse">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full bg-[#1a1a1a]" />
+          <div class="w-1 h-10 rounded-full bg-[#1a1a1a]" />
+          <div class="flex-1 space-y-2">
+            <div class="h-4 bg-[#1a1a1a] rounded w-1/3" />
+            <div class="h-2 bg-[#141414] rounded w-1/5" />
+          </div>
+          <div class="w-48 h-2 bg-[#141414] rounded" />
+          <div class="w-10 h-5 bg-[#1a1a1a] rounded" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>

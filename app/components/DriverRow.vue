@@ -26,6 +26,7 @@ const props = defineProps<{
   stopped?: boolean
   sectors?: Record<string, any> | any[]
   catching?: boolean
+  inBattle?: boolean
 }>()
 
 const teamColor = computed(() => {
@@ -51,15 +52,19 @@ const sectorsList = computed(() => {
   return Object.values(props.sectors)
 })
 
-// Position change animation
+// Position change animation + arrow
 const positionFlashClass = ref('')
 const flashKey = ref(0)
+const posArrow = ref<'up' | 'down' | null>(null)
 
 watch(() => Number(props.position), (newPos, oldPos) => {
   if (oldPos == null || newPos === oldPos) return
-  positionFlashClass.value = newPos < oldPos ? 'pos-gained' : 'pos-lost'
+  const gained = newPos < oldPos
+  positionFlashClass.value = gained ? 'pos-gained' : 'pos-lost'
+  posArrow.value = gained ? 'up' : 'down'
   flashKey.value++
   setTimeout(() => { positionFlashClass.value = '' }, 1300)
+  setTimeout(() => { posArrow.value = null }, 4000)
 })
 
 // Last lap change animation
@@ -79,16 +84,26 @@ watch(() => props.lastLap, (newVal, oldVal) => {
   <tr
     :key="flashKey"
     class="border-b border-[#0f0f0f] hover:bg-[#0f0f0f] transition-colors"
-    :class="[{ 'opacity-30': retired || stopped }, positionFlashClass]"
+    :class="[
+      { 'opacity-30': retired || stopped },
+      positionFlashClass,
+      inBattle ? 'battle-row' : ''
+    ]"
   >
     <!-- Position -->
     <td class="px-3 py-1.5 text-center">
-      <span
-        class="text-xs font-bold w-6 h-6 flex items-center justify-center rounded"
-        :style="{ color: positionColor, backgroundColor: `${teamColor}15` }"
-      >
-        {{ position }}
-      </span>
+      <div class="flex items-center gap-0.5">
+        <span
+          class="text-xs font-bold w-6 h-6 flex items-center justify-center rounded"
+          :style="{ color: positionColor, backgroundColor: `${teamColor}15` }"
+        >
+          {{ position }}
+        </span>
+        <transition name="arrow-fade">
+          <span v-if="posArrow === 'up'" class="text-[8px] text-[#00d25b] font-bold">&#9650;</span>
+          <span v-else-if="posArrow === 'down'" class="text-[8px] text-[#e10600] font-bold">&#9660;</span>
+        </transition>
+      </div>
     </td>
 
     <!-- Team color bar -->
