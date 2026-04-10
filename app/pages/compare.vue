@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getTeamColor } from '~/utils/team-colors'
+import { getDriverPhoto } from '~/utils/drivers-2026'
 
 definePageMeta({ layout: 'default' })
 
@@ -56,24 +57,43 @@ const d2 = computed(() => allDrivers.value?.find(d => d.driverId === driver2.val
     </div>
 
     <div v-if="d1 && d2" class="space-y-4">
-      <!-- Driver cards -->
+      <!-- Driver cards with photos -->
       <div class="grid grid-cols-2 gap-4">
-        <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden">
-          <div class="h-[3px]" :style="{ backgroundColor: getTeamColor(d1.constructorName || '') }" />
-          <div class="p-4 text-center">
-            <p class="text-xl font-bold text-[#f0f0f0] truncate">{{ d1.givenName }} {{ d1.familyName }}</p>
-            <p class="text-xs" :style="{ color: getTeamColor(d1.constructorName || '') }">{{ d1.constructorName }}</p>
-            <p class="font-timing text-3xl font-bold text-[#f0f0f0] mt-2">{{ d1.points }}</p>
-            <p class="text-[10px] text-[#444] uppercase">points</p>
-          </div>
-        </div>
-        <div class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden">
-          <div class="h-[3px]" :style="{ backgroundColor: getTeamColor(d2.constructorName || '') }" />
-          <div class="p-4 text-center">
-            <p class="text-xl font-bold text-[#f0f0f0] truncate">{{ d2.givenName }} {{ d2.familyName }}</p>
-            <p class="text-xs" :style="{ color: getTeamColor(d2.constructorName || '') }">{{ d2.constructorName }}</p>
-            <p class="font-timing text-3xl font-bold text-[#f0f0f0] mt-2">{{ d2.points }}</p>
-            <p class="text-[10px] text-[#444] uppercase">points</p>
+        <div v-for="(d, idx) in [d1, d2]" :key="idx"
+          class="card-glass card-glow rounded-2xl overflow-hidden relative">
+          <div class="h-[3px]" :style="{ backgroundColor: getTeamColor(d.constructorName || '') }" />
+          <div class="p-5 flex items-center gap-4">
+            <!-- Driver photo -->
+            <div class="relative shrink-0">
+              <img
+                v-if="getDriverPhoto(d.familyName)"
+                :src="getDriverPhoto(d.familyName)"
+                :alt="`${d.givenName} ${d.familyName}`"
+                width="100"
+                height="100"
+                class="w-[100px] h-[100px] object-cover object-top rounded-xl"
+                style="mask-image: linear-gradient(to bottom, black 70%, transparent 100%);"
+              />
+              <div v-else class="w-[100px] h-[100px] rounded-xl bg-[#141414] flex items-center justify-center">
+                <span class="font-timing text-2xl text-[#333] font-black">{{ d.driverCode }}</span>
+              </div>
+              <div class="absolute -bottom-1 -right-1 corner-cut-sm px-2 py-0.5"
+                :style="{ backgroundColor: getTeamColor(d.constructorName || '') }">
+                <span class="font-timing text-[10px] font-black text-white">P{{ d.position }}</span>
+              </div>
+            </div>
+            <!-- Info -->
+            <div class="flex-1 min-w-0">
+              <p class="text-xs text-[#555] font-medium">{{ d.givenName }}</p>
+              <p class="text-xl font-black text-[#f0f0f0] truncate tracking-tight">{{ d.familyName }}</p>
+              <p class="text-[10px] font-semibold mt-0.5" :style="{ color: getTeamColor(d.constructorName || '') }">
+                {{ (d.constructorName || '').replace(/\s+F1\s+Team\s*$/i, '') }}
+              </p>
+              <div class="mt-2 flex items-baseline gap-1">
+                <span class="font-timing text-3xl font-black text-[#f0f0f0]">{{ d.points }}</span>
+                <span class="text-[10px] text-[#444] uppercase font-semibold">pts</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

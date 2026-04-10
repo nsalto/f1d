@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getTeamColor } from '~/utils/team-colors'
 import { getCountryFlag, getCompoundColor } from '~/utils/formatters'
+import { getDriverPhoto } from '~/utils/drivers-2026'
 
 definePageMeta({ layout: 'default' })
 
@@ -104,17 +105,32 @@ const maxLap = computed(() => {
 
     <!-- Race Results -->
     <div v-if="activeTab === 'results'">
-      <!-- Podium -->
-      <div v-if="results?.length && results.length >= 3" class="grid grid-cols-3 gap-3 mb-4 items-end">
+      <!-- Podium with photos -->
+      <div v-if="results?.length && results.length >= 3" class="grid grid-cols-3 gap-3 mb-5 items-end">
         <div v-for="(pos, idx) in [1, 0, 2]" :key="idx"
-          class="rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] overflow-hidden text-center podium-card"
+          class="card-glass card-glow rounded-2xl overflow-hidden text-center podium-card"
           :style="{ animationDelay: `${idx * 0.15}s` }">
           <div class="h-[3px]" :style="{ backgroundColor: getTeamColor(results[pos].constructorName || '') }" />
-          <div :class="['py-4 px-3', pos === 0 ? 'pb-6' : 'pb-3']">
+          <div :class="['px-3 pt-4', pos === 0 ? 'pb-5' : 'pb-3']">
+            <!-- Driver photo -->
+            <div class="relative mx-auto mb-2" :class="pos === 0 ? 'w-20 h-20' : 'w-14 h-14'">
+              <img
+                v-if="getDriverPhoto(results[pos].familyName)"
+                :src="getDriverPhoto(results[pos].familyName)"
+                :alt="results[pos].familyName"
+                :width="pos === 0 ? 80 : 56"
+                :height="pos === 0 ? 80 : 56"
+                class="w-full h-full object-cover object-top rounded-xl"
+                style="mask-image: linear-gradient(to bottom, black 70%, transparent 100%);"
+              />
+              <div v-else class="w-full h-full rounded-xl bg-[#141414] flex items-center justify-center">
+                <span class="font-timing text-lg text-[#333] font-black">{{ results[pos].driverCode || '' }}</span>
+              </div>
+            </div>
             <LivePositionBadge :position="results[pos].position || pos + 1" :size="pos === 0 ? 'lg' : 'md'" class="mx-auto mb-2" />
-            <p class="text-sm font-bold text-[#f0f0f0]">{{ results[pos].familyName }}</p>
-            <p class="text-[10px] text-[#8a8a8a]">{{ results[pos].givenName }}</p>
-            <p class="text-[10px] mt-1" :style="{ color: getTeamColor(results[pos].constructorName || '') }">
+            <p :class="pos === 0 ? 'text-base' : 'text-sm'" class="font-black text-[#f0f0f0] tracking-tight">{{ results[pos].familyName }}</p>
+            <p class="text-[10px] text-[#555]">{{ results[pos].givenName }}</p>
+            <p class="text-[10px] mt-1 font-semibold" :style="{ color: getTeamColor(results[pos].constructorName || '') }">
               {{ (results[pos].constructorName || '').replace(/\s+F1\s+Team\s*$/i, '') }}
             </p>
             <p class="font-timing text-xs text-[#444] mt-1">{{ results[pos].time || '' }}</p>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getTeamColor } from '~/utils/team-colors'
 import { getCountryFlag } from '~/utils/formatters'
-import { getTeamIdByName } from '~/utils/drivers-2026'
+import { getTeamIdByName, getDriverPhoto } from '~/utils/drivers-2026'
 
 definePageMeta({ layout: 'default' })
 
@@ -62,7 +62,16 @@ const maxPoints = computed(() => standings.value?.[0]?.points || 1)
             </td>
             <td class="px-4 py-3">
               <div class="flex items-center gap-2.5">
-                <span class="text-base leading-none">{{ getCountryFlag(d.nationality || '') }}</span>
+                <img
+                  v-if="getDriverPhoto(d.familyName)"
+                  :src="getDriverPhoto(d.familyName)"
+                  :alt="d.familyName"
+                  width="32"
+                  height="32"
+                  loading="lazy"
+                  class="w-8 h-8 rounded-lg object-cover object-top shrink-0"
+                />
+                <span v-else class="text-base leading-none shrink-0">{{ getCountryFlag(d.nationality || '') }}</span>
                 <div class="flex flex-col leading-tight">
                   <div class="flex items-baseline gap-1.5">
                     <span class="text-[#555] text-xs font-medium">{{ d.givenName }}</span>
