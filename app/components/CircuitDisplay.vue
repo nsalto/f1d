@@ -19,6 +19,13 @@ const sizeClasses = computed(() => {
   }
   return sizes[props.size || 'md']
 })
+
+const imgClasses = computed(() => {
+  // For "full" size, constrain the image so strokes stay thin
+  return props.size === 'full'
+    ? 'max-w-[320px] max-h-[320px] w-full h-full object-contain circuit-svg mx-auto'
+    : 'w-full h-full object-contain circuit-svg'
+})
 </script>
 
 <template>
@@ -32,7 +39,7 @@ const sizeClasses = computed(() => {
         :alt="circuitName ? `${circuitName} circuit layout` : 'Circuit layout'"
         width="200"
         height="200"
-        class="w-full h-full object-contain circuit-svg"
+        :class="imgClasses"
       />
     </div>
     <div v-if="showLabel && circuitName" class="mt-2 text-center">
