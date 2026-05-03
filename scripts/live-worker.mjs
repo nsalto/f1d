@@ -246,13 +246,19 @@ async function shutdown(signal) {
   if (pendingFlush) clearTimeout(pendingFlush)
   try {
     await writeState(state, lastTopic, feedCount)
-  } catch {}
+  } catch (e) {
+    console.warn('[worker] final write failed:', e.message)
+  }
   try {
     if (connection) await connection.stop()
-  } catch {}
+  } catch {
+    // already stopped
+  }
   try {
     await sql.end({ timeout: 5 })
-  } catch {}
+  } catch {
+    // already ended
+  }
   process.exit(0)
 }
 

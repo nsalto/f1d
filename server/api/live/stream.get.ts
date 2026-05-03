@@ -1,33 +1,65 @@
-import { liveTimingPayload, useF1LiveTiming } from '../../utils/f1-live-state'
+import { useDB } from '../../database'
+import { sql as drizzleSql } from 'drizzle-orm'
 
-// GET /api/live/stream — SSE endpoint para updates en tiempo real
+// GET /api/live/stream — SSE que polea la tabla live_state cada 1s y emite snapshots
+// solo cuando hay cambios (detectado por updated_at + feed_count). El worker standalone
+// escribe la tabla; este endpoint la sirve a los clientes.
 //
-// Modelo: PUSH (no polling). El cliente SignalR emite eventos 'state' cuando llega
-// un feed; los coalescemos en una ventana de 200ms para no spamear al cliente
-// cuando llegan ráfagas de updates. Latencia típica: <250ms vs los 2000ms del
-// polling anterior.
-const COALESCE_MS = 200
-const HEARTBEAT_MS = 25_000 // ping para mantener vivo el conn a través de proxies
+// Por qué polling en vez de Postgres LISTEN/NOTIFY: simpler. Polling cada 1s con índice
+// implícito en PK es prácticamente gratis (single-row read) y evita coordinar conexiones
+// dedicadas para LISTEN. Podemos migrar a NOTIFY si más adelante hace falta latencia <1s.
+const POLL_INTERVAL_MS = 1000
+const HEARTBEAT_MS = 25_000
 
 export default defineEventHandler(async (event) => {
-  const client = useF1LiveTiming()
-
-  if (!client) {
-    throw createError({ statusCode: 503, message: 'Live timing not available' })
-  }
-
   setResponseHeaders(event, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache, no-transform',
     'Connection': 'keep-alive',
-    // Disable buffering on nginx if alguna vez se usa
     'X-Accel-Buffering': 'no'
   })
 
+  const db = useDB()
+
+  async function readState() {
+    const rows = await db.execute(drizzleSql`
+      SELECT payload, session_status, session_path, updated_at, feed_count
+      FROM live_state WHERE id = 1
+    `)
+    return (rows as unknown as Array<{
+      payload: Record<string, unknown>
+      session_status: string | null
+      session_path: string | null
+      updated_at: Date | string
+      feed_count: number
+    }>)[0]
+  }
+
+  function buildPayload(row: Awaited<ReturnType<typeof readState>>) {
+    const s = (row?.payload || {}) as Record<string, unknown>
+    return {
+      sessionInfo: s.SessionInfo,
+      trackStatus: s.TrackStatus,
+      weatherData: s.WeatherData,
+      lapCount: s.LapCount,
+      timingData: s.TimingData,
+      raceControlMessages: s.RaceControlMessages,
+      driverList: s.DriverList,
+      extrapolatedClock: s.ExtrapolatedClock,
+      sessionStatus: s.SessionStatus,
+      sessionData: s.SessionData,
+      timingStats: s.TimingStats,
+      timingAppData: s.TimingAppData,
+      championshipPrediction: s.ChampionshipPrediction
+    }
+  }
+
   const stream = new ReadableStream({
-    start(controller) {
+    async start(controller) {
       const encoder = new TextEncoder()
       let closed = false
+      let lastFeedCount = -1
+      let lastUpdatedMs = -1
 
       const send = (payload: unknown) => {
         if (closed) return
@@ -38,52 +70,56 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // 1) Snapshot inicial
-      const initial = client.currentState
-      if (initial && Object.keys(initial).length > 0) {
-        send({ type: 'snapshot', data: liveTimingPayload(client) })
-      } else {
-        send({ type: 'no-session' })
-      }
-
-      // 2) Push updates con coalescing — agrupar ráfagas de feeds en un solo send
-      let pending: ReturnType<typeof setTimeout> | null = null
-      const flush = () => {
-        pending = null
-        const state = client.currentState
-        if (state && Object.keys(state).length > 0) {
-          send({ type: 'update', data: liveTimingPayload(client) })
+      // Snapshot inicial
+      try {
+        const row = await readState()
+        if (row && row.payload && Object.keys(row.payload).length > 0 && row.session_status !== 'initialized') {
+          send({ type: 'snapshot', data: buildPayload(row) })
+          const upd = typeof row.updated_at === 'string' ? new Date(row.updated_at).getTime() : row.updated_at.getTime()
+          lastFeedCount = row.feed_count
+          lastUpdatedMs = upd
+        } else {
+          send({ type: 'no-session' })
         }
+      } catch (e) {
+        send({ type: 'error', message: (e as Error).message })
       }
-      const offState = client.on('state', () => {
-        if (pending) return // ya hay un flush programado en la ventana
-        pending = setTimeout(flush, COALESCE_MS)
-      })
 
-      // 3) Heartbeat — mantener el TCP vivo y dar señal de vida al cliente
+      // Loop de polling — solo emite si feed_count o updated_at cambió
+      const poll = setInterval(async () => {
+        if (closed) return
+        try {
+          const row = await readState()
+          if (!row) return
+          const upd = typeof row.updated_at === 'string' ? new Date(row.updated_at).getTime() : row.updated_at.getTime()
+          if (row.feed_count === lastFeedCount && upd === lastUpdatedMs) return // sin cambios
+          lastFeedCount = row.feed_count
+          lastUpdatedMs = upd
+          if (row.session_status === 'initialized' || !row.payload || Object.keys(row.payload).length === 0) {
+            send({ type: 'no-session' })
+            return
+          }
+          send({ type: 'update', data: buildPayload(row) })
+        } catch (e) {
+          send({ type: 'error', message: (e as Error).message })
+        }
+      }, POLL_INTERVAL_MS)
+
+      // Heartbeat (comentario SSE) para mantener vivo el TCP a través de proxies
       const hb = setInterval(() => {
         if (closed) return
         try {
-          // Comentario SSE — no genera evento en el EventSource pero mantiene el stream
           controller.enqueue(encoder.encode(`: heartbeat ${Date.now()}\n\n`))
         } catch {
           closed = true
         }
       }, HEARTBEAT_MS)
 
-      // 4) Disconnect/connect events del SignalR
-      const offDisc = client.on('disconnected', () => send({ type: 'disconnected' }))
-      const offConn = client.on('connected', () => send({ type: 'connected' }))
-
-      // 5) Cleanup
       const cleanup = () => {
         if (closed) return
         closed = true
-        if (pending) clearTimeout(pending)
+        clearInterval(poll)
         clearInterval(hb)
-        offState()
-        offDisc()
-        offConn()
         try {
           controller.close()
         } catch {

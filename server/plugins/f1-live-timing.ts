@@ -17,6 +17,28 @@ function withJitter(ms: number) {
 export default defineNitroPlugin(async (nitro) => {
   if (import.meta.prerender) return
 
+  // ┌─────────────────────────────────────────────────────────────────────┐
+  // │ DESACTIVADO en producción.                                          │
+  // │                                                                      │
+  // │ @microsoft/signalr usa require() dinámicos (ws, eventsource) que    │
+  // │ rompen el bundle de Nitro con errores tipo "requireFunc is not a    │
+  // │ function" o "Cannot find module 'ws'". Los datos en vivo ahora       │
+  // │ vienen del worker standalone:                                        │
+  // │                                                                      │
+  // │   node scripts/live-worker.mjs                                       │
+  // │                                                                      │
+  // │ El worker corre vanilla Node (sin bundle), conecta a F1 SignalR y    │
+  // │ escribe el state en la tabla `live_state`. El endpoint               │
+  // │ /api/live/timing lee de ahí.                                         │
+  // │                                                                      │
+  // │ Si querés correr el cliente in-process igual (en dev), seteá la      │
+  // │ env var ENABLE_INPROCESS_SIGNALR=1.                                  │
+  // └─────────────────────────────────────────────────────────────────────┘
+  if (process.env.ENABLE_INPROCESS_SIGNALR !== '1') {
+    console.log('[F1 Live] Plugin disabled — using standalone worker via live_state table')
+    return
+  }
+
   // Dedupe por sesión: una vez que disparamos el sync para una sesión "Finalised",
   // no lo volvemos a disparar aunque el feed siga repitiendo el status.
   const syncedSessions = new Set<string>()
