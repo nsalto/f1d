@@ -24,7 +24,8 @@
     "nuxt": "^4.4.2",
     "tailwindcss": "^4.2.1",
     "tough-cookie": "^6.0.1",
-    "vue-chartjs": "^5.3.3"
+    "vue-chartjs": "^5.3.3",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",

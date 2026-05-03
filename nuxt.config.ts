@@ -65,15 +65,19 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-15',
 
   nitro: {
-    // @microsoft/signalr uses dynamic require() for tough-cookie, fetch-cookie, etc.
-    // Must be externalized so Nitro doesn't try to bundle them
+    // @microsoft/signalr uses dynamic require() for tough-cookie, fetch-cookie, ws, etc.
+    // Must be externalized so Nitro doesn't try to bundle them.
+    // 'ws' es la librería de WebSocket que SignalR necesita en runtime de Node — sin ella
+    // connection.start() falla con "Cannot find module 'ws'" en prod (en dev funciona porque
+    // Vite resuelve todo dinámicamente).
     externals: {
       inline: [],
       external: [
         '@microsoft/signalr',
         'tough-cookie',
         'fetch-cookie',
-        'node-fetch'
+        'node-fetch',
+        'ws'
       ]
     },
     // Ship SQL migrations next to the server entry (Railway cwd may omit repo-root drizzle/)
