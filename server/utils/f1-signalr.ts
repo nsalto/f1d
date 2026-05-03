@@ -6,6 +6,10 @@ import {
   HttpTransportType
 } from '@microsoft/signalr'
 import { EventEmitter } from 'node:events'
+// Pasamos WebSocket explícito a SignalR para que NO use su require() dinámico
+// (que falla con "requireFunc(...) is not a function" en bundles de Nitro).
+// Importarlo así hace que el bundler lo resuelva al build, no en runtime.
+import WebSocket from 'ws'
 
 // ─── Topics ────────────────────────────────────────────────────────────────────
 // Free topics (no auth required)
@@ -259,6 +263,11 @@ export class F1LiveTimingClient {
       .withUrl('https://livetiming.formula1.com/signalrcore', {
         // Use WebSockets transport
         transport: HttpTransportType.WebSockets,
+        // Pasamos WebSocket explícito para evitar el require() dinámico de SignalR
+        // que falla en el bundle de Nitro ("requireFunc(...) is not a function").
+        // Cast porque la firma de SignalR espera el WebSocket de browser, pero el
+        // de 'ws' es API-compatible para lo que SignalR usa.
+        WebSocket: WebSocket as unknown as typeof globalThis.WebSocket,
         // Inject the cookie and optional auth token
         headers: this.cookie ? { Cookie: this.cookie } : {},
         // For authenticated access, provide token
