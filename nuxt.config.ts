@@ -67,9 +67,10 @@ export default defineNuxtConfig({
   nitro: {
     // @microsoft/signalr uses dynamic require() for tough-cookie, fetch-cookie, ws, etc.
     // Must be externalized so Nitro doesn't try to bundle them.
-    // 'ws' es la librería de WebSocket que SignalR necesita en runtime de Node — sin ella
-    // connection.start() falla con "Cannot find module 'ws'" en prod (en dev funciona porque
-    // Vite resuelve todo dinámicamente).
+    // 'ws' (WebSocket) y 'eventsource' (SSE) son los transports que SignalR carga en Node.
+    // SignalR los hace `require()` dinámicamente al inicializar el HubConnection, aunque
+    // nosotros solo usemos WebSockets. Sin ellos en el bundle, connection.start() falla con
+    // "Cannot find module ...". En dev funciona porque Vite resuelve todo dinámicamente.
     externals: {
       inline: [],
       external: [
@@ -77,7 +78,8 @@ export default defineNuxtConfig({
         'tough-cookie',
         'fetch-cookie',
         'node-fetch',
-        'ws'
+        'ws',
+        'eventsource'
       ]
     },
     // Ship SQL migrations next to the server entry (Railway cwd may omit repo-root drizzle/)
