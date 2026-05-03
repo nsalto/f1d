@@ -258,6 +258,14 @@ export class F1LiveTimingClient {
     this.cookie = await getAwsAlbCookie()
     console.log('[F1 SignalR] Got cookie:', this.cookie ? 'yes' : 'no')
 
+    // Diagnóstico — qué hay disponible globalmente
+    console.log(
+      '[F1 SignalR] env:'
+      + ` typeof WebSocket=${typeof (globalThis as any).WebSocket}`
+      + ` | typeof globalThis.WebSocket=${typeof globalThis.WebSocket}`
+      + ` | node=${process.versions.node}`
+    )
+
     // Step 2: Build SignalR Core connection
     const builder = new HubConnectionBuilder()
       .withUrl('https://livetiming.formula1.com/signalrcore', {

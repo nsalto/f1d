@@ -87,15 +87,17 @@ export default defineNitroPlugin(async (nitro) => {
       backoffMs = RECONNECT_MIN_MS // reset backoff al conectar
     } catch (err) {
       connected = false
-      // Logueamos para diagnóstico — sin esto el error es invisible
       const e = err as Error & { errorType?: string, statusCode?: number }
       console.warn(
         `[F1 Live] Connection attempt failed: ${e?.message || e}`
         + (e?.errorType ? ` | errorType=${e.errorType}` : '')
         + (e?.statusCode ? ` | status=${e.statusCode}` : '')
       )
-      // Normal cuando no hay sesión activa — pero igual aplicamos backoff
-      // para no spamear el endpoint de F1
+      // Stack trace recortado — para saber DÓNDE adentro de SignalR explota el require
+      if (e?.stack) {
+        const lines = e.stack.split('\n').slice(0, 10).join('\n')
+        console.warn(`[F1 Live] stack:\n${lines}`)
+      }
     }
   }
 
