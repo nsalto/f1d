@@ -85,8 +85,15 @@ export default defineNitroPlugin(async (nitro) => {
       console.log('[F1 Live] Connected to live timing')
       connected = true
       backoffMs = RECONNECT_MIN_MS // reset backoff al conectar
-    } catch {
+    } catch (err) {
       connected = false
+      // Logueamos para diagnóstico — sin esto el error es invisible
+      const e = err as Error & { errorType?: string, statusCode?: number }
+      console.warn(
+        `[F1 Live] Connection attempt failed: ${e?.message || e}`
+        + (e?.errorType ? ` | errorType=${e.errorType}` : '')
+        + (e?.statusCode ? ` | status=${e.statusCode}` : '')
+      )
       // Normal cuando no hay sesión activa — pero igual aplicamos backoff
       // para no spamear el endpoint de F1
     }
