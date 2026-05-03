@@ -1,9 +1,11 @@
+import type {
+  HubConnection } from '@microsoft/signalr'
 import {
   HubConnectionBuilder,
-  HubConnection,
   LogLevel,
-  HttpTransportType,
+  HttpTransportType
 } from '@microsoft/signalr'
+import { EventEmitter } from 'node:events'
 
 // ─── Topics ────────────────────────────────────────────────────────────────────
 // Free topics (no auth required)
@@ -22,7 +24,7 @@ export const FREE_TOPICS = [
   'LapCount',
   'ExtrapolatedClock',
   'TeamRadio',
-  'ChampionshipPrediction',
+  'ChampionshipPrediction'
 ] as const
 
 // These require F1TV subscription token
@@ -30,7 +32,7 @@ export const SUBSCRIBER_TOPICS = [
   'CarData.z',
   'Position.z',
   'PitLaneTimeCollection',
-  'PitStopSeries',
+  'PitStopSeries'
 ] as const
 
 export const ALL_TOPICS = [...FREE_TOPICS, ...SUBSCRIBER_TOPICS] as const
@@ -41,14 +43,14 @@ export type F1Topic = (typeof ALL_TOPICS)[number]
 export interface TimingDataLine {
   Position?: string
   GapToLeader?: string
-  IntervalToPositionAhead?: { Value?: string; Catching?: boolean }
+  IntervalToPositionAhead?: { Value?: string, Catching?: boolean }
   Line?: number
   InPit?: boolean
   PitOut?: boolean
   NumberOfPitStops?: number
   NumberOfLaps?: number
-  LastLapTime?: { Value?: string; OverallFastest?: boolean; PersonalFastest?: boolean }
-  BestLapTime?: { Value?: string; Lap?: number }
+  LastLapTime?: { Value?: string, OverallFastest?: boolean, PersonalFastest?: boolean }
+  BestLapTime?: { Value?: string, Lap?: number }
   Sectors?: Record<string, {
     Value?: string
     OverallFastest?: boolean
@@ -168,7 +170,7 @@ export function deepMerge(target: any, source: any): any {
 async function getAwsAlbCookie(): Promise<string> {
   // Fast-F1 does an OPTIONS request to get the AWSALBCORS cookie
   const res = await fetch('https://livetiming.formula1.com/signalrcore/negotiate?negotiateVersion=1', {
-    method: 'OPTIONS',
+    method: 'OPTIONS'
   })
 
   const setCookie = res.headers.get('set-cookie') || ''
@@ -213,17 +215,38 @@ export class F1LiveTimingClient {
   private state: Record<string, any> = {}
   private options: F1LiveTimingOptions
   private cookie: string = ''
+  private emitter = new EventEmitter()
 
   constructor(options: F1LiveTimingOptions = {}) {
     this.options = {
       topics: FREE_TOPICS,
       logLevel: LogLevel.Information,
-      ...options,
+      ...options
     }
+    // Allow many concurrent SSE listeners without warning spam
+    this.emitter.setMaxListeners(50)
   }
 
   get currentState() {
     return this.state
+  }
+
+  /**
+   * Subscribe to live events. Emitter events:
+   *   - 'feed'        (topic: string, data: any, timestamp: Date) — every parsed feed
+   *   - 'state'       () — fires after the internal state was mutated by a feed (good
+   *                       for SSE: you can read currentState and push a snapshot)
+   *   - 'session'     (status: string) — emitted when SessionStatus.Status changes
+   *   - 'connected'   () — connection established
+   *   - 'disconnected'() — connection lost
+   */
+  on(event: 'feed' | 'state' | 'session' | 'connected' | 'disconnected', listener: (...args: unknown[]) => void) {
+    this.emitter.on(event, listener)
+    return () => this.emitter.off(event, listener)
+  }
+
+  off(event: string, listener: (...args: unknown[]) => void) {
+    this.emitter.off(event, listener)
   }
 
   async start(): Promise<void> {
@@ -243,7 +266,7 @@ export class F1LiveTimingClient {
           ? () => this.options.accessToken!
           : undefined,
         // Skip negotiate if having issues (direct WebSocket)
-        skipNegotiation: false,
+        skipNegotiation: false
       })
       .withAutomaticReconnect()
       .configureLogging(this.options.logLevel!)
@@ -259,38 +282,64 @@ export class F1LiveTimingClient {
         if (typeof data === 'string') {
           inflateF1Data(data)
             .then((decoded) => {
-              this.state[baseTopic] = deepMerge(this.state[baseTopic], decoded)
-              this.options.onFeed?.(baseTopic, decoded, new Date(timestamp))
+              this.applyFeed(baseTopic, decoded, new Date(timestamp))
             })
             .catch(err => console.error(`[F1 SignalR] Failed to decompress ${topic}:`, err))
         }
-      }
-      else {
-        this.state[topic] = deepMerge(this.state[topic], data)
-        this.options.onFeed?.(topic, data, new Date(timestamp))
+      } else {
+        this.applyFeed(topic, data, new Date(timestamp))
       }
     })
 
     this.connection.onclose((error) => {
       console.log('[F1 SignalR] Connection closed', error?.message)
+      this.emitter.emit('disconnected')
       this.options.onClose?.(error || undefined)
     })
 
     this.connection.onreconnected(() => {
       console.log('[F1 SignalR] Reconnected')
+      this.emitter.emit('connected')
       this.options.onReconnect?.()
       // Re-subscribe after reconnect
       this.subscribe().catch(err =>
-        console.error('[F1 SignalR] Failed to re-subscribe:', err),
+        console.error('[F1 SignalR] Failed to re-subscribe:', err)
       )
     })
 
     // Step 4: Start connection
     await this.connection.start()
     console.log('[F1 SignalR] Connected')
+    this.emitter.emit('connected')
 
     // Step 5: Subscribe and get initial state
     await this.subscribe()
+  }
+
+  /**
+   * Apply a parsed feed to internal state, emit events.
+   * Centralizing this so both compressed and plain topics use the same path.
+   */
+  private applyFeed(topic: string, data: any, timestamp: Date) {
+    const prevSessionStatus = this.getSessionStatusValue()
+    this.state[topic] = deepMerge(this.state[topic], data)
+    this.emitter.emit('feed', topic, data, timestamp)
+    this.emitter.emit('state')
+
+    // Detect SessionStatus.Status transition (e.g. → 'Finalised') and emit once
+    if (topic === 'SessionStatus') {
+      const newStatus = this.getSessionStatusValue()
+      if (newStatus && newStatus !== prevSessionStatus) {
+        this.emitter.emit('session', newStatus)
+      }
+    }
+    this.options.onFeed?.(topic, data, timestamp)
+  }
+
+  /** Reads the current SessionStatus.Status string ('Inactive' | 'Started' | 'Finished' | 'Finalised' | 'Ends' | ...) */
+  getSessionStatusValue(): string | undefined {
+    const ss = this.state.SessionStatus as { Status?: string, SessionStatus?: string } | undefined
+    return ss?.Status || ss?.SessionStatus
   }
 
   private async subscribe(): Promise<void> {
@@ -300,7 +349,7 @@ export class F1LiveTimingClient {
     // and returns the full current state as a JSON object
     const initialState = await this.connection.invoke<Record<string, any>>(
       'Subscribe',
-      this.options.topics,
+      this.options.topics
     )
 
     if (initialState) {
@@ -315,8 +364,7 @@ export class F1LiveTimingClient {
             const decoded = await inflateF1Data(initialState[key])
             this.state[baseTopic] = decoded
             delete this.state[key]
-          }
-          catch (err) {
+          } catch (err) {
             console.error(`[F1 SignalR] Failed to decompress initial ${key}:`, err)
           }
         }
